@@ -66,7 +66,13 @@ tr.first .pos{color:var(--ink)}
 .pg{font:700 3rem/1 "Archivo Narrow",sans-serif;margin:8px 0 4px;text-shadow:0 0 20px rgba(255,255,255,.35)}
 .pc1 .pg{font-size:4.4rem}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px}
-.sm{padding:14px;border-radius:20px;gap:10px}
+.sm{padding:14px;border-radius:20px;gap:10px;-webkit-tap-highlight-color:transparent}
+.pc::after{content:"";position:absolute;top:-10%;bottom:-10%;left:0;width:45%;opacity:0;pointer-events:none;background:linear-gradient(100deg,rgba(255,255,255,0) 0,rgba(255,255,255,.18) 30%,rgba(255,255,255,.7) 50%,rgba(255,255,255,.18) 70%,rgba(255,255,255,0) 100%);transform:translateX(-160%) skewX(-18deg)}
+.pc:hover::after,.pc:active::after,.pc:focus-visible::after{animation:sheen .85s cubic-bezier(.3,.6,.3,1) both}
+.pc:hover,.pc:active{box-shadow:inset 0 1px 2px rgba(255,255,255,.9),inset 0 -8px 16px rgba(0,0,0,.2),0 18px 36px rgba(0,0,0,.3),0 0 38px color-mix(in srgb,var(--tint) 70%,transparent)}
+.pc:active{transform:scale(.97)}
+@keyframes sheen{0%{opacity:1;transform:translateX(-160%) skewX(-18deg)}100%{opacity:1;transform:translateX(330%) skewX(-18deg)}}
+@media (prefers-reduced-motion:reduce){.pc:hover::after,.pc:active::after,.pc:focus-visible::after{animation:none;opacity:.25;transform:translateX(100%) skewX(-18deg)}}
 .sr{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .nb{font:700 1.05rem "Archivo Narrow",sans-serif;min-width:38px;text-align:center;padding:3px 10px;border-radius:999px;color:#fff;border:1px solid rgba(255,255,255,.6);background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.1));box-shadow:inset 0 1px 1px rgba(255,255,255,.8)}
 .cb{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;min-width:0}
@@ -84,8 +90,25 @@ tr.first .pos{color:var(--ink)}
 dialog{--tint:#2f7d46;border:1px solid rgba(255,255,255,.5);border-radius:28px;color:#fff;padding:0;width:min(520px,calc(100% - 28px));max-height:calc(100% - 28px);overflow-y:auto;background:radial-gradient(ellipse at 50% -20%,color-mix(in srgb,var(--tint) 70%,#fff) 0,transparent 60%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 40%,#07130c),#07130c 85%);box-shadow:inset 0 1px 2px rgba(255,255,255,.6),0 30px 80px rgba(0,0,0,.55),0 0 60px color-mix(in srgb,var(--tint) 50%,transparent)}
 dialog[open]{animation:pop .35s cubic-bezier(.2,.9,.3,1.2)}
 @keyframes pop{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:none}}
-dialog::before{content:"";position:absolute;inset:0;pointer-events:none;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;background:conic-gradient(from 160deg at 50% -10%,rgba(255,255,215,.28),rgba(255,255,215,0) 40deg)}
+dialog::before{content:"";position:absolute;inset:0;pointer-events:none;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;background:conic-gradient(from var(--ang,160deg) at 50% -10%,rgba(255,255,215,.36),rgba(255,255,215,0) 40deg);animation:sweep 6s ease-in-out infinite alternate}
 dialog::backdrop{background:rgba(3,12,7,.72);backdrop-filter:blur(6px)}
+@property --ang{syntax:"<angle>";inherits:false;initial-value:160deg}
+@keyframes sweep{from{--ang:148deg}to{--ang:196deg}}
+.fx{position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none}
+.fx i{position:absolute;border-radius:50%;filter:blur(38px);mix-blend-mode:screen}
+.fx i:nth-child(1){width:260px;height:260px;left:-60px;top:-40px;background:color-mix(in srgb,var(--tint) 85%,#fff);opacity:.55;animation:d1 9s ease-in-out infinite alternate}
+.fx i:nth-child(2){width:220px;height:220px;right:-50px;top:150px;background:color-mix(in srgb,var(--tint) 60%,#ffe27a);opacity:.45;animation:d2 11s ease-in-out infinite alternate}
+.fx i:nth-child(3){width:300px;height:300px;left:30%;bottom:-130px;background:var(--tint);opacity:.6;animation:d3 13s ease-in-out infinite alternate}
+@keyframes d1{to{transform:translate(170px,130px) scale(1.3)}}
+@keyframes d2{to{transform:translate(-190px,-70px) scale(.8)}}
+@keyframes d3{to{transform:translate(130px,-150px) scale(1.25)}}
+.fx u{position:absolute;left:50%;top:40%;width:240px;height:240px;margin:-120px 0 0 -120px;border:1.5px solid rgba(255,255,255,.45);border-radius:50%;opacity:0;animation:ring 5s ease-out infinite}
+.fx u:nth-of-type(2){animation-delay:2.5s}
+@keyframes ring{from{transform:scale(.3);opacity:.7}to{transform:scale(2.6);opacity:0}}
+.fx b{position:absolute;left:0;bottom:-20px;width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:50px 0 #fff,130px -40px #fff,220px 30px #fff,310px -20px #fff,400px 10px #fff,470px -60px #fff;animation:rise 8s linear infinite}
+.fx b+b{left:24px;animation-duration:12s;animation-delay:-4s;box-shadow:90px 0 #fff,180px -50px #fff,270px 20px #fff,360px -30px #fff,440px 40px #fff}
+@keyframes rise{0%{transform:translateY(0);opacity:0}12%{opacity:.75}100%{transform:translateY(-660px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.fx i,.fx u,.fx b,dialog::before{animation:none}.fx u,.fx b{display:none}}
 @media (prefers-reduced-motion:reduce){dialog[open]{animation:none}}
 .dh,.st,#dd{position:relative}
 .drk{position:absolute;right:18px;top:-10px;font:700 10rem/1 "Archivo Narrow",sans-serif;opacity:.13;pointer-events:none}
@@ -128,6 +151,7 @@ dt{color:var(--muted)}dd{font-weight:500;text-align:right}
 </main>
 
 <dialog id="dlg" aria-labelledby="dn">
+<div class="fx" aria-hidden="true"><i></i><i></i><i></i><u></u><u></u><b></b><b></b></div>
 <div class="drk" id="rk" aria-hidden="true"></div>
 <div class="dh"><div><span class="dc" id="dc"></span><h2 id="dn"></h2><p id="dm"></p></div><button class="x" id="close" aria-label="Sluiten">×</button></div>
 <div class="st"><b id="s1"></b><span class="sl">Doelpunten in totaal</span><span class="meter"><i id="sm"></i></span><small id="sr"></small></div>
