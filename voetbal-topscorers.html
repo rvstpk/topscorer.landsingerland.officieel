@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Topscorers aller tijden: voetbal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&family=Archivo+Narrow:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--pitch:#1b5a32;--pitch2:#17502c;--ink:#0f1a13;--paper:#fff;--stripe:#f0f5ee;--line:#d5ded2;--muted:#5b6b60;--card:#ffd60a;--on-card:#0f1a13;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#101a14;--ink:#eef4ec;--stripe:#16231b;--line:#2a3d30;--muted:#9bb0a1;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#101a14;--ink:#eef4ec;--stripe:#16231b;--line:#2a3d30;--muted:#9bb0a1;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0}
+body{background:radial-gradient(circle at 12% 25%,rgba(60,200,110,.4),transparent 42%),radial-gradient(circle at 88% 55%,rgba(255,214,10,.35),transparent 40%),radial-gradient(circle at 30% 90%,rgba(27,110,55,.3),transparent 45%),var(--paper) fixed;color:var(--ink);font:400 1rem/1.5 Archivo,system-ui,sans-serif}
+:focus-visible{outline:3px solid var(--card);outline-offset:2px;box-shadow:0 0 0 5px var(--ink)}
+.hero{position:relative;background:radial-gradient(ellipse at 50% 120%,#1f7a42 0,transparent 60%),linear-gradient(180deg,#04100a 0,#0b2e1a 55%,#145230 100%);color:#fff;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;filter:blur(14px);background:conic-gradient(from 150deg at 10% -8%,rgba(255,255,215,.42),rgba(255,255,215,0) 34deg),conic-gradient(from 176deg at 90% -8%,rgba(255,255,215,.42),rgba(255,255,215,0) 34deg)}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16px}
+.hero svg{position:absolute;inset:0;width:100%;height:100%;stroke:rgba(255,255,255,.22);fill:none;stroke-width:2}
+.hero div{position:relative;max-width:960px;margin:0 auto;padding:72px 20px 140px}
+h1{font:700 clamp(3rem,11vw,7rem)/.9 "Archivo Narrow","Arial Narrow",sans-serif;text-transform:uppercase;letter-spacing:-.01em;text-shadow:0 0 46px rgba(255,255,200,.4),0 4px 0 rgba(0,0,0,.28)}
+.hero p{max-width:46ch;margin-top:16px;color:#d8ead9}
+main{max-width:960px;margin:0 auto;padding:22px 20px 56px}
+.bar{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:end;justify-content:space-between;margin-bottom:14px}
+.tabs{display:flex;gap:22px}
+.tab{font:700 1rem "Archivo Narrow",sans-serif;background:none;border:0;position:relative;color:var(--muted);padding:8px 0 16px;cursor:pointer}
+.tab[aria-pressed="true"]{color:var(--ink)}
+.tab[aria-pressed="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:10px;border-radius:999px}
+input{font:inherit;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:0;padding:8px 12px;width:min(100%,260px)}
+table{width:100%;border-collapse:separate;border-spacing:0 8px}
+th{font:700 .85rem "Archivo Narrow",sans-serif;color:var(--muted);text-align:right;border-bottom:0;padding:0 0 8px;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0)) bottom/100% 6px no-repeat,linear-gradient(90deg,rgba(60,200,110,.95),rgba(27,100,50,1)) bottom/100% 6px no-repeat}
+th:nth-child(2),th:nth-child(3){text-align:left}
+th button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:10px 10px;width:100%;text-align:inherit}
+th button{position:relative}
+th[aria-sort="ascending"] button,th[aria-sort="descending"] button{color:var(--ink)}
+th[aria-sort="ascending"] button::after,th[aria-sort="descending"] button::after{content:"";position:absolute;left:6px;right:6px;bottom:3px;height:8px;border-radius:999px}
+td{padding:12px 10px;text-align:right;font-variant-numeric:tabular-nums;background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,.1)),color-mix(in srgb,var(--tint,#fff) 45%,transparent);backdrop-filter:blur(12px) saturate(1.8);-webkit-backdrop-filter:blur(12px) saturate(1.8);border-top:1px solid rgba(255,255,255,.95);border-bottom:1px solid rgba(255,255,255,.55);box-shadow:inset 0 1px 2px rgba(255,255,255,.9),inset 0 -3px 6px rgba(15,60,30,.1);transition:background .2s}
+td:first-child{border-left:1px solid rgba(255,255,255,.95);border-radius:16px 0 0 16px}
+td:last-child{border-right:1px solid rgba(255,255,255,.6);border-radius:0 16px 16px 0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) td{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.03)),color-mix(in srgb,var(--tint,#fff) 38%,transparent);border-color:rgba(255,255,255,.22);box-shadow:inset 0 1px 2px rgba(255,255,255,.25),inset 0 -3px 6px rgba(0,0,0,.35)}}
+td:nth-child(2),td:nth-child(3){text-align:left}
+tbody tr{cursor:pointer}
+tbody tr:hover td{filter:brightness(1.1) saturate(1.25)}
+.pos{width:44px;font:700 1.3rem "Archivo Narrow",sans-serif;color:var(--muted)}
+tr.first .pos{color:var(--ink)}
+.nm{font:600 1.05rem Archivo,sans-serif;background:none;border:0;color:inherit;text-align:left;cursor:pointer;padding:0}
+.yr{display:block;font-size:.8rem;color:var(--muted)}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:-1px;background:var(--tint);box-shadow:inset 0 1px 2px rgba(255,255,255,.8),0 0 0 1px rgba(0,0,0,.18)}
+.g{font:700 1.5rem "Archivo Narrow",sans-serif}
+.meter{position:relative;display:block;height:16px;min-width:110px;margin-top:6px;border-radius:999px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,.12)),rgba(27,90,50,.14);backdrop-filter:blur(8px) saturate(1.8);-webkit-backdrop-filter:blur(8px) saturate(1.8);border:1px solid rgba(255,255,255,.85);box-shadow:inset 0 2px 3px rgba(255,255,255,.9),inset 0 -3px 5px rgba(15,60,30,.14),0 1px 4px rgba(15,26,19,.2)}
+.meter i{position:relative;display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.5) 0,rgba(255,255,255,0) 55%),linear-gradient(90deg,color-mix(in srgb,var(--tint,#2f7d46) 70%,#fff),var(--tint,#2f7d46));box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -4px 6px rgba(0,0,0,.3),0 0 10px color-mix(in srgb,var(--tint,#2f7d46) 60%,transparent);transition:width .5s}
+.meter i::after{content:"";position:absolute;left:8px;right:8px;top:2px;height:4px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.75),rgba(255,255,255,.1))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .meter{background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.04)),rgba(120,220,160,.08);border-color:rgba(255,255,255,.28);box-shadow:inset 0 2px 3px rgba(255,255,255,.3),inset 0 -3px 5px rgba(0,0,0,.4),0 1px 4px rgba(0,0,0,.5)}}
+.hero::after,.tab[aria-pressed="true"]::after,th[aria-sort="ascending"] button::after,th[aria-sort="descending"] button::after,dialog::before{background:linear-gradient(180deg,rgba(255,255,255,.65) 0,rgba(255,255,255,0) 55%),linear-gradient(90deg,rgba(255,224,60,.92),rgba(255,190,0,.95));box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -3px 5px rgba(140,90,0,.35),0 0 10px rgba(255,214,10,.5);border:1px solid rgba(255,255,255,.7);pointer-events:none}
+.podium{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1.18fr 1fr;gap:14px;align-items:end;margin:-96px 0 30px}
+.podium[hidden]{display:none}
+.pc{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:2px;text-align:left;font:inherit;color:#fff;cursor:pointer;padding:20px 18px 18px;border-radius:24px;border:1px solid rgba(255,255,255,.55);background:linear-gradient(180deg,rgba(255,255,255,.32),rgba(255,255,255,.04) 45%),color-mix(in srgb,var(--tint) 58%,#08150d);backdrop-filter:blur(14px) saturate(1.8);-webkit-backdrop-filter:blur(14px) saturate(1.8);box-shadow:inset 0 1px 2px rgba(255,255,255,.7),inset 0 -8px 16px rgba(0,0,0,.25),0 18px 36px rgba(0,0,0,.28),0 0 28px color-mix(in srgb,var(--tint) 45%,transparent);transition:transform .25s}
+.pc:hover{transform:translateY(-4px)}
+.pc1{order:2;padding-top:36px;padding-bottom:28px}.pc2{order:1}.pc3{order:3}
+.rk{position:absolute;right:12px;top:-8px;font:700 6.5rem/1 "Archivo Narrow",sans-serif;opacity:.2}
+.pcl{font-size:.85rem;opacity:.88}
+.pn{font:700 1.5rem/1.1 "Archivo Narrow",sans-serif;text-transform:uppercase}
+.pc1 .pn{font-size:1.95rem}
+.pg{font:700 3rem/1 "Archivo Narrow",sans-serif;margin:8px 0 4px;text-shadow:0 0 20px rgba(255,255,255,.35)}
+.pc1 .pg{font-size:4.4rem}
+@media (max-width:640px){.podium{grid-template-columns:1fr;margin-top:-80px}.pc1{order:1}.pc2{order:2}.pc3{order:3}.hero div{padding-bottom:110px}}
+@media (prefers-reduced-motion:reduce){.pc{transition:none}}
+.empty{padding:36px 0;color:var(--muted)}
+.note{margin-top:22px;max-width:64ch;font-size:.82rem;color:var(--muted)}
+dialog{--tint:#2f7d46;border:1px solid rgba(255,255,255,.5);border-radius:28px;color:#fff;padding:0;width:min(520px,calc(100% - 28px));max-height:calc(100% - 28px);overflow-y:auto;background:radial-gradient(ellipse at 50% -20%,color-mix(in srgb,var(--tint) 70%,#fff) 0,transparent 60%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 40%,#07130c),#07130c 85%);box-shadow:inset 0 1px 2px rgba(255,255,255,.6),0 30px 80px rgba(0,0,0,.55),0 0 60px color-mix(in srgb,var(--tint) 50%,transparent)}
+dialog[open]{animation:pop .35s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:none}}
+dialog::before{content:"";position:absolute;inset:0;pointer-events:none;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;background:conic-gradient(from 160deg at 50% -10%,rgba(255,255,215,.28),rgba(255,255,215,0) 40deg)}
+dialog::backdrop{background:rgba(3,12,7,.72);backdrop-filter:blur(6px)}
+@media (prefers-reduced-motion:reduce){dialog[open]{animation:none}}
+.dh,.st,#dd{position:relative}
+.drk{position:absolute;right:18px;top:-10px;font:700 10rem/1 "Archivo Narrow",sans-serif;opacity:.13;pointer-events:none}
+.dh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:26px 24px 8px}
+.dc{display:inline-flex;align-items:center;font-size:.85rem;padding:4px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.55);background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.08)),color-mix(in srgb,var(--tint) 60%,transparent);box-shadow:inset 0 1px 1px rgba(255,255,255,.7)}
+.dh h2{font:700 clamp(2.4rem,9vw,3.6rem)/.95 "Archivo Narrow",sans-serif;text-transform:uppercase;margin-top:12px;text-shadow:0 0 30px rgba(255,255,255,.3)}
+.dh p{color:rgba(255,255,255,.75);font-size:.9rem;margin-top:6px}
+.x{font:inherit;font-size:1.5rem;line-height:1;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;border:1px solid rgba(255,255,255,.55);background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.06));box-shadow:inset 0 1px 1px rgba(255,255,255,.7);backdrop-filter:blur(6px)}
+.st{padding:10px 24px 6px}
+.st b{display:block;font:700 clamp(4.5rem,18vw,7rem)/.9 "Archivo Narrow",sans-serif;text-shadow:0 0 34px rgba(255,255,255,.45)}
+.sl{display:block;font-size:.9rem;opacity:.85}
+.st .meter{margin:14px 0 8px;height:20px;background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.05));border-color:rgba(255,255,255,.4)}
+#sm{transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.st small{display:block;font-size:.82rem;opacity:.75}
+#dd{padding:8px 24px 28px}
+#dd h3{font:700 1rem "Archivo Narrow",sans-serif;opacity:.75;margin:18px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{font-size:.9rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:linear-gradient(180deg,rgba(255,255,255,.32),rgba(255,255,255,.06));box-shadow:inset 0 1px 1px rgba(255,255,255,.6);backdrop-filter:blur(6px)}
+dl{padding:6px 20px 18px}
+dl div{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--line)}
+dl div:last-child{border:0}
+dt{color:var(--muted)}dd{font-weight:500;text-align:right}
+@media (max-width:640px){.h-m{display:none}td,th button{padding-inline:6px}.hero div{padding-top:40px}}
+@media (prefers-reduced-motion:reduce){.meter i{transition:none}}
+</style>
+</head>
+<body>
+<header class="hero">
+<svg viewBox="0 0 960 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="20" y="20" width="920" height="260"/><line x1="480" y1="20" x2="480" y2="280"/><circle cx="480" cy="150" r="60"/><rect x="20" y="85" width="110" height="130"/><rect x="830" y="85" width="110" height="130"/></svg>
+<div><h1>Topscorers<br>aller tijden</h1><p>De negen grootste doelpuntenmakers uit de voetbalgeschiedenis. Klik op een naam voor de details.</p></div>
+</header>
+<main>
+<div class="podium" id="podium"></div>
+<div class="bar">
+<input id="q" type="search" placeholder="Zoek speler, club of land" aria-label="Zoeken">
+</div>
+<table>
+<thead><tr>
+<th class="pos" style="text-align:center"><span style="padding:0 6px">#</span></th>
+<th style="padding:10px 10px 8px">Speler</th>
+<th style="padding:10px 10px 8px">Club</th>
+<th style="padding:10px 10px 8px">Goals</th>
+</tr></thead>
+<tbody id="rows"></tbody>
+</table>
+<p class="empty" id="empty" hidden>Geen speler gevonden. Pas je zoekopdracht aan.</p>
+<p class="note">Aantallen zijn afgerond en gelden voor officiële en erkende wedstrijden bij clubs en nationale teams. Tellingen verschillen per bron, vooral voor spelers uit de beginjaren. Controleer actuele cijfers van spelers die nog actief zijn.</p>
+</main>
+
+<dialog id="dlg" aria-labelledby="dn">
+<div class="drk" id="rk" aria-hidden="true"></div>
+<div class="dh"><div><span class="dc" id="dc"></span><h2 id="dn"></h2><p id="dm"></p></div><button class="x" id="close" aria-label="Sluiten">×</button></div>
+<div class="st"><b id="s1"></b><span class="sl">Doelpunten in totaal</span><span class="meter"><i id="sm"></i></span><small id="sr"></small></div>
+<div id="dd"></div>
+</dialog>
+
+<script>
+var P=[
+{n:"Cristiano Ronaldo",c:"Portugal",g:950,m:1280,i:143,y:"2002-heden",a:true,t:"Sporting, Man. United, Real Madrid, Juventus, Al-Nassr",h:"5x Ballon d’Or, 5x Champions League"},
+{n:"Lionel Messi",c:"Argentinië",g:890,m:1130,i:115,y:"2004-heden",a:true,t:"Barcelona, PSG, Inter Miami",h:"8x Ballon d’Or, WK-winnaar 2022"},
+{n:"Josef Bican",c:"Oostenrijk / Tsjechië",g:805,m:530,i:46,y:"1931-1955",a:false,t:"Rapid Wien, Slavia Praag",h:"Meest productieve scorer volgens RSSSF"},
+{n:"Pelé",c:"Brazilië",g:757,m:812,i:77,y:"1956-1977",a:false,t:"Santos, New York Cosmos",h:"3x WK-winnaar"},
+{n:"Ferenc Puskás",c:"Hongarije / Spanje",g:746,m:754,i:84,y:"1943-1966",a:false,t:"Honvéd, Real Madrid",h:"5x Spaans topscorer, 3x Europa Cup I"},
+{n:"Gerd Müller",c:"West-Duitsland",g:735,m:793,i:68,y:"1964-1981",a:false,t:"Bayern München, Fort Lauderdale",h:"WK-winnaar 1974, Gouden Schoen 1970"},
+{n:"Robert Lewandowski",c:"Polen",g:705,m:1050,i:85,y:"2005-heden",a:true,t:"Dortmund, Bayern München, Barcelona",h:"Gouden Schoen 2021 en 2022, Champions League 2020"},
+{n:"Zlatan Ibrahimović",c:"Zweden",g:573,m:1030,i:62,y:"1999-2023",a:false,t:"Ajax, Juventus, Inter, Barcelona, Milan, PSG, Man. United",h:"Topscorer in vier landen"},
+{n:"Karim Benzema",c:"Frankrijk",g:450,m:900,i:37,y:"2004-heden",a:true,t:"Lyon, Real Madrid, Al-Ittihad",h:"Ballon d’Or 2022, 5x Champions League"}
+];
+var CL={"Cristiano Ronaldo":["Al-Nassr","#2a4db0"],"Lionel Messi":["Inter Miami","#f08fb5"],"Josef Bican":["Rapid Wien","#1f9d55"],"Pelé":["Santos","#8d949b"],"Ferenc Puskás":["Real Madrid","#7b6fd6"],"Gerd Müller":["Bayern München","#dc052d"],"Robert Lewandowski":["Barcelona","#a50044"],"Zlatan Ibrahimović":["AC Milan","#2b2b2b"],"Karim Benzema":["Al-Ittihad","#e0a800"]};
+var done=false;
+function count(){
+ if(done)return;done=true;
+ if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+ document.querySelectorAll("[data-n]").forEach(function(e){var n=+e.dataset.n,t0=performance.now();(function st(t){var k=Math.min((t-t0)/1200,1);e.textContent=num(Math.round(n*(1-Math.pow(1-k,3))));if(k<1)requestAnimationFrame(st)})(t0)})
+}
+var f="all",q="",s="goals",body=document.getElementById("rows");
+function num(x){return x.toLocaleString("nl-NL")}
+function val(p){return p.g}
+function view(){
+ var r=P.filter(function(p){
+  return (p.n+" "+p.t+" "+CL[p.n][0]).toLowerCase().indexOf(q)>-1});
+ r.sort(function(a,b){return s==="name"?a.n.localeCompare(b.n,"nl"):val(b)-val(a)});
+ var max=Math.max.apply(null,r.map(function(p){return p.g}).concat(1));
+ var pod=document.getElementById("podium"),ns=q?0:3;pod.innerHTML="";pod.hidden=!ns;
+ r.slice(0,ns).forEach(function(p,k){
+  var b=document.createElement("button");b.className="pc pc"+(k+1);b.style.setProperty("--tint",CL[p.n][1]);
+  b.innerHTML='<span class="rk"></span><span class="pcl"></span><span class="pn"></span><span class="pg"></span><span class="meter"><i></i></span>';
+  var c=b.children;c[0].textContent=k+1;c[1].textContent=CL[p.n][0];c[2].textContent=p.n;c[3].textContent=num(p.g);c[3].dataset.n=p.g;
+  b.querySelector("i").dataset.w=p.g/max*100;
+  b.onclick=function(){open(p)};pod.appendChild(b);
+ });
+ body.innerHTML="";
+ r.slice(q?0:3).forEach(function(p,k0){var k=k0+(q?0:3);
+  var tr=document.createElement("tr");
+  if(k===0)tr.className="first";
+  tr.style.setProperty("--tint",CL[p.n][1]);
+  tr.innerHTML='<td class="pos"></td><td><button class="nm"></button><span class="yr"></span></td><td></td><td class="g"><span></span><span class="meter"><i></i></span></td>';
+  var c=tr.children;
+  c[0].textContent=k+1;
+  c[1].firstChild.textContent=p.n;
+  c[1].lastChild.textContent=p.y;
+  c[2].innerHTML='<span class="dot"></span>';c[2].appendChild(document.createTextNode(CL[p.n][0]));
+  c[3].firstChild.textContent=num(p.g);c[3].firstChild.dataset.n=p.g;
+  c[3].querySelector("i").dataset.w=p.g/max*100;
+  tr.onclick=function(){open(p)};
+  body.appendChild(tr);
+ });
+ requestAnimationFrame(function(){document.querySelectorAll(".meter i").forEach(function(e){e.style.width=e.dataset.w+"%"});count()});
+ document.getElementById("empty").hidden=r.length>0;
+}
+function spin(e,n){
+ if(matchMedia("(prefers-reduced-motion:reduce)").matches){e.textContent=num(n);return}
+ var t0=performance.now();(function st(t){var k=Math.min((t-t0)/1000,1);e.textContent=num(Math.round(n*(1-Math.pow(1-k,3))));if(k<1)requestAnimationFrame(st)})(t0)
+}
+function open(p){
+ var d=document.getElementById("dlg"),cl=CL[p.n],$=function(i){return document.getElementById(i)},best=P[0].g,rank=P.indexOf(p);
+ d.style.setProperty("--tint",cl[1]);
+ $("dc").textContent=cl[0];$("dn").textContent=p.n;$("dm").textContent=p.c+" · "+p.y;
+ $("rk").textContent=rank+1;
+ $("sr").textContent=rank?Math.round(p.g/best*100)+"% van het aantal van de nummer 1":"De nummer 1 van deze lijst";
+ $("sm").style.width="0";
+ var dd=$("dd");dd.innerHTML="";
+ [["Clubs",p.t],["Erelijst",p.h]].forEach(function(x){
+  var h=document.createElement("h3");h.textContent=x[0];dd.appendChild(h);
+  var w=document.createElement("div");w.className="chips";
+  x[1].split(", ").forEach(function(t){var c=document.createElement("span");c.textContent=t;w.appendChild(c)});
+  dd.appendChild(w)});
+ d.showModal();
+ requestAnimationFrame(function(){requestAnimationFrame(function(){$("sm").style.width=p.g/best*100+"%"})});
+ spin($("s1"),p.g);
+}
+document.getElementById("q").oninput=function(e){q=e.target.value.toLowerCase().trim();view()};
+document.getElementById("close").onclick=function(){document.getElementById("dlg").close()};
+document.getElementById("dlg").onclick=function(e){if(e.target===this)this.close()};
+view();
+</script>
+</body>
+</html>
