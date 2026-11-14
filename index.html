@@ -159,6 +159,57 @@ dt{color:var(--muted)}dd{font-weight:500;text-align:right}
 .pf .go{margin-top:16px}
 .sec{font:600 1rem Archivo,sans-serif;color:#fff;padding:11px;border-radius:999px;cursor:pointer;border:1px solid rgba(255,255,255,.5);background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.06));box-shadow:inset 0 1px 1px rgba(255,255,255,.6)}
 @media (max-width:480px){.ad form{grid-template-columns:1fr}}
+
+#dlg{--cp:polygon(0 7%,10% 3.5%,50% 0,90% 3.5%,100% 7%,100% 86%,50% 100%,0 86%);--fg:#2a1d00;--fg2:rgba(42,29,0,.72);width:min(360px,calc(100% - 28px));border:0;border-radius:0;color:var(--fg);overflow:hidden;max-height:none;clip-path:var(--cp);background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%);box-shadow:none}
+#dlg::before{display:none}
+#dlg::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:4;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.6) 50%,transparent 65%);transform:translateX(-130%);animation:foil 4s ease-in-out infinite}
+@keyframes foil{0%{transform:translateX(-130%)}55%,100%{transform:translateX(130%)}}
+#dlg[open]{animation:cardin .65s cubic-bezier(.2,.9,.3,1.1)}
+@keyframes cardin{from{opacity:0;transform:perspective(900px) rotateY(-75deg) scale(.8)}to{opacity:1;transform:none}}
+#dlg .fcw{position:relative;margin:8px;padding:34px 20px 74px;clip-path:var(--cp);background:linear-gradient(160deg,rgba(255,255,255,.45),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 20%,#f7e49c),#ecc752 55%,#d6a92f)}
+#dlg .fcw>:not(.drk){position:relative}
+#dlg .drk{color:var(--fg);opacity:.07;right:6px;top:48px;font-size:11rem}
+#dlg .x{position:absolute;top:22px;right:26px;z-index:5;width:34px;height:34px;color:var(--fg);border-color:rgba(60,40,0,.4);background:rgba(255,255,255,.45);box-shadow:inset 0 1px 1px rgba(255,255,255,.8)}
+#dlg .ftop{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center}
+#dlg .fl{display:grid;gap:5px;justify-items:start}
+#dlg #s1{display:block;font:700 4.2rem/.9 "Archivo Narrow",sans-serif;color:var(--fg);text-shadow:none}
+#dlg .sl{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--fg2);opacity:1}
+#dlg .ln{display:block;width:44px;height:2px;background:var(--fg2);opacity:.5}
+#dlg .rkl{font:700 1.5rem "Archivo Narrow",sans-serif}
+#dlg .dc{color:var(--fg);font-size:.78rem;padding:3px 10px;border-color:rgba(60,40,0,.35);background:rgba(255,255,255,.4);box-shadow:inset 3px 0 0 var(--tint),inset 0 1px 1px rgba(255,255,255,.8)}
+#dlg .por{justify-self:end;width:min(150px,40vw);aspect-ratio:1;display:grid;place-items:center;border-radius:50%;font:700 3.4rem "Archivo Narrow",sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.4);background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.6),transparent 50%),var(--tint);box-shadow:inset 0 -10px 18px rgba(0,0,0,.3),0 0 0 4px rgba(255,255,255,.55),0 8px 18px rgba(60,40,0,.3)}
+#dlg .dh{display:block;padding:0;margin-top:10px;text-align:center;border-top:2px solid var(--fg2);padding-top:10px}
+#dlg .dh h2{color:var(--fg);text-shadow:none;margin:0;font-size:clamp(1.7rem,8vw,2.2rem)}
+#dlg .dh p{color:var(--fg2);margin-top:4px}
+#dlg .st{padding:0;margin-top:10px}
+#dlg .st .meter{height:14px;margin:4px 0 6px;background:rgba(60,40,0,.2);border-color:rgba(255,255,255,.7)}
+#dlg .st small{color:var(--fg2);opacity:1;text-align:center}
+#dlg #dd{padding:0}
+#dlg #dd h3{color:var(--fg2);opacity:1;margin:10px 0 6px;font-size:.85rem;text-align:center}
+#dlg .chips{justify-content:center;gap:6px}
+#dlg .chips span{color:var(--fg);background:rgba(255,255,255,.4);border-color:rgba(60,40,0,.35);box-shadow:inset 0 1px 1px rgba(255,255,255,.8);padding:3px 10px;font-size:.78rem}
+#dlg.top{--fg:#f6e6a8;--fg2:rgba(246,230,168,.78)}
+#dlg.top .fcw{background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 32%,#101c4a),#0a1233)}
+#dlg.top .dc,#dlg.top .chips span,#dlg.top .x{background:rgba(255,255,255,.1);border-color:rgba(246,230,168,.55)}
+#dlg.top .st .meter{background:rgba(255,255,255,.12)}
+@media (prefers-reduced-motion:reduce){#dlg[open]{animation:none}#dlg::after{animation:none;opacity:0}}
+dialog{margin:auto}
+
+#dlg .drk{display:none}
+#dlg .rkl{font-size:2.6rem;line-height:.95}
+#dlg .rkl::before{content:"RANG";display:block;font:600 .68rem Archivo,sans-serif;letter-spacing:.14em;color:var(--fg2);margin-bottom:2px}
+#dlg[data-tier="1"]{background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%)}
+#dlg[data-tier="2"]{background:linear-gradient(135deg,#ffffff 0,#dde2e9 28%,#8f98a3 52%,#f1f4f8 76%,#7a838e 100%)}
+#dlg[data-tier="3"]{background:linear-gradient(135deg,#ffdcb4 0,#e29c5c 28%,#a15a22 52%,#f2b57c 76%,#7a3f12 100%)}
+#dlg[data-tier="r"]{background:linear-gradient(135deg,#d6ae45 0,#a8801f 28%,#6e5010 52%,#c4a035 76%,#4f3908 100%)}
+#dlg .x:focus-visible{outline:2px solid var(--fg);outline-offset:2px;box-shadow:none}
+
+#dlg[data-tier="r"]{--fg:#fff1c4;--fg2:rgba(255,241,196,.8);background:linear-gradient(135deg,#e2bd5a 0,#b38a26 25%,#5e430a 55%,#c9a23c 78%,#3b2905 100%)}
+#dlg[data-tier="r"] .fcw{background:linear-gradient(160deg,rgba(255,255,255,.28),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 72%,#000),color-mix(in srgb,var(--tint) 48%,#000))}
+#dlg[data-tier="r"] .por{background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.65),transparent 55%),color-mix(in srgb,var(--tint) 88%,#fff)}
+#dlg[data-tier="r"] .st .meter i{background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),linear-gradient(90deg,#fff1c4,#e8c86a)}
+#dlg[data-tier="r"] .dc,#dlg[data-tier="r"] .chips span,#dlg[data-tier="r"] .x{background:rgba(255,255,255,.14);border-color:rgba(255,241,196,.55)}
+#dlg[data-tier="r"] .st .meter{background:rgba(0,0,0,.25)}
 </style>
 </head>
 <body>
@@ -176,12 +227,18 @@ dt{color:var(--muted)}dd{font-weight:500;text-align:right}
 <p class="empty" id="empty" hidden>Geen speler gevonden. Pas je zoekopdracht aan.</p>
 </main>
 
-<dialog id="dlg" aria-labelledby="dn">
-<div class="fx" aria-hidden="true"><i></i><i></i><i></i><u></u><u></u><b></b><b></b></div>
+<dialog id="dlg" class="fc" aria-labelledby="dn">
+<button class="x" id="close" aria-label="Sluiten">×</button>
+<div class="fcw">
 <div class="drk" id="rk" aria-hidden="true"></div>
-<div class="dh"><div><span class="dc" id="dc"></span><h2 id="dn"></h2><p id="dm"></p></div><button class="x" id="close" aria-label="Sluiten">×</button></div>
-<div class="st"><b id="s1"></b><span class="sl">Doelpunten in totaal</span><span class="meter"><i id="sm"></i></span><small id="sr"></small></div>
+<div class="ftop">
+<div class="fl"><b id="s1"></b><span class="sl">Doelpunten</span><span class="ln"></span><span class="rkl" id="rkl"></span><span class="dc" id="dc"></span></div>
+<div class="por" id="ini" aria-hidden="true"></div>
+</div>
+<div class="dh"><div><h2 id="dn"></h2><p id="dm"></p></div></div>
+<div class="st"><span class="meter"><i id="sm"></i></span><small id="sr"></small></div>
 <div id="dd"></div>
+</div>
 </dialog>
 
 <dialog id="auth" class="ad" aria-labelledby="at">
@@ -299,6 +356,10 @@ function open(p){
  d.style.setProperty("--tint",cl[1]);
  $("dc").textContent=cl[0];$("dn").textContent=p.n;$("dm").textContent=p.c+" · "+p.y;
  $("rk").textContent=rank+1;
+ $("rkl").textContent="#"+(rank+1);
+ $("ini").textContent=p.n.replace(/\s*\(.*\)$/,"").split(" ").map(function(w){return w[0]}).join("").slice(0,2).toUpperCase();
+ d.classList.toggle("top",rank<3);
+ d.dataset.tier=rank<3?rank+1:"r";
  $("sr").textContent=rank?Math.round(p.g/best*100)+"% van het aantal van de nummer 1":"De nummer 1 van deze lijst";
  $("sm").style.width="0";
  var dd=$("dd");dd.innerHTML="";
