@@ -214,7 +214,19 @@ dt{color:var(--muted)}dd{font-weight:500;text-align:right}
 <div class="pf" id="pf"></div>
 </dialog>
 
-<script>
+<script type="module">
+
+/* ====== PLAK HIER JE FIREBASE-CONFIG (Firebase console > Projectinstellingen > Je apps) ====== */
+const firebaseConfig={
+ apiKey:"AIzaSyBTHYRBCR02jlBcCdAwrSJ-xUH4Y9rAh70",
+ authDomain:"topscorerslandsingerland.firebaseapp.com",
+ projectId:"topscorerslandsingerland",
+ appId:"1:403521878629:web:24f80f092de829068a648c"
+};
+/* ================================================================================================ */
+let ok=firebaseConfig.apiKey!=="AIzaSyBTHYRBCR02jlBcCdAwrSJ-xUH4Y9rAh70";
+let fbMsg=ok?"Even geduld, Firebase wordt geladen.":"Firebase is nog niet ingesteld.";
+let initializeApp,getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,getFirestore,collection,doc,setDoc,updateDoc,onSnapshot;
 var BASE=[
 {n:"Cristiano Ronaldo",c:"Portugal",g:950,m:1280,i:143,y:"2002-heden",a:true,t:"Sporting, Man. United, Real Madrid, Juventus, Al-Nassr",h:"5x Ballon d’Or, 5x Champions League"},
 {n:"Lionel Messi",c:"Argentinië",g:890,m:1130,i:115,y:"2004-heden",a:true,t:"Barcelona, PSG, Inter Miami",h:"8x Ballon d’Or, WK-winnaar 2022"},
@@ -301,56 +313,78 @@ document.getElementById("q").oninput=function(e){q=e.target.value.toLowerCase().
 document.getElementById("close").onclick=function(){document.getElementById("dlg").close()};
 document.getElementById("dlg").onclick=function(e){if(e.target===this)this.close()};
 var $=function(i){return document.getElementById(i)};
-function store(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}return null}
-function getUsers(){try{return JSON.parse(store("ts_users")||"{}")}catch(e){return{}}}
-function hex(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")}
-function hashPw(pw,salt){var e=new TextEncoder();return crypto.subtle.importKey("raw",e.encode(pw),"PBKDF2",false,["deriveBits"]).then(function(k){return crypto.subtle.deriveBits({name:"PBKDF2",salt:e.encode(salt),iterations:150000,hash:"SHA-256"},k,256)}).then(hex)}
-function me(){return getUsers()[store("ts_session")]||null}
-function paint(){var u=me();$("acc").textContent=u?u.first:"Inloggen"}
+var PL=[],CU=null,wantProf=false;
+var app=null,auth=null,db=null;
+function getUsers(){var o={};PL.forEach(function(u){o[u.id]=u});return o}
+function me(){if(!CU)return null;var u=PL.filter(function(x){return x.id===CU.uid})[0];return u?Object.assign({},u,{email:CU.email}):null}
+function paint(){var u=me();$("acc").textContent=CU?(u?u.first:"Profiel"):"Inloggen"}
+function msg(e){var c=(e&&e.code)||"";
+ if(c==="auth/email-already-in-use")return "Er bestaat al een account met dit e-mailadres.";
+ if(c==="auth/weak-password")return "Kies een sterker wachtwoord (minstens 8 tekens).";
+ if(c==="auth/invalid-email")return "Dit e-mailadres lijkt niet te kloppen.";
+ if(c==="auth/too-many-requests")return "Te veel pogingen. Probeer het later opnieuw.";
+ if(c==="auth/network-request-failed")return "Geen verbinding. Probeer het opnieuw.";
+ if(c==="permission-denied")return "Opslaan is niet toegestaan. Controleer de Firestore-regels.";
+ return "Er ging iets mis. Probeer het opnieuw."}
 function tab(t){var l=t==="l";$("fl").hidden=!l;$("fr").hidden=l;$("tbl").setAttribute("aria-pressed",l);$("tbr").setAttribute("aria-pressed",!l);$("at").textContent=l?"Inloggen":"Account maken"}
-function openAuth(t){tab(t);$("el").textContent="";$("er").textContent="";$("auth").showModal()}
+function openAuth(t){tab(t);$("el").textContent=auth?"":fbMsg;$("er").textContent=auth?"":fbMsg;$("auth").showModal()}
 function showProf(){
  var u=me();if(!u)return;var pf=$("pf");pf.innerHTML="";
  var add=function(t,c,x){var n=document.createElement(t);if(c)n.className=c;n.textContent=x;pf.appendChild(n);return n};
  add("p","pk","Mijn profiel");add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
  [["Doelpunten",u.goals||0],["Club",u.club],["Leeftijd",u.age+" jaar"],["E-mail",u.email]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
- var bump=function(d){var us=getUsers(),x=us[u.email];if(!x)return;x.goals=Math.max(0,(x.goals||0)+d);store("ts_users",JSON.stringify(us));rebuild();view();showProf()};
+ var bump=function(d){updateDoc(doc(db,"players",u.id),{goals:Math.max(0,(u.goals||0)+d)}).catch(function(x){alert(msg(x))})};
  add("button","go","+1 goal gescoord").onclick=function(){bump(1)};
  add("button","sec","Goal eraf").onclick=function(){bump(-1)};
- add("button","sec","Uitloggen").onclick=function(){store("ts_session",null);paint();$("prof").close()};
- var col=clubColor(u.club);
- $("prof").style.setProperty("--tint",col);if(!$("prof").open)$("prof").showModal();
+ add("button","sec","Uitloggen").onclick=function(){signOut(auth).then(function(){$("prof").close()})};
+ $("prof").style.setProperty("--tint",clubColor(u.club));if(!$("prof").open)$("prof").showModal();
 }
-$("acc").onclick=function(){me()?showProf():openAuth("l")};
+$("acc").onclick=function(){CU?(me()?showProf():(wantProf=true)):openAuth("l")};
 $("tbl").onclick=function(){tab("l")};$("tbr").onclick=function(){tab("r")};
 $("fl").onsubmit=function(e){e.preventDefault();
- var em=$("le").value.trim().toLowerCase(),pw=$("lp").value,err=$("el"),u=getUsers()[em],bad=function(){err.textContent="E-mail of wachtwoord klopt niet."};
+ var em=$("le").value.trim(),pw=$("lp").value,err=$("el");
+ if(!auth){err.textContent=fbMsg;return}
  if(!em||!pw){err.textContent="Vul je e-mail en wachtwoord in.";return}
- if(!u||!window.crypto||!crypto.subtle){bad();return}
- hashPw(pw,u.salt).then(function(h){if(h!==u.hash){bad();return}store("ts_session",em);$("fl").reset();err.textContent="";$("auth").close();paint()})
+ signInWithEmailAndPassword(auth,em,pw).then(function(){$("fl").reset();err.textContent="";$("auth").close()}).catch(function(x){
+  err.textContent=(x.code==="auth/invalid-credential"||x.code==="auth/wrong-password"||x.code==="auth/user-not-found")?"E-mail of wachtwoord klopt niet.":msg(x)})
 };
 $("fr").onsubmit=function(e){e.preventDefault();
- var v=function(i){return $(i).value.trim()},err=$("er"),em=v("re").toLowerCase(),num=+v("rr"),age=+v("rl"),pw=$("rp").value;
+ var v=function(i){return $(i).value.trim()},err=$("er"),em=v("re"),num=+v("rr"),age=+v("rl"),pw=$("rp").value;
+ if(!auth){err.textContent=fbMsg;return}
  if(!v("rn")||!v("ra")||!v("rc")||!em||!pw||!v("rr")||!v("rl")){err.textContent="Vul alle velden in.";return}
  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){err.textContent="Dit e-mailadres lijkt niet te kloppen.";return}
  if(!(num>=1&&num<=99&&num%1===0)){err.textContent="Rugnummer moet tussen 1 en 99 liggen.";return}
  if(!(age>=5&&age<=99&&age%1===0)){err.textContent="Leeftijd moet tussen 5 en 99 liggen.";return}
  if(pw.length<8){err.textContent="Wachtwoord moet minstens 8 tekens hebben.";return}
- if(!window.crypto||!crypto.subtle){err.textContent="Deze browser kan dit niet veilig doen. Open de pagina via https.";return}
- var us=getUsers();if(us[em]){err.textContent="Er bestaat al een account met dit e-mailadres.";return}
- var salt=hex(crypto.getRandomValues(new Uint8Array(16)));
- hashPw(pw,salt).then(function(h){
-  us[em]={first:v("rn"),last:v("ra"),num:num,club:v("rc"),age:age,email:em,salt:salt,hash:h,goals:0};
-  store("ts_users",JSON.stringify(us));
-  if(!getUsers()[em]){err.textContent="Opslaan lukt niet in deze browser.";return}
-  store("ts_session",em);$("fr").reset();err.textContent="";$("auth").close();paint();rebuild();view();showProf()
- })
+ wantProf=true;
+ createUserWithEmailAndPassword(auth,em,pw).then(function(c){
+  return setDoc(doc(db,"players",c.user.uid),{first:v("rn"),last:v("ra"),num:num,club:v("rc"),age:age,goals:0})
+ }).then(function(){$("fr").reset();err.textContent="";$("auth").close()}).catch(function(x){wantProf=false;err.textContent=msg(x)})
 };
 document.querySelectorAll("[data-close]").forEach(function(b){b.onclick=function(){b.closest("dialog").close()}});
 ["auth","prof"].forEach(function(i){$(i).onclick=function(e){if(e.target===this)this.close()}});
 paint();
 rebuild();
 view();
+(async function(){
+ if(!ok)return;
+ try{
+  var V="https://www.gstatic.com/firebasejs/10.14.1/";
+  var m=await Promise.all([import(V+"firebase-app.js"),import(V+"firebase-auth.js"),import(V+"firebase-firestore.js")]);
+  initializeApp=m[0].initializeApp;
+  getAuth=m[1].getAuth;onAuthStateChanged=m[1].onAuthStateChanged;createUserWithEmailAndPassword=m[1].createUserWithEmailAndPassword;signInWithEmailAndPassword=m[1].signInWithEmailAndPassword;signOut=m[1].signOut;
+  getFirestore=m[2].getFirestore;collection=m[2].collection;doc=m[2].doc;setDoc=m[2].setDoc;updateDoc=m[2].updateDoc;onSnapshot=m[2].onSnapshot;
+  app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
+ }catch(e){ok=false;fbMsg="Firebase kon niet geladen worden. Controleer je verbinding en de config.";return}
+
+ onAuthStateChanged(auth,function(u){CU=u;paint()});
+ onSnapshot(collection(db,"players"),function(s){
+  PL=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});
+  rebuild();view();paint();
+  if(wantProf&&me()){wantProf=false;showProf()}else if($("prof").open)showProf()
+ },function(){});
+
+})();
 </script>
 </body>
 </html>
