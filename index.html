@@ -228,7 +228,7 @@ const firebaseConfig={
 /* ================================================================================================ */
 let ok=firebaseConfig.apiKey!=="PLAK_HIER";
 let fbMsg=ok?"Even geduld, Firebase wordt geladen.":"Firebase is nog niet ingesteld.";
-let initializeApp,getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,getFirestore,collection,doc,setDoc,updateDoc,onSnapshot;
+let initializeApp,getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,getFirestore,collection,doc,setDoc,onSnapshot;
 var BASE=[
 {n:"Cristiano Ronaldo",c:"Portugal",g:950,m:1280,i:143,y:"2002-heden",a:true,t:"Sporting, Man. United, Real Madrid, Juventus, Al-Nassr",h:"5x Ballon d’Or, 5x Champions League"},
 {n:"Lionel Messi",c:"Argentinië",g:890,m:1130,i:115,y:"2004-heden",a:true,t:"Barcelona, PSG, Inter Miami",h:"8x Ballon d’Or, WK-winnaar 2022"},
@@ -335,10 +335,8 @@ function showProf(){
  var add=function(t,c,x){var n=document.createElement(t);if(c)n.className=c;n.textContent=x;pf.appendChild(n);return n};
  add("p","pk","Mijn profiel");add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
  [["Doelpunten",u.goals||0],["Club",u.club],["Leeftijd",u.age+" jaar"],["E-mail",u.email]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
- var bump=function(d){updateDoc(doc(db,"players",u.id),{goals:Math.max(0,(u.goals||0)+d)}).catch(function(x){alert(msg(x))})};
- add("button","go","+1 goal gescoord").onclick=function(){bump(1)};
- add("button","sec","Goal eraf").onclick=function(){bump(-1)};
- add("button","sec","Uitloggen").onclick=function(){signOut(auth).then(function(){$("prof").close()})};
+ add("button","go","Uitloggen").onclick=function(){signOut(auth).then(function(){$("prof").close()})};
+ add("p","pk","Versie 3 · goals alleen aanpasbaar via Firebase").style.marginTop="14px";
  $("prof").style.setProperty("--tint",clubColor(u.club));if(!$("prof").open)$("prof").showModal();
 }
 $("acc").onclick=function(){CU?(me()?showProf():(wantProf=true)):openAuth("l")};
@@ -375,7 +373,7 @@ view();
   var m=await Promise.all([import(V+"firebase-app.js"),import(V+"firebase-auth.js"),import(V+"firebase-firestore.js")]);
   initializeApp=m[0].initializeApp;
   getAuth=m[1].getAuth;onAuthStateChanged=m[1].onAuthStateChanged;createUserWithEmailAndPassword=m[1].createUserWithEmailAndPassword;signInWithEmailAndPassword=m[1].signInWithEmailAndPassword;signOut=m[1].signOut;
-  getFirestore=m[2].getFirestore;collection=m[2].collection;doc=m[2].doc;setDoc=m[2].setDoc;updateDoc=m[2].updateDoc;onSnapshot=m[2].onSnapshot;
+  getFirestore=m[2].getFirestore;collection=m[2].collection;doc=m[2].doc;setDoc=m[2].setDoc;onSnapshot=m[2].onSnapshot;
   app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
  }catch(e){ok=false;fbMsg="Firebase kon niet geladen worden. Controleer je verbinding en de config.";return}
 
