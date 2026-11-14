@@ -131,13 +131,40 @@ dl{padding:6px 20px 18px}
 dl div{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--line)}
 dl div:last-child{border:0}
 dt{color:var(--muted)}dd{font-weight:500;text-align:right}
-@media (max-width:640px){.h-m{display:none}td,th button{padding-inline:6px}.hero div{padding-top:40px}}
+@media (max-width:640px){.h-m{display:none}td,th button{padding-inline:6px}.hero div{padding-top:70px}}
 @media (prefers-reduced-motion:reduce){.meter i{transition:none}}
+.acc{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;z-index:3;font:600 .95rem Archivo,system-ui,sans-serif;color:#fff;cursor:pointer;padding:9px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.6);background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.08));box-shadow:inset 0 1px 1px rgba(255,255,255,.8),0 6px 18px rgba(0,0,0,.25);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.ad{width:min(460px,calc(100% - 28px))}
+.ad>:not(.fx){position:relative}
+.ad .x{position:absolute;top:18px;right:18px;z-index:2}
+.ad h2{font:700 2.4rem/1 "Archivo Narrow",sans-serif;text-transform:uppercase;padding:28px 70px 0 24px;text-shadow:0 0 30px rgba(255,255,255,.3)}
+.tg{display:flex;gap:6px;margin:16px 24px 2px;padding:4px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.08)}
+.tg button{flex:1;font:600 .95rem Archivo,sans-serif;color:#fff;background:none;border:0;border-radius:999px;padding:9px;cursor:pointer}
+.tg button[aria-pressed="true"]{background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.12));box-shadow:inset 0 1px 1px rgba(255,255,255,.8)}
+.ad form{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 24px 26px}
+.ad form[hidden]{display:none}
+.ad label{display:grid;gap:5px;font-size:.84rem;color:rgba(255,255,255,.85)}
+.ad .w,.err,.go{grid-column:1/-1}
+.ad input{width:100%;font:inherit;font-size:1rem;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.4);border-radius:12px;padding:10px 12px;box-shadow:inset 0 2px 4px rgba(0,0,0,.25)}
+.ad input:focus-visible{outline:2px solid #ffd60a;box-shadow:inset 0 2px 4px rgba(0,0,0,.25)}
+.err{min-height:1.2em;font-size:.88rem;color:#ffd0c8}
+.go{font:700 1.1rem "Archivo Narrow",sans-serif;color:#0f1a13;padding:12px;border-radius:999px;cursor:pointer;border:1px solid rgba(255,255,255,.75);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,rgba(255,226,70,.95),rgba(235,182,0,.98));box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -3px 5px rgba(150,100,0,.35),0 0 12px rgba(255,214,10,.45)}
+.pf{display:grid;gap:6px;padding:28px 24px 26px}
+.pk{font-size:.9rem;opacity:.8}
+.bign{font:700 7rem/.85 "Archivo Narrow",sans-serif;text-shadow:0 0 34px rgba(255,255,255,.45)}
+.pf h2{padding:0;font-size:2.2rem}
+.pr{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.22)}
+.pr span:first-child{opacity:.75}
+.pr span:last-child{text-align:right;overflow-wrap:anywhere}
+.pf .go{margin-top:16px}
+.sec{font:600 1rem Archivo,sans-serif;color:#fff;padding:11px;border-radius:999px;cursor:pointer;border:1px solid rgba(255,255,255,.5);background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.06));box-shadow:inset 0 1px 1px rgba(255,255,255,.6)}
+@media (max-width:480px){.ad form{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <header class="hero">
 <svg viewBox="0 0 960 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="20" y="20" width="920" height="260"/><line x1="480" y1="20" x2="480" y2="280"/><circle cx="480" cy="150" r="60"/><rect x="20" y="85" width="110" height="130"/><rect x="830" y="85" width="110" height="130"/></svg>
+<button class="acc" id="acc">Inloggen</button>
 <div><h1>Topscorers<br>Landsingerland</h1><p>de topscorers uit landsingerland. klik op de naam voor details van de spelers.</p></div>
 </header>
 <main>
@@ -157,8 +184,38 @@ dt{color:var(--muted)}dd{font-weight:500;text-align:right}
 <div id="dd"></div>
 </dialog>
 
+<dialog id="auth" class="ad" aria-labelledby="at">
+<div class="fx" aria-hidden="true"><i></i><i></i><i></i><u></u><b></b></div>
+<button class="x" data-close aria-label="Sluiten">×</button>
+<h2 id="at">Inloggen</h2>
+<div class="tg" role="group" aria-label="Kies"><button type="button" id="tbl" aria-pressed="true">Inloggen</button><button type="button" id="tbr" aria-pressed="false">Registreren</button></div>
+<form id="fl" novalidate>
+<label class="w">E-mail<input id="le" type="email" autocomplete="email" required></label>
+<label class="w">Wachtwoord<input id="lp" type="password" autocomplete="current-password" required></label>
+<p class="err" id="el" role="alert"></p>
+<button class="go" type="submit">Inloggen</button>
+</form>
+<form id="fr" novalidate hidden>
+<label>Naam<input id="rn" autocomplete="given-name" required></label>
+<label>Achternaam<input id="ra" autocomplete="family-name" required></label>
+<label>Rugnummer<input id="rr" type="number" min="1" max="99" inputmode="numeric" required></label>
+<label>Leeftijd<input id="rl" type="number" min="5" max="99" inputmode="numeric" required></label>
+<label class="w">Club<input id="rc" autocomplete="organization" required></label>
+<label class="w">E-mail<input id="re" type="email" autocomplete="email" required></label>
+<label class="w">Wachtwoord (minstens 8 tekens)<input id="rp" type="password" autocomplete="new-password" minlength="8" required></label>
+<p class="err" id="er" role="alert"></p>
+<button class="go" type="submit">Account maken</button>
+</form>
+</dialog>
+
+<dialog id="prof" class="ad" aria-labelledby="pt">
+<div class="fx" aria-hidden="true"><i></i><i></i><i></i><u></u><b></b></div>
+<button class="x" data-close aria-label="Sluiten">×</button>
+<div class="pf" id="pf"></div>
+</dialog>
+
 <script>
-var P=[
+var BASE=[
 {n:"Cristiano Ronaldo",c:"Portugal",g:950,m:1280,i:143,y:"2002-heden",a:true,t:"Sporting, Man. United, Real Madrid, Juventus, Al-Nassr",h:"5x Ballon d’Or, 5x Champions League"},
 {n:"Lionel Messi",c:"Argentinië",g:890,m:1130,i:115,y:"2004-heden",a:true,t:"Barcelona, PSG, Inter Miami",h:"8x Ballon d’Or, WK-winnaar 2022"},
 {n:"Josef Bican",c:"Oostenrijk / Tsjechië",g:805,m:530,i:46,y:"1931-1955",a:false,t:"Rapid Wien, Slavia Praag",h:"Meest productieve scorer volgens RSSSF"},
@@ -170,6 +227,18 @@ var P=[
 {n:"Karim Benzema",c:"Frankrijk",g:450,m:900,i:37,y:"2004-heden",a:true,t:"Lyon, Real Madrid, Al-Ittihad",h:"Ballon d’Or 2022, 5x Champions League"}
 ];
 var CL={"Cristiano Ronaldo":["Al-Nassr","#2a4db0"],"Lionel Messi":["Inter Miami","#f08fb5"],"Josef Bican":["Rapid Wien","#1f9d55"],"Pelé":["Santos","#8d949b"],"Ferenc Puskás":["Real Madrid","#7b6fd6"],"Gerd Müller":["Bayern München","#dc052d"],"Robert Lewandowski":["Barcelona","#a50044"],"Zlatan Ibrahimović":["AC Milan","#2b2b2b"],"Karim Benzema":["Al-Ittihad","#e0a800"]};
+var P=BASE.slice();
+function clubColor(c){var l=c.toLowerCase(),f=null;Object.keys(CL).forEach(function(k){if(!CL[k][2]&&CL[k][0].toLowerCase()===l)f=CL[k][1]});if(f)return f;var h=0;for(var i=0;i<l.length;i++)h=(h*31+l.charCodeAt(i))%360;return "hsl("+h+",62%,46%)"}
+function rebuild(){
+ Object.keys(CL).forEach(function(k){if(CL[k][2])delete CL[k]});
+ var us=getUsers(),extra=[];
+ Object.keys(us).forEach(function(em){var u=us[em],n=u.first+" "+u.last;
+  if(CL[n])n+=" (#"+u.num+")";
+  CL[n]=[u.club,clubColor(u.club),true];
+  extra.push({n:n,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar"})});
+ P=BASE.concat(extra);
+ P.sort(function(a,b){return b.g-a.g});
+}
 var done=false;
 function count(){
  if(done)return;done=true;
@@ -231,6 +300,56 @@ function open(p){
 document.getElementById("q").oninput=function(e){q=e.target.value.toLowerCase().trim();view()};
 document.getElementById("close").onclick=function(){document.getElementById("dlg").close()};
 document.getElementById("dlg").onclick=function(e){if(e.target===this)this.close()};
+var $=function(i){return document.getElementById(i)};
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}return null}
+function getUsers(){try{return JSON.parse(store("ts_users")||"{}")}catch(e){return{}}}
+function hex(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")}
+function hashPw(pw,salt){var e=new TextEncoder();return crypto.subtle.importKey("raw",e.encode(pw),"PBKDF2",false,["deriveBits"]).then(function(k){return crypto.subtle.deriveBits({name:"PBKDF2",salt:e.encode(salt),iterations:150000,hash:"SHA-256"},k,256)}).then(hex)}
+function me(){return getUsers()[store("ts_session")]||null}
+function paint(){var u=me();$("acc").textContent=u?u.first:"Inloggen"}
+function tab(t){var l=t==="l";$("fl").hidden=!l;$("fr").hidden=l;$("tbl").setAttribute("aria-pressed",l);$("tbr").setAttribute("aria-pressed",!l);$("at").textContent=l?"Inloggen":"Account maken"}
+function openAuth(t){tab(t);$("el").textContent="";$("er").textContent="";$("auth").showModal()}
+function showProf(){
+ var u=me();if(!u)return;var pf=$("pf");pf.innerHTML="";
+ var add=function(t,c,x){var n=document.createElement(t);if(c)n.className=c;n.textContent=x;pf.appendChild(n);return n};
+ add("p","pk","Mijn profiel");add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
+ [["Doelpunten",u.goals||0],["Club",u.club],["Leeftijd",u.age+" jaar"],["E-mail",u.email]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
+ var bump=function(d){var us=getUsers(),x=us[u.email];if(!x)return;x.goals=Math.max(0,(x.goals||0)+d);store("ts_users",JSON.stringify(us));rebuild();view();showProf()};
+ add("button","go","+1 goal gescoord").onclick=function(){bump(1)};
+ add("button","sec","Goal eraf").onclick=function(){bump(-1)};
+ add("button","sec","Uitloggen").onclick=function(){store("ts_session",null);paint();$("prof").close()};
+ var col=clubColor(u.club);
+ $("prof").style.setProperty("--tint",col);if(!$("prof").open)$("prof").showModal();
+}
+$("acc").onclick=function(){me()?showProf():openAuth("l")};
+$("tbl").onclick=function(){tab("l")};$("tbr").onclick=function(){tab("r")};
+$("fl").onsubmit=function(e){e.preventDefault();
+ var em=$("le").value.trim().toLowerCase(),pw=$("lp").value,err=$("el"),u=getUsers()[em],bad=function(){err.textContent="E-mail of wachtwoord klopt niet."};
+ if(!em||!pw){err.textContent="Vul je e-mail en wachtwoord in.";return}
+ if(!u||!window.crypto||!crypto.subtle){bad();return}
+ hashPw(pw,u.salt).then(function(h){if(h!==u.hash){bad();return}store("ts_session",em);$("fl").reset();err.textContent="";$("auth").close();paint()})
+};
+$("fr").onsubmit=function(e){e.preventDefault();
+ var v=function(i){return $(i).value.trim()},err=$("er"),em=v("re").toLowerCase(),num=+v("rr"),age=+v("rl"),pw=$("rp").value;
+ if(!v("rn")||!v("ra")||!v("rc")||!em||!pw||!v("rr")||!v("rl")){err.textContent="Vul alle velden in.";return}
+ if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){err.textContent="Dit e-mailadres lijkt niet te kloppen.";return}
+ if(!(num>=1&&num<=99&&num%1===0)){err.textContent="Rugnummer moet tussen 1 en 99 liggen.";return}
+ if(!(age>=5&&age<=99&&age%1===0)){err.textContent="Leeftijd moet tussen 5 en 99 liggen.";return}
+ if(pw.length<8){err.textContent="Wachtwoord moet minstens 8 tekens hebben.";return}
+ if(!window.crypto||!crypto.subtle){err.textContent="Deze browser kan dit niet veilig doen. Open de pagina via https.";return}
+ var us=getUsers();if(us[em]){err.textContent="Er bestaat al een account met dit e-mailadres.";return}
+ var salt=hex(crypto.getRandomValues(new Uint8Array(16)));
+ hashPw(pw,salt).then(function(h){
+  us[em]={first:v("rn"),last:v("ra"),num:num,club:v("rc"),age:age,email:em,salt:salt,hash:h,goals:0};
+  store("ts_users",JSON.stringify(us));
+  if(!getUsers()[em]){err.textContent="Opslaan lukt niet in deze browser.";return}
+  store("ts_session",em);$("fr").reset();err.textContent="";$("auth").close();paint();rebuild();view();showProf()
+ })
+};
+document.querySelectorAll("[data-close]").forEach(function(b){b.onclick=function(){b.closest("dialog").close()}});
+["auth","prof"].forEach(function(i){$(i).onclick=function(e){if(e.target===this)this.close()}});
+paint();
+rebuild();
 view();
 </script>
 </body>
