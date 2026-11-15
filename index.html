@@ -157,7 +157,7 @@ dt{color:var(--muted)}dd{font-weight:500;text-align:right}
 .pr span:first-child{opacity:.75}
 .pr span:last-child{text-align:right;overflow-wrap:anywhere}
 .pf .go{margin-top:16px}
-.sec{font:600 1rem Archivo,sans-serif;color:#fff;padding:11px;border-radius:999px;cursor:pointer;border:1px solid rgba(255,255,255,.5);background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.06));box-shadow:inset 0 1px 1px rgba(255,255,255,.6)}
+.sec{font:600 1rem Archivo,sans-serif;color:#fff;padding:11px;border-radius:999px;cursor:pointer;border:1px solid rgba(255,255,255,.5);background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(8,28,16,.85));box-shadow:inset 0 1px 1px rgba(255,255,255,.6)}
 @media (max-width:480px){.ad form{grid-template-columns:1fr}}
 
 #dlg{--cp:polygon(0 7%,10% 3.5%,50% 0,90% 3.5%,100% 7%,100% 86%,50% 100%,0 86%);--fg:#2a1d00;--fg2:rgba(42,29,0,.72);width:min(360px,calc(100% - 28px));border:0;border-radius:0;color:var(--fg);overflow:hidden;max-height:none;clip-path:var(--cp);background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%);box-shadow:none}
@@ -166,7 +166,7 @@ dt{color:var(--muted)}dd{font-weight:500;text-align:right}
 @keyframes foil{0%{transform:translateX(-130%)}55%,100%{transform:translateX(130%)}}
 #dlg[open]{animation:cardin .65s cubic-bezier(.2,.9,.3,1.1)}
 @keyframes cardin{from{opacity:0;transform:perspective(900px) rotateY(-75deg) scale(.8)}to{opacity:1;transform:none}}
-#dlg .fcw{position:relative;margin:8px;padding:34px 20px 74px;clip-path:var(--cp);background:linear-gradient(160deg,rgba(255,255,255,.45),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 20%,#f7e49c),#ecc752 55%,#d6a92f)}
+#dlg .fcw{position:relative;margin:8px;padding:34px 20px 74px;clip-path:var(--cp);background:linear-gradient(160deg,rgba(255,255,255,.45),rgba(255,255,255,0) 45%,linear-gradient(180deg,color-mix(in srgb,var(--tint) 20%,#f7e49c),#ecc752 55%,#d6a92f))}
 #dlg .fcw>:not(.drk){position:relative}
 #dlg .drk{color:var(--fg);opacity:.07;right:6px;top:48px;font-size:11rem}
 #dlg .x{position:absolute;top:22px;right:26px;z-index:5;width:34px;height:34px;color:var(--fg);border-color:rgba(60,40,0,.4);background:rgba(255,255,255,.45);box-shadow:inset 0 1px 1px rgba(255,255,255,.8)}
@@ -429,10 +429,10 @@ function clubColor(c){var l=c.toLowerCase(),f=null;Object.keys(CL).forEach(funct
 function rebuild(){
  Object.keys(CL).forEach(function(k){if(CL[k][2])delete CL[k]});
  var us=getUsers(),extra=[];
- Object.keys(us).forEach(function(em){var u=us[em],n=u.first+" "+u.last;
+ Object.keys(us).forEach(function(id){var u=us[id],n=u.first+" "+u.last;
   if(CL[n])n+=" (#"+u.num+")";
   CL[n]=[u.club,clubColor(u.club),true];
-  extra.push({n:n,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar"})});
+  extra.push({id:id,n:n,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar"})});
  P=BASE.concat(extra);
  P.sort(function(a,b){return b.g-a.g});
  P.forEach(function(p){CL[p.n][1]=tierColor(p.g)});
@@ -524,27 +524,61 @@ function msg(e){var c=(e&&e.code)||"";
 function tab(t){var l=t==="l";$("fl").hidden=!l;$("fr").hidden=l;$("tbl").setAttribute("aria-pressed",l);$("tbr").setAttribute("aria-pressed",!l);$("at").textContent=l?"Inloggen":"Account maken"}
 function openAuth(t){tab(t);$("el").textContent=auth?"":fbMsg;$("er").textContent=auth?"":fbMsg;$("auth").showModal()}
 function showProf(){
- var u=me();if(!u)return;var pf=$("pf");pf.innerHTML="";
+ if(!CU){openAuth("l");return}
+ var u=me(),pf=$("pf");pf.innerHTML="";
  var add=function(t,c,x){var n=document.createElement(t);if(c)n.className=c;n.textContent=x;pf.appendChild(n);return n};
- add("p","pk","Mijn profiel");add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
- [["Doelpunten",u.goals||0],["Club",u.club],["Leeftijd",u.age+" jaar"],["E-mail",u.email]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
- add("button","go","Uitloggen").onclick=function(){signOut(auth).then(function(){$("prof").close()})};
- add("p","pk","Versie 3 · goals alleen aanpasbaar via Firebase").style.marginTop="14px";
- $("prof").style.setProperty("--tint",tierColor(u.goals||0));$("prof").dataset.rank=["bronze","silver","gold","red"][tierOf(u.goals||0)];$("prof").dataset.tier="r";if(!$("prof").open)$("prof").showModal();
+ if(u){
+  add("p","pk","Mijn profiel");add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
+  [["Doelpunten",u.goals||0],["Club",u.club],["Leeftijd",u.age+" jaar"],["E-mail",u.email]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
+  $("prof").style.setProperty("--tint",tierColor(u.goals||0));
+  $("prof").dataset.rank=["bronze","silver","gold","red"][tierOf(u.goals||0)];
+ } else {
+  add("p","pk","Ingelogd account");
+  add("h2","",CU.email||"Gebruiker").id="pt";
+  add("p","pk","Je profielbestand in de database ontbreekt of wordt nog geladen.").style.margin="8px 0 12px";
+  $("prof").style.setProperty("--tint","#2f7d46");
+  $("prof").dataset.rank="bronze";
+ }
+ var outBtn=add("button","go","Uitloggen");
+ outBtn.onclick=function(){
+  signOut(auth).then(function(){
+   CU=null;
+   paint();
+   $("prof").close();
+  }).catch(function(err){ console.error(err); });
+ };
+ var switchBtn=add("button","sec","Uitloggen & Inloggen met ander account");
+ switchBtn.style.marginTop="8px";
+ switchBtn.onclick=function(){
+  signOut(auth).then(function(){
+   CU=null;
+   paint();
+   $("prof").close();
+   openAuth("l");
+  }).catch(function(err){ console.error(err); });
+ };
+ add("p","pk","Versie 3 · Firebase auth actief").style.marginTop="14px";
+ $("prof").dataset.tier="r";
+ if(!$("prof").open)$("prof").showModal();
 }
-$("acc").onclick=function(){CU?(me()?showProf():(wantProf=true)):openAuth("l")};
+$("acc").onclick=function(){CU?showProf():openAuth("l")};
 $("tbl").onclick=function(){tab("l")};$("tbr").onclick=function(){tab("r")};
 $("fl").onsubmit=function(e){e.preventDefault();
  var em=$("le").value.trim(),pw=$("lp").value,err=$("el");
  if(!auth){err.textContent=fbMsg;return}
  if(!em||!pw){err.textContent="Vul je e-mail en wachtwoord in.";return}
- signInWithEmailAndPassword(auth,em,pw).then(function(){$("fl").reset();err.textContent="";$("auth").close()}).catch(function(x){
-  err.textContent=(x.code==="auth/invalid-credential"||x.code==="auth/wrong-password"||x.code==="auth/user-not-found")?"E-mail of wachtwoord klopt niet.":msg(x)})
+ signInWithEmailAndPassword(auth,em,pw).then(function(){
+  $("fl").reset();
+  err.textContent="";
+  $("auth").close();
+ }).catch(function(x){
+  err.textContent=(x.code==="auth/invalid-credential"||x.code==="auth/wrong-password"||x.code==="auth/user-not-found")?"E-mail of wachtwoord klopt niet.":msg(x)
+ })
 };
 $("fr").onsubmit=function(e){e.preventDefault();
  var v=function(i){return $(i).value.trim()},err=$("er"),em=v("re"),num=+v("rr"),age=+v("rl"),pw=$("rp").value;
  if(!auth){err.textContent=fbMsg;return}
- if(!v("rn")||!v("ra")||!v("rc")||!em||!pw||!v("rr")||!v("rl")){err.textContent="Vul alle velden in.";return}
+ if(!v("rn")||!v("ra")||!v("rc")||!em||!pw||!v("rr"]||!v("rl")){err.textContent="Vul alle velden in.";return}
  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){err.textContent="Dit e-mailadres lijkt niet te kloppen.";return}
  if(!(num>=1&&num<=99&&num%1===0)){err.textContent="Rugnummer moet tussen 1 en 99 liggen.";return}
  if(!(age>=5&&age<=99&&age%1===0)){err.textContent="Leeftijd moet tussen 5 en 99 liggen.";return}
@@ -552,7 +586,14 @@ $("fr").onsubmit=function(e){e.preventDefault();
  wantProf=true;
  createUserWithEmailAndPassword(auth,em,pw).then(function(c){
   return setDoc(doc(db,"players",c.user.uid),{first:v("rn"),last:v("ra"),num:num,club:v("rc"),age:age,goals:0})
- }).then(function(){$("fr").reset();err.textContent="";$("auth").close()}).catch(function(x){wantProf=false;err.textContent=msg(x)})
+ }).then(function(){
+  $("fr").reset();
+  err.textContent="";
+  $("auth").close();
+ }).catch(function(x){
+  wantProf=false;
+  err.textContent=msg(x);
+ })
 };
 document.querySelectorAll("[data-close]").forEach(function(b){b.onclick=function(){b.closest("dialog").close()}});
 ["auth","prof"].forEach(function(i){$(i).onclick=function(e){if(e.target===this)this.close()}});
@@ -608,11 +649,17 @@ view();
  }catch(e){ok=false;fbMsg="Firebase kon niet geladen worden. Controleer je verbinding en de config.";return}
 
  onAuthStateChanged(auth,function(u){CU=u;paint()});
+ 
+ // Robuuste listener met foutafhandeling zodat de app nooit vastloopt
  onSnapshot(collection(db,"players"),function(s){
   PL=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});
   rebuild();view();paint();
   if(wantProf&&me()){wantProf=false;showProf()}else if($("prof").open)showProf()
- },function(){});
+ },function(err){
+  console.error("Firestore-fout bij ophalen spelers:", err);
+  PL=[];
+  rebuild();view();paint();
+ });
 
 })();
 </script>
