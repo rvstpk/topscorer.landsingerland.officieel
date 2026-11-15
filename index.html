@@ -506,10 +506,10 @@ function open(p){
  [["Clubs",p.t],["Erelijst",p.h]].forEach(function(x){
   var h=document.createElement("h3");h.textContent=x[0];dd.appendChild(h);
   var w=document.createElement("div");w.className="chips";
-  x[1].split(", ").forEach(function(t){c=document.createElement("span");c.textContent=t;w.appendChild(c)});
+  x[1].split(", ").forEach(function(t){var c=document.createElement("span");c.textContent=t;w.appendChild(c)});
   dd.appendChild(w)});
 
- // Machtigingssysteem logica voor bewerken doelpunten
+ // Machtigingssysteem logica: alleen tonen als gebruiker is ingelogd, canEditGoals true is én het een Firestore-speler (p.id) is
  var editContainer = $("edit-goals-container");
  var editInput = $("edit-goals-input");
  var editBtn = $("edit-goals-btn");
@@ -517,7 +517,6 @@ function open(p){
  editErr.textContent = "";
 
  var currentUser = me();
- // Controleer of ingelogde gebruiker gemachtigd is (canEditGoals === true) én of de speler een geregistreerde gebruiker in Firestore is (p.id aanwezig)
  if(currentUser && currentUser.canEditGoals === true && p.id){
   editContainer.hidden = false;
   editInput.value = p.g;
