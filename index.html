@@ -210,6 +210,37 @@ dialog{margin:auto}
 #dlg[data-tier="r"] .st .meter i{background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),linear-gradient(90deg,#fff1c4,#e8c86a)}
 #dlg[data-tier="r"] .dc,#dlg[data-tier="r"] .chips span,#dlg[data-tier="r"] .x{background:rgba(255,255,255,.14);border-color:rgba(255,241,196,.55)}
 #dlg[data-tier="r"] .st .meter{background:rgba(0,0,0,.25)}
+
+#dlg[data-tier] .st .meter{overflow:visible;height:16px;margin:10px 0 12px;background:rgba(10,5,0,.45);border-color:rgba(255,226,120,.55);box-shadow:inset 0 2px 4px rgba(0,0,0,.5),0 0 14px rgba(255,190,0,.25)}
+#dlg[data-tier] .st .meter i{background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe46b,#ffc400 55%,#ff9f0a);animation:glow 2.2s ease-in-out infinite}
+#dlg[data-tier] .st .meter i::before{content:"";position:absolute;right:-3px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:#fff8cf;box-shadow:0 0 10px 3px #ffe566,0 0 22px 8px rgba(255,190,0,.8)}
+@keyframes glow{0%,100%{box-shadow:inset 0 1px 1px rgba(255,255,255,.95),0 0 6px #ffd60a,0 0 14px rgba(255,200,0,.85),0 0 28px rgba(255,170,0,.55)}50%{box-shadow:inset 0 1px 1px rgba(255,255,255,.95),0 0 10px #ffe566,0 0 24px rgba(255,210,0,1),0 0 48px rgba(255,180,0,.85)}}
+@media (prefers-reduced-motion:reduce){#dlg[data-tier] .st .meter i{animation:none;box-shadow:inset 0 1px 1px rgba(255,255,255,.95),0 0 12px #ffd60a,0 0 26px rgba(255,190,0,.7)}}
+
+#dlg{clip-path:none;overflow:visible;background:none;--glow:#ffd60a}
+#dlg::after{display:none}
+#dlg[data-tier="1"]{--glow:#ffd60a}
+#dlg[data-tier="2"]{--glow:#e3ecf8}
+#dlg[data-tier="3"]{--glow:#ff9a4a}
+#dlg[data-tier="r"]{--glow:#e0a400}
+#dlg[data-tier="1"],#dlg[data-tier="2"],#dlg[data-tier="3"],#dlg[data-tier="r"]{background:none}
+#dlg .shell{position:relative;overflow:hidden;clip-path:var(--cp);background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%)}
+#dlg .shell::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:4;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.6) 50%,transparent 65%);transform:translateX(-130%);animation:foil 4s ease-in-out infinite}
+#dlg[data-tier="1"] .shell{background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%)}
+#dlg[data-tier="2"] .shell{background:linear-gradient(135deg,#ffffff 0,#dde2e9 28%,#8f98a3 52%,#f1f4f8 76%,#7a838e 100%)}
+#dlg[data-tier="3"] .shell{background:linear-gradient(135deg,#ffdcb4 0,#e29c5c 28%,#a15a22 52%,#f2b57c 76%,#7a3f12 100%)}
+#dlg[data-tier="r"] .shell{background:linear-gradient(135deg,#e2bd5a 0,#b38a26 25%,#5e430a 55%,#c9a23c 78%,#3b2905 100%)}
+#dlg{filter:drop-shadow(0 0 5px var(--glow)) drop-shadow(0 0 16px var(--glow))}
+#dlg[open]{animation:cardin .65s cubic-bezier(.2,.9,.3,1.1),edge 2.6s ease-in-out .65s infinite}
+@keyframes edge{0%,100%{filter:drop-shadow(0 0 4px var(--glow)) drop-shadow(0 0 12px var(--glow))}50%{filter:drop-shadow(0 0 9px var(--glow)) drop-shadow(0 0 24px var(--glow)) drop-shadow(0 0 46px var(--glow))}}
+@media (prefers-reduced-motion:reduce){#dlg[open]{animation:none}#dlg .shell::after{animation:none;opacity:0}}
+
+#dlg .fcw>.fx{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+#dlg .fcw::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:conic-gradient(from var(--ang,160deg) at 50% -10%,rgba(255,255,215,.34),rgba(255,255,215,0) 40deg);animation:sweep 6s ease-in-out infinite alternate}
+#dlg .fx i{opacity:.5}
+#dlg .fx i:nth-child(2){opacity:.4}
+#dlg .fx i:nth-child(3){opacity:.55}
+@media (prefers-reduced-motion:reduce){#dlg .fcw::before{animation:none}}
 </style>
 </head>
 <body>
@@ -229,7 +260,8 @@ dialog{margin:auto}
 
 <dialog id="dlg" class="fc" aria-labelledby="dn">
 <button class="x" id="close" aria-label="Sluiten">×</button>
-<div class="fcw">
+<div class="shell"><div class="fcw">
+<div class="fx" aria-hidden="true"><i></i><i></i><i></i><u></u><u></u><b></b><b></b></div>
 <div class="drk" id="rk" aria-hidden="true"></div>
 <div class="ftop">
 <div class="fl"><b id="s1"></b><span class="sl">Doelpunten</span><span class="ln"></span><span class="rkl" id="rkl"></span><span class="dc" id="dc"></span></div>
@@ -238,7 +270,7 @@ dialog{margin:auto}
 <div class="dh"><div><h2 id="dn"></h2><p id="dm"></p></div></div>
 <div class="st"><span class="meter"><i id="sm"></i></span><small id="sr"></small></div>
 <div id="dd"></div>
-</div>
+</div></div>
 </dialog>
 
 <dialog id="auth" class="ad" aria-labelledby="at">
