@@ -189,7 +189,7 @@ dt{color:var(--muted)}dd{font-weight:500;text-align:right}
 #dlg .chips{justify-content:center;gap:6px}
 #dlg .chips span{color:var(--fg);background:rgba(255,255,255,.4);border-color:rgba(60,40,0,.35);box-shadow:inset 0 1px 1px rgba(255,255,255,.8);padding:3px 10px;font-size:.78rem}
 #dlg.top{--fg:#f6e6a8;--fg2:rgba(246,230,168,.78)}
-#dlg.top .fcw{background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 32%,#101c4a),#0a1233)}
+#dlg.top .fcw{background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,0) 45%,linear-gradient(180deg,color-mix(in srgb,var(--tint) 32%,#101c4a),#0a1233))}
 #dlg.top .dc,#dlg.top .chips span,#dlg.top .x{background:rgba(255,255,255,.1);border-color:rgba(246,230,168,.55)}
 #dlg.top .st .meter{background:rgba(255,255,255,.12)}
 @media (prefers-reduced-motion:reduce){#dlg[open]{animation:none}#dlg::after{animation:none;opacity:0}}
@@ -205,7 +205,7 @@ dialog{margin:auto}
 #dlg .x:focus-visible{outline:2px solid var(--fg);outline-offset:2px;box-shadow:none}
 
 #dlg[data-tier="r"]{--fg:#fff1c4;--fg2:rgba(255,241,196,.8);background:linear-gradient(135deg,#e2bd5a 0,#b38a26 25%,#5e430a 55%,#c9a23c 78%,#3b2905 100%)}
-#dlg[data-tier="r"] .fcw{background:linear-gradient(160deg,rgba(255,255,255,.28),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 72%,#000),color-mix(in srgb,var(--tint) 48%,#000))}
+#dlg[data-tier="r"] .fcw{background:linear-gradient(160deg,rgba(255,255,255,.28),rgba(255,255,255,0) 45%,linear-gradient(180deg,color-mix(in srgb,var(--tint) 72%,#000),color-mix(in srgb,var(--tint) 48%,#000))}
 #dlg[data-tier="r"] .por{background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.65),transparent 55%),color-mix(in srgb,var(--tint) 88%,#fff)}
 #dlg[data-tier="r"] .st .meter i{background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),linear-gradient(90deg,#fff1c4,#e8c86a)}
 #dlg[data-tier="r"] .dc,#dlg[data-tier="r"] .chips span,#dlg[data-tier="r"] .x{background:rgba(255,255,255,.14);border-color:rgba(255,241,196,.55)}
@@ -361,14 +361,6 @@ dialog{margin:auto}
 <div class="dh"><div><h2 id="dn"></h2><p id="dm"></p></div></div>
 <div class="st"><span class="meter"><i id="sm"></i></span><small id="sr"></small></div>
 <div id="dd"></div>
-<div id="edit-goals-container" style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.3);" hidden>
-  <h3 style="font-size:0.9rem;margin-bottom:6px;">Doelpunten beheren (Machtiging)</h3>
-  <div style="display:flex;gap:8px;">
-    <input id="edit-goals-input" type="number" min="0" style="flex:1;padding:6px 10px;font-size:0.9rem;" placeholder="Aantal goals">
-    <button id="edit-goals-btn" type="button" class="sec" style="padding:6px 14px;font-size:0.9rem;">Opslaan</button>
-  </div>
-  <p id="edit-goals-err" style="font-size:0.8rem;margin-top:4px;color:#ffd0c8;"></p>
-</div>
 </div></div>
 </dialog>
 
@@ -437,10 +429,10 @@ function clubColor(c){var l=c.toLowerCase(),f=null;Object.keys(CL).forEach(funct
 function rebuild(){
  Object.keys(CL).forEach(function(k){if(CL[k][2])delete CL[k]});
  var us=getUsers(),extra=[];
- Object.keys(us).forEach(function(id){var u=us[id],n=u.first+" "+u.last;
+ Object.keys(us).forEach(function(em){var u=us[em],n=u.first+" "+u.last;
   if(CL[n])n+=" (#"+u.num+")";
   CL[n]=[u.club,clubColor(u.club),true];
-  extra.push({id:id,n:n,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar"})});
+  extra.push({n:n,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar"})});
  P=BASE.concat(extra);
  P.sort(function(a,b){return b.g-a.g});
  P.forEach(function(p){CL[p.n][1]=tierColor(p.g)});
@@ -508,36 +500,6 @@ function open(p){
   var w=document.createElement("div");w.className="chips";
   x[1].split(", ").forEach(function(t){var c=document.createElement("span");c.textContent=t;w.appendChild(c)});
   dd.appendChild(w)});
-
- // Machtigingssysteem logica: alleen tonen als gebruiker is ingelogd, canEditGoals true is én het een Firestore-speler (p.id) is
- var editContainer = $("edit-goals-container");
- var editInput = $("edit-goals-input");
- var editBtn = $("edit-goals-btn");
- var editErr = $("edit-goals-err");
- editErr.textContent = "";
-
- var currentUser = me();
- if(currentUser && currentUser.canEditGoals === true && p.id){
-  editContainer.hidden = false;
-  editInput.value = p.g;
-  editBtn.onclick = async function(){
-   var newGoals = parseInt(editInput.value, 10);
-   if(isNaN(newGoals) || newGoals < 0){
-    editErr.textContent = "Voer een geldig aantal doelen in.";
-    return;
-   }
-   try{
-    await setDoc(doc(db, "players", p.id), { goals: newGoals }, { merge: true });
-    editErr.textContent = "Doelpunten succesvol bijgewerkt!";
-    setTimeout(() => { d.close(); }, 1000);
-   } catch(err){
-    editErr.textContent = "Fout bij opslaan: geen rechten of verbinding.";
-   }
-  };
- } else {
-  editContainer.hidden = true;
- }
-
  d.showModal();
  requestAnimationFrame(function(){requestAnimationFrame(function(){$("sm").style.width=p.g/best*100+"%"})});
  spin($("s1"),p.g);
@@ -562,15 +524,31 @@ function msg(e){var c=(e&&e.code)||"";
 function tab(t){var l=t==="l";$("fl").hidden=!l;$("fr").hidden=l;$("tbl").setAttribute("aria-pressed",l);$("tbr").setAttribute("aria-pressed",!l);$("at").textContent=l?"Inloggen":"Account maken"}
 function openAuth(t){tab(t);$("el").textContent=auth?"":fbMsg;$("er").textContent=auth?"":fbMsg;$("auth").showModal()}
 function showProf(){
- var u=me();if(!u)return;var pf=$("pf");pf.innerHTML="";
+ if(!CU){openAuth("l");return}
+ var u=me(),pf=$("pf");pf.innerHTML="";
  var add=function(t,c,x){var n=document.createElement(t);if(c)n.className=c;n.textContent=x;pf.appendChild(n);return n};
- add("p","pk","Mijn profiel");add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
- [["Doelpunten",u.goals||0],["Club",u.club],["Leeftijd",u.age+" jaar"],["E-mail",u.email],["Gemachtigd",u.canEditGoals?"Ja":"Nee"]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
- add("button","go","Uitloggen").onclick=function(){signOut(auth).then(function(){$("prof").close()})};
- add("p","pk","Versie 3 · machtiging beheerd via Firebase").style.marginTop="14px";
- $("prof").style.setProperty("--tint",tierColor(u.goals||0));$("prof").dataset.rank=["bronze","silver","gold","red"][tierOf(u.goals||0)];$("prof").dataset.tier="r";if(!$("prof").open)$("prof").showModal();
+ if(u){
+  add("p","pk","Mijn profiel");add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
+  [["Doelpunten",u.goals||0],["Club",u.club],["Leeftijd",u.age+" jaar"],["E-mail",u.email]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
+  $("prof").style.setProperty("--tint",tierColor(u.goals||0));
+  $("prof").dataset.rank=["bronze","silver","gold","red"][tierOf(u.goals||0)];
+ } else {
+  add("p","pk","Ingelogd account");
+  add("h2","",CU.email||"Gebruiker").id="pt";
+  add("p","pk","Profielgegevens zijn nog niet geladen uit de database.").style.margin="8px 0 12px";
+  $("prof").style.setProperty("--tint","#2f7d46");
+  $("prof").dataset.rank="bronze";
+ }
+ var outBtn=add("button","go","Uitloggen");
+ outBtn.onclick=function(){signOut(auth).then(function(){CU=null;paint();$("prof").close()})};
+ var switchBtn=add("button","sec","Inloggen / Registreren met ander account");
+ switchBtn.style.marginTop="8px";
+ switchBtn.onclick=function(){signOut(auth).then(function(){CU=null;paint();$("prof").close();openAuth("l")})};
+ add("p","pk","Versie 3 · goals alleen aanpasbaar via Firebase").style.marginTop="14px";
+ $("prof").dataset.tier="r";
+ if(!$("prof").open)$("prof").showModal();
 }
-$("acc").onclick=function(){CU?(me()?showProf():(wantProf=true)):openAuth("l")};
+$("acc").onclick=function(){CU?showProf():openAuth("l")};
 $("tbl").onclick=function(){tab("l")};$("tbr").onclick=function(){tab("r")};
 $("fl").onsubmit=function(e){e.preventDefault();
  var em=$("le").value.trim(),pw=$("lp").value,err=$("el");
@@ -589,7 +567,7 @@ $("fr").onsubmit=function(e){e.preventDefault();
  if(pw.length<8){err.textContent="Wachtwoord moet minstens 8 tekens hebben.";return}
  wantProf=true;
  createUserWithEmailAndPassword(auth,em,pw).then(function(c){
-  return setDoc(doc(db,"players",c.user.uid),{first:v("rn"),last:v("ra"),num:num,club:v("rc"),age:age,goals:0,canEditGoals:false})
+  return setDoc(doc(db,"players",c.user.uid),{first:v("rn"),last:v("ra"),num:num,club:v("rc"),age:age,goals:0})
  }).then(function(){$("fr").reset();err.textContent="";$("auth").close()}).catch(function(x){wantProf=false;err.textContent=msg(x)})
 };
 document.querySelectorAll("[data-close]").forEach(function(b){b.onclick=function(){b.closest("dialog").close()}});
