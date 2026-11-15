@@ -189,7 +189,7 @@ dt{color:var(--muted)}dd{font-weight:500;text-align:right}
 #dlg .chips{justify-content:center;gap:6px}
 #dlg .chips span{color:var(--fg);background:rgba(255,255,255,.4);border-color:rgba(60,40,0,.35);box-shadow:inset 0 1px 1px rgba(255,255,255,.8);padding:3px 10px;font-size:.78rem}
 #dlg.top{--fg:#f6e6a8;--fg2:rgba(246,230,168,.78)}
-#dlg.top .fcw{background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 32%,#101c4a),#0a1233)}
+#dlg.top .fcw{background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,0) 45%,linear-gradient(180deg,color-mix(in srgb,var(--tint) 32%,#101c4a),#0a1233))}
 #dlg.top .dc,#dlg.top .chips span,#dlg.top .x{background:rgba(255,255,255,.1);border-color:rgba(246,230,168,.55)}
 #dlg.top .st .meter{background:rgba(255,255,255,.12)}
 @media (prefers-reduced-motion:reduce){#dlg[open]{animation:none}#dlg::after{animation:none;opacity:0}}
@@ -205,7 +205,7 @@ dialog{margin:auto}
 #dlg .x:focus-visible{outline:2px solid var(--fg);outline-offset:2px;box-shadow:none}
 
 #dlg[data-tier="r"]{--fg:#fff1c4;--fg2:rgba(255,241,196,.8);background:linear-gradient(135deg,#e2bd5a 0,#b38a26 25%,#5e430a 55%,#c9a23c 78%,#3b2905 100%)}
-#dlg[data-tier="r"] .fcw{background:linear-gradient(160deg,rgba(255,255,255,.28),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 72%,#000),color-mix(in srgb,var(--tint) 48%,#000))}
+#dlg[data-tier="r"] .fcw{background:linear-gradient(160deg,rgba(255,255,255,.28),rgba(255,255,255,0) 45%,linear-gradient(180deg,color-mix(in srgb,var(--tint) 72%,#000),color-mix(in srgb,var(--tint) 48%,#000))}
 #dlg[data-tier="r"] .por{background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.65),transparent 55%),color-mix(in srgb,var(--tint) 88%,#fff)}
 #dlg[data-tier="r"] .st .meter i{background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),linear-gradient(90deg,#fff1c4,#e8c86a)}
 #dlg[data-tier="r"] .dc,#dlg[data-tier="r"] .chips span,#dlg[data-tier="r"] .x{background:rgba(255,255,255,.14);border-color:rgba(255,241,196,.55)}
@@ -578,7 +578,7 @@ $("fl").onsubmit=function(e){e.preventDefault();
 $("fr").onsubmit=function(e){e.preventDefault();
  var v=function(i){return $(i).value.trim()},err=$("er"),em=v("re"),num=+v("rr"),age=+v("rl"),pw=$("rp").value;
  if(!auth){err.textContent=fbMsg;return}
- if(!v("rn")||!v("ra")||!v("rc")||!em||!pw||!v("rr"]||!v("rl")){err.textContent="Vul alle velden in.";return}
+ if(!v("rn")||!v("ra")||!v("rc")||!em||!pw||!v("rr")||!v("rl")){err.textContent="Vul alle velden in.";return}
  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){err.textContent="Dit e-mailadres lijkt niet te kloppen.";return}
  if(!(num>=1&&num<=99&&num%1===0)){err.textContent="Rugnummer moet tussen 1 en 99 liggen.";return}
  if(!(age>=5&&age<=99&&age%1===0)){err.textContent="Leeftijd moet tussen 5 en 99 liggen.";return}
@@ -650,7 +650,6 @@ view();
 
  onAuthStateChanged(auth,function(u){CU=u;paint()});
  
- // Robuuste listener met foutafhandeling zodat de app nooit vastloopt
  onSnapshot(collection(db,"players"),function(s){
   PL=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});
   rebuild();view();paint();
