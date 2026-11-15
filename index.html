@@ -166,7 +166,7 @@ dt{color:var(--muted)}dd{font-weight:500;text-align:right}
 @keyframes foil{0%{transform:translateX(-130%)}55%,100%{transform:translateX(130%)}}
 #dlg[open]{animation:cardin .65s cubic-bezier(.2,.9,.3,1.1)}
 @keyframes cardin{from{opacity:0;transform:perspective(900px) rotateY(-75deg) scale(.8)}to{opacity:1;transform:none}}
-#dlg .fcw{position:relative;margin:8px;padding:34px 20px 74px;clip-path:var(--cp);background:linear-gradient(160deg,rgba(255,255,255,.45),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 20%,#f7e49c),#ecc752 55%,#d6a92f)}
+#dlg .fcw{position:relative;margin:8px;padding:34px 20px 74px;clip-path:var(--cp);background:linear-gradient(160deg,rgba(255,255,255,.45),rgba(255,255,255,0) 45%,linear-gradient(180deg,color-mix(in srgb,var(--tint) 20%,#f7e49c),#ecc752 55%,#d6a92f))}
 #dlg .fcw>:not(.drk){position:relative}
 #dlg .drk{color:var(--fg);opacity:.07;right:6px;top:48px;font-size:11rem}
 #dlg .x{position:absolute;top:22px;right:26px;z-index:5;width:34px;height:34px;color:var(--fg);border-color:rgba(60,40,0,.4);background:rgba(255,255,255,.45);box-shadow:inset 0 1px 1px rgba(255,255,255,.8)}
@@ -361,6 +361,14 @@ dialog{margin:auto}
 <div class="dh"><div><h2 id="dn"></h2><p id="dm"></p></div></div>
 <div class="st"><span class="meter"><i id="sm"></i></span><small id="sr"></small></div>
 <div id="dd"></div>
+<div id="edit-goals-container" style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.3);" hidden>
+  <h3 style="font-size:0.9rem;margin-bottom:6px;">Doelpunten beheren (Machtiging)</h3>
+  <div style="display:flex;gap:8px;">
+    <input id="edit-goals-input" type="number" min="0" style="flex:1;padding:6px 10px;font-size:0.9rem;" placeholder="Aantal goals">
+    <button id="edit-goals-btn" type="button" class="sec" style="padding:6px 14px;font-size:0.9rem;">Opslaan</button>
+  </div>
+  <p id="edit-goals-err" style="font-size:0.8rem;margin-top:4px;color:#ffd0c8;"></p>
+</div>
 </div></div>
 </dialog>
 
@@ -429,10 +437,10 @@ function clubColor(c){var l=c.toLowerCase(),f=null;Object.keys(CL).forEach(funct
 function rebuild(){
  Object.keys(CL).forEach(function(k){if(CL[k][2])delete CL[k]});
  var us=getUsers(),extra=[];
- Object.keys(us).forEach(function(em){var u=us[em],n=u.first+" "+u.last;
+ Object.keys(us).forEach(function(id){var u=us[id],n=u.first+" "+u.last;
   if(CL[n])n+=" (#"+u.num+")";
   CL[n]=[u.club,clubColor(u.club),true];
-  extra.push({n:n,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar"})});
+  extra.push({id:id,n:n,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar"})});
  P=BASE.concat(extra);
  P.sort(function(a,b){return b.g-a.g});
  P.forEach(function(p){CL[p.n][1]=tierColor(p.g)});
@@ -498,8 +506,39 @@ function open(p){
  [["Clubs",p.t],["Erelijst",p.h]].forEach(function(x){
   var h=document.createElement("h3");h.textContent=x[0];dd.appendChild(h);
   var w=document.createElement("div");w.className="chips";
-  x[1].split(", ").forEach(function(t){var c=document.createElement("span");c.textContent=t;w.appendChild(c)});
+  x[1].split(", ").forEach(function(t){c=document.createElement("span");c.textContent=t;w.appendChild(c)});
   dd.appendChild(w)});
+
+ // Machtigingssysteem logica voor bewerken doelpunten
+ var editContainer = $("edit-goals-container");
+ var editInput = $("edit-goals-input");
+ var editBtn = $("edit-goals-btn");
+ var editErr = $("edit-goals-err");
+ editErr.textContent = "";
+
+ var currentUser = me();
+ // Controleer of ingelogde gebruiker gemachtigd is (canEditGoals === true) én of de speler een geregistreerde gebruiker in Firestore is (p.id aanwezig)
+ if(currentUser && currentUser.canEditGoals === true && p.id){
+  editContainer.hidden = false;
+  editInput.value = p.g;
+  editBtn.onclick = async function(){
+   var newGoals = parseInt(editInput.value, 10);
+   if(isNaN(newGoals) || newGoals < 0){
+    editErr.textContent = "Voer een geldig aantal doelen in.";
+    return;
+   }
+   try{
+    await setDoc(doc(db, "players", p.id), { goals: newGoals }, { merge: true });
+    editErr.textContent = "Doelpunten succesvol bijgewerkt!";
+    setTimeout(() => { d.close(); }, 1000);
+   } catch(err){
+    editErr.textContent = "Fout bij opslaan: geen rechten of verbinding.";
+   }
+  };
+ } else {
+  editContainer.hidden = true;
+ }
+
  d.showModal();
  requestAnimationFrame(function(){requestAnimationFrame(function(){$("sm").style.width=p.g/best*100+"%"})});
  spin($("s1"),p.g);
@@ -527,9 +566,9 @@ function showProf(){
  var u=me();if(!u)return;var pf=$("pf");pf.innerHTML="";
  var add=function(t,c,x){var n=document.createElement(t);if(c)n.className=c;n.textContent=x;pf.appendChild(n);return n};
  add("p","pk","Mijn profiel");add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
- [["Doelpunten",u.goals||0],["Club",u.club],["Leeftijd",u.age+" jaar"],["E-mail",u.email]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
+ [["Doelpunten",u.goals||0],["Club",u.club],["Leeftijd",u.age+" jaar"],["E-mail",u.email],["Gemachtigd",u.canEditGoals?"Ja":"Nee"]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
  add("button","go","Uitloggen").onclick=function(){signOut(auth).then(function(){$("prof").close()})};
- add("p","pk","Versie 3 · goals alleen aanpasbaar via Firebase").style.marginTop="14px";
+ add("p","pk","Versie 3 · machtiging beheerd via Firebase").style.marginTop="14px";
  $("prof").style.setProperty("--tint",tierColor(u.goals||0));$("prof").dataset.rank=["bronze","silver","gold","red"][tierOf(u.goals||0)];$("prof").dataset.tier="r";if(!$("prof").open)$("prof").showModal();
 }
 $("acc").onclick=function(){CU?(me()?showProf():(wantProf=true)):openAuth("l")};
@@ -551,7 +590,7 @@ $("fr").onsubmit=function(e){e.preventDefault();
  if(pw.length<8){err.textContent="Wachtwoord moet minstens 8 tekens hebben.";return}
  wantProf=true;
  createUserWithEmailAndPassword(auth,em,pw).then(function(c){
-  return setDoc(doc(db,"players",c.user.uid),{first:v("rn"),last:v("ra"),num:num,club:v("rc"),age:age,goals:0})
+  return setDoc(doc(db,"players",c.user.uid),{first:v("rn"),last:v("ra"),num:num,club:v("rc"),age:age,goals:0,canEditGoals:false})
  }).then(function(){$("fr").reset();err.textContent="";$("auth").close()}).catch(function(x){wantProf=false;err.textContent=msg(x)})
 };
 document.querySelectorAll("[data-close]").forEach(function(b){b.onclick=function(){b.closest("dialog").close()}});
