@@ -359,6 +359,24 @@ dialog{margin:auto}
 .pq span{min-width:0;overflow-wrap:anywhere}
 .pq div{display:flex;gap:6px;flex:none}
 .pq .no{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.5)}
+
+body.locked>header,body.locked>main,body.locked>section.vid{display:none}
+body.locked{background:radial-gradient(ellipse at 50% 0,#145230,transparent 60%),#04100a}
+body.locked #auth .x{display:none}
+.idh{margin:-28px -24px 16px;padding:12px 70px 12px 24px;font:700 .85rem "Archivo Narrow",sans-serif;letter-spacing:.2em;color:#2a1c00;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:inset 0 -2px 4px rgba(150,100,0,.35)}
+.pf .idh+.avb{margin-bottom:4px}
+.avb{width:84px;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font:700 2.4rem "Archivo Narrow",sans-serif;color:#fff;background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.6),transparent 52%),var(--tint);box-shadow:inset 0 -6px 12px rgba(0,0,0,.3),0 0 0 3px rgba(255,255,255,.55)}
+.pf .bign{font-size:3.2rem}
+.pq .vw{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.5)}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.btns .go,.btns .sec{margin:0;grid-column:auto}
+.btns .full{grid-column:1/-1}
+.wip{width:min(420px,calc(100% - 32px));text-align:center;overflow:hidden}
+.wip .hz{height:16px;background:repeating-linear-gradient(135deg,#ffd60a 0 16px,#16160f 16px 32px)}
+.wip .wb{padding:22px 26px 26px;display:grid;gap:10px;justify-items:center;position:relative}
+.wip h2{font:700 2rem/1 "Archivo Narrow",sans-serif;text-transform:uppercase}
+.wip p{color:rgba(255,255,255,.85)}
+.wip .go{margin-top:8px;min-width:180px}
 </style>
 </head>
 <body>
@@ -613,6 +631,22 @@ dialog{margin:auto}
 <div class="pf" id="pf"></div>
 </dialog>
 
+<dialog id="rev" class="ad" aria-labelledby="revt">
+<button class="x" data-close aria-label="Sluiten">×</button>
+<div class="pf" id="revc"></div>
+</dialog>
+
+<dialog id="wip" class="wip" aria-labelledby="wipt">
+<div class="hz"></div>
+<div class="wb">
+<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 6 L60 56 H4 Z" fill="#ffd60a" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><rect x="29" y="22" width="6" height="18" rx="3" fill="#16160f"/><circle cx="32" cy="47" r="3.6" fill="#16160f"/></svg>
+<h2 id="wipt">Website in de bouw</h2>
+<p>Welkom! Deze website is nog in de bouw. Er kunnen nog dingen veranderen of niet goed werken.</p>
+<button class="go" type="button" id="wipok">Begrepen</button>
+</div>
+<div class="hz"></div>
+</dialog>
+
 <script type="module">
 
 /* ====== PLAK HIER JE FIREBASE-CONFIG (Firebase console > Projectinstellingen > Je apps) ====== */
@@ -751,12 +785,18 @@ document.getElementById("q").oninput=function(e){q=e.target.value.toLowerCase().
 document.getElementById("close").onclick=function(){document.getElementById("dlg").close()};
 document.getElementById("dlg").onclick=function(e){if(e.target===this)this.close()};
 var $=function(i){return document.getElementById(i)};
-var PL=[],ALL=[],MYDOC=null,CU=null,wantProf=false;
+var PL=[],ALL=[],EM={},MYDOC=null,CU=null,wantProf=false,wipShown=false,docLoaded=false;
 var app=null,auth=null,db=null;
 function getUsers(){var o={};PL.forEach(function(u){o[u.id]=u});return o}
 function me(){if(!CU||!MYDOC)return null;return Object.assign({},MYDOC,{email:CU.email})}
 function isAdmin(){var u=me();return !!(u&&u.admin===true)}
-function paint(){var u=me();$("acc").textContent=CU?(u?u.first:"Profiel"):"Inloggen"}
+function paint(){var u=me();$("acc").textContent=CU?(u?u.first:"Profiel"):"Inloggen";gate()}
+function gate(){
+ var locked=!CU;document.body.classList.toggle("locked",locked);
+ if(locked){if(!$("auth").open){tab("l");$("el").textContent=auth?"":fbMsg;$("er").textContent=auth?"":fbMsg;$("auth").showModal()}}
+ else if($("auth").open)$("auth").close()
+}
+function maybeWip(){if(CU&&docLoaded&&!isAdmin()&&!wipShown){wipShown=true;if(!$("wip").open)$("wip").showModal()}}
 function msg(e){var c=(e&&e.code)||"";
  if(c==="auth/email-already-in-use")return "Er bestaat al een account met dit e-mailadres.";
  if(c==="auth/weak-password")return "Kies een sterker wachtwoord (minstens 8 tekens).";
@@ -770,8 +810,10 @@ function openAuth(t){tab(t);$("el").textContent=auth?"":fbMsg;$("er").textConten
 function showProf(){
  var u=me();if(!u)return;var pf=$("pf");pf.innerHTML="";
  var add=function(t,c,x){var n=document.createElement(t);if(c)n.className=c;n.textContent=x;pf.appendChild(n);return n};
- add("p","pk","Mijn profiel");add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
- [["Doelpunten",u.goals||0],["Club",u.club],["Leeftijd",u.age+" jaar"],["E-mail",u.email]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
+ add("div","idh","MIJN PROFIEL");
+ add("div","avb",ini(u.first+" "+u.last));
+ add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
+ [["Naam",u.first],["Achternaam",u.last],["Rugnummer","#"+u.num],["Club",u.club],["Leeftijd",u.age+" jaar"],["E-mail",u.email],["Doelpunten",u.goals||0]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
  if(!u.approved){add("p","pk",u.rejected?"Je aanvraag is afgewezen.":"Je account wacht op goedkeuring van een beheerder. Daarna sta je in de lijst met topscorers.").style.marginTop="10px"}
  if(u.admin===true){
   var wait=ALL.filter(function(x){return !x.approved&&!x.rejected});
@@ -780,15 +822,30 @@ function showProf(){
    var r=document.createElement("div");r.className="pq";
    var t=document.createElement("span");t.textContent=x.first+" "+x.last+" · "+x.club+" · #"+x.num;
    var bx=document.createElement("div");
-   var set=function(data){updateDoc(doc(db,"players",x.id),data).catch(function(e){alert(msg(e))})};
-   var yes=document.createElement("button");yes.type="button";yes.textContent="Goedkeuren";yes.onclick=function(){set({approved:true})};
-   var no=document.createElement("button");no.type="button";no.className="no";no.textContent="Weigeren";no.onclick=function(){set({rejected:true})};
-   bx.appendChild(yes);bx.appendChild(no);r.appendChild(t);r.appendChild(bx);pf.appendChild(r)});
+   var yes=document.createElement("button");yes.type="button";yes.className="vw";yes.textContent="Bekijk profiel";yes.onclick=function(){showRev(x)};
+   var no=null;
+   bx.appendChild(yes);r.appendChild(t);r.appendChild(bx);pf.appendChild(r)});
   if(!wait.length)add("p","pk","Geen openstaande aanvragen.")
  }
  add("button","go","Uitloggen").onclick=function(){signOut(auth).then(function(){$("prof").close()})};
  add("p","pk",u.admin===true?"Je bent beheerder: je kunt goals aanpassen in de kaart van een speler.":"Goals worden alleen door een beheerder aangepast.").style.marginTop="14px";
  $("prof").style.setProperty("--tint",tierColor(u.goals||0));$("prof").dataset.rank=["bronze","silver","gold","red"][tierOf(u.goals||0)];$("prof").dataset.tier="r";if(!$("prof").open)$("prof").showModal();
+}
+function showRev(x){
+ var d=$("rev"),pf=$("revc");pf.innerHTML="";
+ var add=function(t,c,v){var n=document.createElement(t);if(c)n.className=c;n.textContent=v;pf.appendChild(n);return n};
+ add("div","idh","SPELERSPAS · AANVRAAG");
+ var nm=x.first+" "+x.last;
+ add("div","avb",ini(nm));
+ add("h2","",nm).id="revt";
+ [["Naam",x.first],["Achternaam",x.last],["Rugnummer","#"+x.num],["Club",x.club],["Leeftijd",x.age+" jaar"],["E-mail",EM[x.id]||"onbekend (zie Firebase > Authentication)"]].forEach(function(r){var row=add("div","pr","");[r[0],r[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;row.appendChild(s)})});
+ var bt=document.createElement("div");bt.className="btns";pf.appendChild(bt);
+ var set=function(data){updateDoc(doc(db,"players",x.id),data).then(function(){d.close()}).catch(function(e){alert(msg(e))})};
+ var ok2=document.createElement("button");ok2.type="button";ok2.className="go";ok2.textContent="Goedkeuren";ok2.onclick=function(){set({approved:true})};
+ var no2=document.createElement("button");no2.type="button";no2.className="sec";no2.textContent="Weigeren";no2.onclick=function(){set({rejected:true})};
+ bt.appendChild(ok2);bt.appendChild(no2);
+ d.style.setProperty("--tint",clubColor(x.club));
+ d.showModal()
 }
 $("acc").onclick=function(){CU?(me()?showProf():(wantProf=true)):openAuth("l")};
 $("tbl").onclick=function(){tab("l")};$("tbr").onclick=function(){tab("r")};
@@ -809,11 +866,13 @@ $("fr").onsubmit=function(e){e.preventDefault();
  if(pw.length<8){err.textContent="Wachtwoord moet minstens 8 tekens hebben.";return}
  wantProf=true;
  createUserWithEmailAndPassword(auth,em,pw).then(function(c){
-  return setDoc(doc(db,"players",c.user.uid),{first:v("rn"),last:v("ra"),num:num,club:v("rc"),age:age,goals:0,approved:false})
+  return setDoc(doc(db,"players",c.user.uid),{first:v("rn"),last:v("ra"),num:num,club:v("rc"),age:age,goals:0,approved:false}).then(function(){return setDoc(doc(db,"private",c.user.uid),{email:em})})
  }).then(function(){$("fr").reset();err.textContent="";$("auth").close()}).catch(function(x){wantProf=false;err.textContent=msg(x)})
 };
 document.querySelectorAll("[data-close]").forEach(function(b){b.onclick=function(){b.closest("dialog").close()}});
-["auth","prof"].forEach(function(i){$(i).onclick=function(e){if(e.target===this)this.close()}});
+["auth","prof","rev"].forEach(function(i){$(i).onclick=function(e){if(e.target===this&&!(i==="auth"&&!CU))this.close()}});
+$("auth").addEventListener("cancel",function(e){if(!CU)e.preventDefault()});
+$("wipok").onclick=function(){$("wip").close()};
 var VTOT=10,C0=1.4,C1=8,GMAX=39,TH=[0,10,20,30],VT=0,VPLAY=false,VLAST=0,VSTART=false,VPH=-1,vst=$("stage"),vlad=$("vlad");
 function vg(t){if(t<=C0)return 0;var x=Math.min((t-C0)/(C1-C0),1);return GMAX*(1-Math.cos(Math.PI*x))/2}
 var ST=[C0,C1,C1,C1];
@@ -871,23 +930,23 @@ view();
   initializeApp=m[0].initializeApp;
   getAuth=m[1].getAuth;onAuthStateChanged=m[1].onAuthStateChanged;createUserWithEmailAndPassword=m[1].createUserWithEmailAndPassword;signInWithEmailAndPassword=m[1].signInWithEmailAndPassword;signOut=m[1].signOut;
   getFirestore=m[2].getFirestore;collection=m[2].collection;doc=m[2].doc;setDoc=m[2].setDoc;onSnapshot=m[2].onSnapshot;query=m[2].query;where=m[2].where;updateDoc=m[2].updateDoc;
-  app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
- }catch(e){ok=false;fbMsg="Firebase kon niet geladen worden. Controleer je verbinding en de config.";return}
+  app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);if(!CU){$("el").textContent="";$("er").textContent=""}
+ }catch(e){ok=false;fbMsg="Firebase kon niet geladen worden. Controleer je verbinding en de config.";$("el").textContent=fbMsg;$("er").textContent=fbMsg;return}
 
- var uMine=null,uAll=null;
- function refresh(){rebuild();view();paint();if(wantProf&&me()){wantProf=false;showProf()}else if($("prof").open)showProf()}
+ var uMine=null,uAll=null,uEm=null;
+ function refresh(){rebuild();view();paint();if(wantProf&&me()){wantProf=false;showProf()}else if($("prof").open)showProf();maybeWip()}
  onSnapshot(query(collection(db,"players"),where("approved","==",true)),function(s){
   PL=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});refresh()
  },function(){});
  onAuthStateChanged(auth,function(u){
-  CU=u;MYDOC=null;ALL=[];
-  if(uMine){uMine();uMine=null}if(uAll){uAll();uAll=null}
+  CU=u;MYDOC=null;ALL=[];EM={};docLoaded=false;if(!u)wipShown=false;
+  if(uMine){uMine();uMine=null}if(uAll){uAll();uAll=null}if(uEm){uEm();uEm=null}
   paint();
   if(!u){refresh();return}
   uMine=onSnapshot(doc(db,"players",u.uid),function(d){
-   MYDOC=d.exists()?Object.assign({id:d.id},d.data()):null;
-   if(MYDOC&&MYDOC.admin===true&&!uAll){uAll=onSnapshot(collection(db,"players"),function(s){ALL=s.docs.map(function(x){return Object.assign({id:x.id},x.data())});refresh()},function(){})}
-   if(!(MYDOC&&MYDOC.admin===true)&&uAll){uAll();uAll=null;ALL=[]}
+   MYDOC=d.exists()?Object.assign({id:d.id},d.data()):null;docLoaded=true;
+   if(MYDOC&&MYDOC.admin===true&&!uAll){uAll=onSnapshot(collection(db,"players"),function(s){ALL=s.docs.map(function(x){return Object.assign({id:x.id},x.data())});refresh()},function(){});uEm=onSnapshot(collection(db,"private"),function(s){EM={};s.docs.forEach(function(x){EM[x.id]=x.data().email});if($("rev").open){}},function(){})}
+   if(!(MYDOC&&MYDOC.admin===true)&&uAll){uAll();uAll=null;ALL=[];if(uEm){uEm();uEm=null}}
    refresh()
   },function(){})
  });
