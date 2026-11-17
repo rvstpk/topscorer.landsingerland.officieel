@@ -1189,7 +1189,14 @@ function getUsers(){var o={};PL.forEach(function(u){o[u.id]=u});return o}
 function me(){if(!CU||!MYDOC)return null;return Object.assign({},MYDOC,{email:CU.email})}
 function isAdmin(){var u=me();return !!(u&&u.admin===true)}
 function paint(){var u=me();$("acc").textContent=CU?(u?u.first:"Profiel"):"Inloggen";gate()}
+
+// Vlag om bij te houden of Firebase klaar is met de initiële check
+let authInitialized = false;
+
 function gate(){
+ // Als Firebase nog niet klaar is met controleren, doe dan nog niets om onnodig inlogscherm te voorkomen
+ if (!authInitialized) return;
+
  var locked=!CU;document.body.classList.toggle("locked",locked);
  if(locked){if(!$("auth").open){tab("l");$("el").textContent=auth?"":fbMsg;$("er").textContent=auth?"":fbMsg;$("auth").showModal()}}
  else if($("auth").open)$("auth").close()
@@ -1348,6 +1355,10 @@ view();
  },function(){});
  onAuthStateChanged(auth,function(u){
   CU=u;MYDOC=null;ALL=[];EM={};docLoaded=false;
+  
+  // Markeer dat Firebase klaar is met de initiële check
+  authInitialized = true;
+
   if(!u){wipShown=false;bootPlayedForSession=false;if(bootActive)stopBootAnim(true)}
   if(uMine){uMine();uMine=null}if(uAll){uAll();uAll=null}if(uEm){uEm();uEm=null}
   paint();
