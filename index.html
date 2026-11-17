@@ -377,6 +377,152 @@ body.locked #auth .x{display:none}
 .wip h2{font:700 2rem/1 "Archivo Narrow",sans-serif;text-transform:uppercase}
 .wip p{color:rgba(255,255,255,.85)}
 .wip .go{margin-top:8px;min-width:180px}
+
+/* ===== 7-SECONDEN SPELERSKAART REVEAL / LAAD-ANIMATIE ===== */
+#boot-overlay{
+ position:fixed;inset:0;z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center;
+ padding:24px;color:#fff;overflow:hidden;
+ --tint:#b87333;--glow:#ffd60a;
+ background:radial-gradient(ellipse at 50% 115%,#1f7a42 0%,transparent 58%),radial-gradient(circle at 50% 44%,color-mix(in srgb,var(--tint) 36%,transparent),transparent 62%),linear-gradient(180deg,#030c07 0%,#082214 55%,#04110a 100%);
+ opacity:1;transition:opacity .55s cubic-bezier(.4,0,.2,1);
+}
+#boot-overlay.active{display:flex}
+#boot-overlay.fade-out{opacity:0;pointer-events:none}
+#boot-overlay::before{
+ content:"";position:absolute;inset:-20%;pointer-events:none;filter:blur(18px);
+ background:conic-gradient(from 148deg at 15% -5%,rgba(255,255,215,.36),transparent 34deg),conic-gradient(from 178deg at 85% -5%,rgba(255,255,215,.36),transparent 34deg);
+ animation:bootSway 6s ease-in-out infinite alternate;
+}
+@keyframes bootSway{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+.boot-grid-bg{
+ position:absolute;inset:0;pointer-events:none;opacity:.16;
+ background-image:linear-gradient(rgba(255,255,255,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.15) 1px,transparent 1px);
+ background-size:44px 44px;mask-image:radial-gradient(circle at 50% 48%,#000 20%,transparent 75%);-webkit-mask-image:radial-gradient(circle at 50% 48%,#000 20%,transparent 75%);
+}
+.boot-skip{
+ position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:18px;z-index:10;
+ font:600 .84rem Archivo,sans-serif;color:rgba(255,255,255,.78);cursor:pointer;
+ padding:7px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.32);
+ background:rgba(255,255,255,.08);backdrop-filter:blur(8px);transition:background .2s,color .2s;
+}
+.boot-skip:hover{background:rgba(255,255,255,.2);color:#fff}
+.boot-top{
+ position:relative;z-index:3;text-align:center;margin-bottom:18px;
+}
+.boot-badge{
+ display:inline-block;font:700 .76rem "Archivo Narrow",sans-serif;letter-spacing:.18em;text-transform:uppercase;
+ padding:4px 14px;border-radius:999px;color:#2a1c00;margin-bottom:8px;
+ background:linear-gradient(180deg,rgba(255,255,255,.75),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);
+ box-shadow:0 0 18px rgba(255,214,10,.55);
+}
+.boot-title{
+ font:700 clamp(1.4rem,4.5vw,2.1rem)/1.05 "Archivo Narrow",sans-serif;text-transform:uppercase;letter-spacing:.03em;
+ text-shadow:0 2px 16px rgba(0,0,0,.55);
+}
+.boot-arena{
+ position:relative;z-index:3;width:min(330px,78vw);aspect-ratio:3/4.25;display:grid;place-items:center;
+ perspective:1100px;
+}
+.boot-ring{
+ position:absolute;left:50%;top:50%;width:105%;aspect-ratio:1;margin:-52.5% 0 0 -52.5%;
+ border-radius:50%;border:2px solid rgba(255,255,255,.65);opacity:0;pointer-events:none;
+ box-shadow:0 0 24px var(--glow);
+}
+.boot-card-wrap{
+ position:relative;width:100%;height:100%;transform-style:preserve-3d;will-change:transform,opacity,filter;
+ --cp:polygon(0 7%,10% 3.5%,50% 0,90% 3.5%,100% 7%,100% 86%,50% 100%,0 86%);
+ filter:drop-shadow(0 0 8px var(--glow)) drop-shadow(0 0 24px var(--glow));
+}
+.boot-card-shell{
+ position:relative;width:100%;height:100%;clip-path:var(--cp);overflow:hidden;
+ background:linear-gradient(135deg,#2a3a30 0%,#14221a 50%,#0c1711 100%);
+}
+/* Kleur-lagen voor de kaartrand per rang */
+.boot-tier-bg{position:absolute;inset:0;opacity:0;transition:opacity .15s linear}
+.boot-tier-0{background:linear-gradient(135deg,#ffdcb4 0,#e29c5c 28%,#a15a22 52%,#f2b57c 76%,#7a3f12 100%)}
+.boot-tier-1{background:linear-gradient(135deg,#ffffff 0,#dde2e9 28%,#8f98a3 52%,#f1f4f8 76%,#7a838e 100%)}
+.boot-tier-2{background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%)}
+.boot-tier-3{background:linear-gradient(135deg,#ff9aa4 0,#e0313f 28%,#8c0f1c 52%,#f0505c 76%,#5c0710 100%)}
+
+.boot-card-inner{
+ position:absolute;inset:8px;clip-path:var(--cp);padding:26px 18px 54px;
+ display:flex;flex-direction:column;justify-content:space-between;color:#fff1c4;overflow:hidden;
+ background:linear-gradient(160deg,rgba(255,255,255,.28),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 74%,#040d08),color-mix(in srgb,var(--tint) 48%,#040d08));
+}
+.boot-card-inner::before{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ background:conic-gradient(from var(--ang,160deg) at 50% -10%,rgba(255,255,215,.36),transparent 40deg);
+ animation:sweep 5s ease-in-out infinite alternate;
+}
+.boot-scanline{
+ position:absolute;left:0;right:0;height:3px;top:0;z-index:6;pointer-events:none;opacity:0;
+ background:linear-gradient(90deg,transparent,#fff,var(--glow),#fff,transparent);
+ box-shadow:0 0 14px 3px var(--glow);
+}
+.boot-flash{
+ position:absolute;inset:0;z-index:7;pointer-events:none;opacity:0;background:#fff;
+}
+.boot-sheen{
+ position:absolute;inset:0;z-index:5;pointer-events:none;
+ background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.65) 50%,transparent 65%);
+ transform:translateX(-140%);
+}
+.bc-top{position:relative;z-index:2;display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center}
+.bc-left{display:grid;gap:4px;justify-items:start}
+.bc-goals{font:700 3.7rem/.88 "Archivo Narrow",sans-serif;text-shadow:0 2px 12px rgba(0,0,0,.35);font-variant-numeric:tabular-nums}
+.bc-lbl{font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;opacity:.82}
+.bc-line{width:40px;height:2px;background:currentColor;opacity:.45;margin:2px 0}
+.bc-rank{font:700 2.1rem/.95 "Archivo Narrow",sans-serif}
+.bc-tier-pill{
+ font:700 .72rem "Archivo Narrow",sans-serif;letter-spacing:.1em;text-transform:uppercase;
+ padding:2px 9px;border-radius:999px;border:1px solid rgba(255,241,196,.55);
+ background:rgba(255,255,255,.15);
+}
+.bc-por{
+ justify-self:end;width:min(126px,32vw);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;
+ font:700 2.8rem "Archivo Narrow",sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.45);
+ background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.65),transparent 52%),color-mix(in srgb,var(--tint) 88%,#fff);
+ box-shadow:inset 0 -8px 16px rgba(0,0,0,.32),0 0 0 4px rgba(255,255,255,.55),0 8px 18px rgba(0,0,0,.35);
+}
+.bc-mid{position:relative;z-index:2;text-align:center;border-top:2px solid rgba(255,241,196,.42);padding-top:10px}
+.bc-name{font:700 clamp(1.45rem,5.5vw,1.95rem)/1.05 "Archivo Narrow",sans-serif;text-transform:uppercase;letter-spacing:.01em}
+.bc-meta{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:6px}
+.bc-chip{
+ font-size:.76rem;padding:3px 10px;border-radius:999px;
+ border:1px solid rgba(255,241,196,.45);background:rgba(255,255,255,.13);
+}
+.bc-bot{position:relative;z-index:2}
+.bc-meter{
+ height:13px;border-radius:999px;background:rgba(0,0,0,.42);border:1px solid rgba(255,226,120,.55);
+ position:relative;overflow:visible;box-shadow:inset 0 2px 4px rgba(0,0,0,.5);
+}
+.bc-meter i{
+ position:absolute;left:0;top:0;bottom:0;width:0;border-radius:999px;
+ background:linear-gradient(180deg,rgba(255,255,255,.75),transparent 55%),linear-gradient(90deg,#ffe46b,#ffc400 55%,#ff9f0a);
+ box-shadow:0 0 10px #ffd60a,0 0 20px rgba(255,190,0,.85);
+}
+.bc-meter i::before{
+ content:"";position:absolute;right:-4px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;
+ background:#fff8cf;box-shadow:0 0 10px 3px #ffe566,0 0 20px 6px rgba(255,190,0,.85);
+}
+.bc-sub{text-align:center;font-size:.76rem;opacity:.88;margin-top:7px}
+
+/* Laadbalk onderaan het 7-seconden scherm */
+.boot-footer{
+ position:relative;z-index:3;width:min(360px,84vw);margin-top:22px;display:grid;gap:8px;
+}
+.boot-status-row{display:flex;justify-content:space-between;align-items:center;font-size:.82rem;color:#d8ead9}
+#boot-step-text{font-weight:500}
+#boot-pct{font:700 .9rem "Archivo Narrow",sans-serif;color:#ffd60a;font-variant-numeric:tabular-nums}
+.boot-prog{
+ height:8px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);overflow:hidden;
+}
+#boot-prog-fill{
+ display:block;height:100%;width:0%;border-radius:999px;
+ background:linear-gradient(90deg,#ffe46b,#ffd60a,#ff9f0a);
+ box-shadow:0 0 14px rgba(255,214,10,.8);
+}
+
 /* ===== Slimme, snelle FAQ-chat (zonder externe AI of API) ===== */
 #fan-chat{position:fixed;right:20px;bottom:20px;z-index:50;font-family:Archivo,system-ui,sans-serif;color:#102016}
 #fan-chat-launch{display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.75);border-radius:999px;padding:12px 18px;background:linear-gradient(180deg,#fff36b,#ffd000);color:#102016;font:700 1rem Archivo,sans-serif;box-shadow:0 12px 35px rgba(0,0,0,.28),inset 0 1px 2px #fff;cursor:pointer;transition:transform .2s,box-shadow .2s}
@@ -402,11 +548,67 @@ body.locked #auth .x{display:none}
 #fan-chat-foot{padding:0 14px 10px;background:#fff;color:#718174;font-size:.67rem;text-align:center}
 @media(max-width:520px){#fan-chat{right:12px;bottom:12px}#fan-chat-panel{right:-2px;bottom:64px;height:min(590px,calc(100dvh - 95px));width:calc(100vw - 24px)}#fan-chat-launch{padding:10px 14px}}
 @media(prefers-reduced-motion:reduce){#fan-chat-panel.open{animation:none}#fan-chat-launch{transition:none}}
-
-
 </style>
 </head>
 <body>
+
+<!-- ===== 7-SECONDEN SPELERSKAART LAAD-SCHERM ===== -->
+<div id="boot-overlay" role="dialog" aria-modal="true" aria-labelledby="boot-title">
+ <div class="boot-grid-bg" aria-hidden="true"></div>
+ <button type="button" class="boot-skip" id="boot-skip">Overslaan ›</button>
+ <div class="boot-top">
+  <span class="boot-badge" id="boot-badge">SPELERSPAS WORDT GELADEN</span>
+  <h2 class="boot-title" id="boot-title">Jouw Spelerskaart</h2>
+ </div>
+ <div class="boot-arena">
+  <div class="boot-ring" id="boot-ring-1"></div>
+  <div class="boot-ring" id="boot-ring-2"></div>
+  <div class="boot-card-wrap" id="boot-card">
+   <div class="boot-card-shell">
+    <i class="boot-tier-bg boot-tier-0" id="bt-0"></i>
+    <i class="boot-tier-bg boot-tier-1" id="bt-1"></i>
+    <i class="boot-tier-bg boot-tier-2" id="bt-2"></i>
+    <i class="boot-tier-bg boot-tier-3" id="bt-3"></i>
+    <div class="boot-card-inner">
+     <div class="bc-top">
+      <div class="bc-left" id="bc-stats">
+       <b class="bc-goals" id="bc-goals">0</b>
+       <span class="bc-lbl">Doelpunten</span>
+       <span class="bc-line"></span>
+       <span class="bc-lbl">Positie</span>
+       <span class="bc-rank" id="bc-rank">#—</span>
+       <span class="bc-tier-pill" id="bc-tier-name">BRONS</span>
+      </div>
+      <div class="bc-por" id="bc-ini">??</div>
+     </div>
+     <div class="bc-mid" id="bc-identity">
+      <div class="bc-name" id="bc-name">SPELER LADEN...</div>
+      <div class="bc-meta">
+       <span class="bc-chip" id="bc-club">Club</span>
+       <span class="bc-chip" id="bc-num">#0</span>
+       <span class="bc-chip" id="bc-age">0 jaar</span>
+      </div>
+     </div>
+     <div class="bc-bot" id="bc-progress-box">
+      <div class="bc-meter"><i id="bc-meter-fill"></i></div>
+      <div class="bc-sub" id="bc-sub">Gegevens synchroniseren...</div>
+     </div>
+     <div class="boot-scanline" id="boot-scanline"></div>
+     <div class="boot-flash" id="boot-flash"></div>
+     <div class="boot-sheen" id="boot-sheen"></div>
+    </div>
+   </div>
+  </div>
+ </div>
+ <div class="boot-footer">
+  <div class="boot-status-row">
+   <span id="boot-step-text">Verbinding maken met spelersprofiel...</span>
+   <span id="boot-pct">0%</span>
+  </div>
+  <div class="boot-prog"><i id="boot-prog-fill"></i></div>
+ </div>
+</div>
+
 <header class="hero">
 <svg viewBox="0 0 960 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="20" y="20" width="920" height="260"/><line x1="480" y1="20" x2="480" y2="280"/><circle cx="480" cy="150" r="60"/><rect x="20" y="85" width="110" height="130"/><rect x="830" y="85" width="110" height="130"/></svg>
 <button class="acc" id="acc">Inloggen</button>
@@ -814,6 +1016,175 @@ document.getElementById("dlg").onclick=function(e){if(e.target===this)this.close
 var $=function(i){return document.getElementById(i)};
 var PL=[],ALL=[],EM={},MYDOC=null,CU=null,wantProf=false,wipShown=false,docLoaded=false;
 var app=null,auth=null,db=null;
+
+/* ===== 7-SECONDEN SPELERSKAART ANIMATIE CONTROLLER ===== */
+var BOOT_DUR=7.0,bootActive=false,bootPlayedForSession=false,bootRaf=null;
+function stopBootAnim(immediate){
+ var ov=$("boot-overlay");
+ if(bootRaf){cancelAnimationFrame(bootRaf);bootRaf=null}
+ bootActive=false;
+ if(immediate){
+  ov.classList.remove("active","fade-out");
+  onBootFinished();
+ }else{
+  ov.classList.add("fade-out");
+  setTimeout(function(){
+   ov.classList.remove("active","fade-out");
+   onBootFinished();
+  },550);
+ }
+}
+function onBootFinished(){
+ if(wantProf&&me()){wantProf=false;showProf()}
+ maybeWip();
+}
+function startBootAnim(u){
+ if(bootActive)return;
+ bootActive=true;
+ bootPlayedForSession=true;
+ var ov=$("boot-overlay");
+ var goals=Math.max(0,Number(u.goals)||0);
+ var tierIdx=tierOf(goals);
+ var tierObj=TIERS[tierIdx];
+ var fullName=((u.first||"")+" "+(u.last||"")).trim()||"Speler";
+ var initials=ini(fullName)||"SP";
+ var best=Math.max(1,P.length?P[0].g:1);
+ var idxInList=P.findIndex(function(p){return p.id===u.id});
+ var rankStr=idxInList>=0?("#"+(idxInList+1)):(u.approved?"#"+(P.length+1):"WACHT");
+ var meterPct=u.approved?(idxInList===0?100:Math.max(8,Math.min(100,Math.round((goals/best)*100)))):35;
+
+ // Kleuren & glows instellen per rang
+ var glowColors=["#ff9a4a","#e3ecf8","#ffd60a","#ff3b4a"];
+ ov.style.setProperty("--tint",tierObj.c);
+ ov.style.setProperty("--glow",glowColors[tierIdx]);
+ [0,1,2,3].forEach(function(k){$("bt-"+k).style.opacity="0"});
+
+ // Statische gegevens voorbereiden
+ $("bc-ini").textContent=initials;
+ $("bc-name").textContent=fullName;
+ $("bc-club").textContent=u.club||"Geen club";
+ $("bc-num").textContent="#"+(u.num||0);
+ $("bc-age").textContent=(u.age||0)+" jaar";
+ $("bc-tier-name").textContent="RANG "+tierObj.n.toUpperCase();
+ $("bc-goals").textContent="0";
+ $("bc-rank").textContent="#—";
+ $("bc-meter-fill").style.width="0%";
+ $("bc-sub").textContent=u.approved?"Rang "+tierObj.n+" · "+tierObj.r+" doelpunten":"Status: Wacht op goedkeuring";
+ $("boot-badge").textContent=u.admin===true?"BEHEERDERSPAS LADEN":"SPELERSPAS LADEN";
+ $("boot-title").textContent="Welkom terug, "+(u.first||"Speler");
+
+ // Begin-states van elementen resetten
+ var card=$("boot-card"),por=$("bc-ini"),idBox=$("bc-identity"),stBox=$("bc-stats"),prBox=$("bc-progress-box");
+ var scan=$("boot-scanline"),flash=$("boot-flash"),sheen=$("boot-sheen"),r1=$("boot-ring-1"),r2=$("boot-ring-2");
+ por.style.opacity="0";por.style.transform="scale(.5)";
+ idBox.style.opacity="0";idBox.style.transform="translateY(14px)";
+ stBox.style.opacity="0";stBox.style.transform="translateX(-12px)";
+ prBox.style.opacity="0";prBox.style.transform="translateY(10px)";
+ scan.style.opacity="0";flash.style.opacity="0";
+ sheen.style.transform="translateX(-140%)";
+ r1.style.opacity="0";r2.style.opacity="0";
+
+ ov.classList.remove("fade-out");
+ ov.classList.add("active");
+
+ var tStart=performance.now();
+ function tick(now){
+  if(!bootActive)return;
+  var t=(now-tStart)/1000;
+  if(t>=BOOT_DUR){
+   $("boot-pct").textContent="100%";
+   $("boot-prog-fill").style.width="100%";
+   $("boot-step-text").textContent="Spelerskaart gereed!";
+   stopBootAnim(false);
+   return;
+  }
+
+  var pct=Math.min(100,Math.round((t/BOOT_DUR)*100));
+  $("boot-pct").textContent=pct+"%";
+  $("boot-prog-fill").style.width=(t/BOOT_DUR*100)+"%";
+
+  // FASE 1 (0.0s - 1.2s): Kaart-outline & 3D entree + scanlijn
+  var p1=ss(0,1.1,t);
+  var rotY=(1-p1)*-68;
+  var rotX=(1-p1)*14;
+  var sc=.78+.22*p1;
+  var floatY=Math.sin(t*2.4)*5;
+  card.style.opacity=ss(0,.45,t);
+  card.style.transform="rotateY("+rotY+"deg) rotateX("+rotX+"deg) translateY("+floatY+"px) scale("+sc+")";
+
+  if(t<1.4){
+   $("boot-step-text").textContent="Fase 1/4 · Spelerskaart initialiseren...";
+   var scP=ss(.2,1.3,t);
+   scan.style.opacity=Math.sin(scP*Math.PI);
+   scan.style.top=(scP*100)+"%";
+  }else{
+   scan.style.opacity="0";
+  }
+
+  // FASE 2 (1.2s - 2.8s): Rang-kleur & metaal-glans activeren + schokgolf
+  if(t>=1.2&&t<2.8){
+   $("boot-step-text").textContent="Fase 2/4 · Rangkleur ("+tierObj.n+") opbouwen...";
+  }
+  var pTier=ss(1.2,2.1,t);
+  $("bt-"+tierIdx).style.opacity=pTier;
+  if(t>=1.25&&t<=1.85){
+   var fl=Math.sin(((t-1.25)/.6)*Math.PI);
+   flash.style.opacity=(fl*.55).toFixed(3);
+   r1.style.opacity=((1-(t-1.25)/.6)*.85).toFixed(3);
+   r1.style.transform="scale("+(0.6+((t-1.25)/.6)*1.15)+")";
+  }else{
+   flash.style.opacity="0";
+   r1.style.opacity="0";
+  }
+
+  // FASE 3 (2.8s - 4.5s): Portret, Naam & Club-badges detail-reveal
+  if(t>=2.8&&t<4.5){
+   $("boot-step-text").textContent="Fase 3/4 · Spelergegevens & club laden...";
+  }
+  var pPor=ss(2.7,3.35,t);
+  por.style.opacity=pPor;
+  por.style.transform="scale("+(0.5+0.5*pPor)+")";
+
+  var pId=ss(3.1,3.85,t);
+  idBox.style.opacity=pId;
+  idBox.style.transform="translateY("+((1-pId)*14)+"px)";
+
+  var pSt=ss(3.5,4.2,t);
+  stBox.style.opacity=pSt;
+  stBox.style.transform="translateX("+((1-pSt)*-12)+"px)";
+
+  // FASE 4 (4.5s - 6.0s): Doelpunten tellen op + Positie & Balk vullen
+  if(t>=4.5&&t<6.0){
+   $("boot-step-text").textContent="Fase 4/4 · Statistieken & ranglijst synchroniseren...";
+  }
+  var pGoals=ss(4.3,5.6,t);
+  var easedGoals=1-Math.pow(1-pGoals,3);
+  $("bc-goals").textContent=num(Math.round(goals*easedGoals));
+
+  if(t>=4.8){
+   $("bc-rank").textContent=rankStr;
+  }
+
+  var pBar=ss(4.6,5.8,t);
+  prBox.style.opacity=pBar;
+  prBox.style.transform="translateY("+((1-pBar)*10)+"px)";
+  $("bc-meter-fill").style.width=(meterPct*pBar)+"%";
+
+  // FASE 5 (6.0s - 7.0s): Finale glans & tweede energiering
+  if(t>=6.0){
+   $("boot-step-text").textContent="Voltooid · Klaar voor aftrap!";
+   var pFin=ss(6.0,6.85,t);
+   sheen.style.transform="translateX("+(-140+pFin*280)+"%)";
+   r2.style.opacity=((1-pFin)*.75).toFixed(3);
+   r2.style.transform="scale("+(0.75+pFin*1.1)+")";
+  }
+
+  bootRaf=requestAnimationFrame(tick);
+ }
+ bootRaf=requestAnimationFrame(tick);
+}
+$("boot-skip").onclick=function(){stopBootAnim(false)};
+
 function getUsers(){var o={};PL.forEach(function(u){o[u.id]=u});return o}
 function me(){if(!CU||!MYDOC)return null;return Object.assign({},MYDOC,{email:CU.email})}
 function isAdmin(){var u=me();return !!(u&&u.admin===true)}
@@ -823,7 +1194,7 @@ function gate(){
  if(locked){if(!$("auth").open){tab("l");$("el").textContent=auth?"":fbMsg;$("er").textContent=auth?"":fbMsg;$("auth").showModal()}}
  else if($("auth").open)$("auth").close()
 }
-function maybeWip(){if(CU&&docLoaded&&!isAdmin()&&!wipShown){wipShown=true;if(!$("wip").open)$("wip").showModal()}}
+function maybeWip(){if(bootActive)return;if(CU&&docLoaded&&!isAdmin()&&!wipShown){wipShown=true;if(!$("wip").open)$("wip").showModal()}}
 function msg(e){var c=(e&&e.code)||"";
  if(c==="auth/email-already-in-use")return "Er bestaat al een account met dit e-mailadres.";
  if(c==="auth/weak-password")return "Kies een sterker wachtwoord (minstens 8 tekens).";
@@ -850,7 +1221,6 @@ function showProf(){
    var t=document.createElement("span");t.textContent=x.first+" "+x.last+" · "+x.club+" · #"+x.num;
    var bx=document.createElement("div");
    var yes=document.createElement("button");yes.type="button";yes.className="vw";yes.textContent="Bekijk profiel";yes.onclick=function(){showRev(x)};
-   var no=null;
    bx.appendChild(yes);r.appendChild(t);r.appendChild(bx);pf.appendChild(r)});
   if(!wait.length)add("p","pk","Geen openstaande aanvragen.")
  }
@@ -961,12 +1331,24 @@ view();
  }catch(e){ok=false;fbMsg="Firebase kon niet geladen worden. Controleer je verbinding en de config.";$("el").textContent=fbMsg;$("er").textContent=fbMsg;return}
 
  var uMine=null,uAll=null,uEm=null;
- function refresh(){rebuild();view();paint();if(wantProf&&me()){wantProf=false;showProf()}else if($("prof").open)showProf();maybeWip()}
+ function refresh(){
+  rebuild();view();paint();
+  var u=me();
+  if(CU&&docLoaded&&u&&!bootPlayedForSession){
+   startBootAnim(u);
+  }
+  if(!bootActive){
+   if(wantProf&&u){wantProf=false;showProf()}
+   else if($("prof").open)showProf();
+   maybeWip();
+  }
+ }
  onSnapshot(query(collection(db,"players"),where("approved","==",true)),function(s){
   PL=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});refresh()
  },function(){});
  onAuthStateChanged(auth,function(u){
-  CU=u;MYDOC=null;ALL=[];EM={};docLoaded=false;if(!u)wipShown=false;
+  CU=u;MYDOC=null;ALL=[];EM={};docLoaded=false;
+  if(!u){wipShown=false;bootPlayedForSession=false;if(bootActive)stopBootAnim(true)}
   if(uMine){uMine();uMine=null}if(uAll){uAll();uAll=null}if(uEm){uEm();uEm=null}
   paint();
   if(!u){refresh();return}
@@ -983,7 +1365,6 @@ view();
 (function setupTopscorerChat(){
  var panel=document.getElementById('fan-chat-panel'),launch=document.getElementById('fan-chat-launch'),close=document.getElementById('fan-chat-close'),messages=document.getElementById('fan-chat-messages'),form=document.getElementById('fan-chat-form'),input=document.getElementById('fan-chat-input');
  if(!panel||!launch||!messages||!form)return;
- // Voeg eigen vragen/woorden en antwoorden toe. Een regel wordt gekozen op basis van de gevonden trefwoorden.
  var KNOWLEDGE=[
   {keys:['hallo','hoi','hey','goedemorgen','goedenavond'],answer:'Hoi! ⚽ Leuk dat je er bent. Ik kan je helpen met de topscorers, doelpunten en de ranglijst. Wat wil je weten?'},
   {keys:['nummer 1','eerste plek','koploper','bovenaan','wie staat boven'],answer:function(){var p=topPlayers(1)[0];return p?'🥇 De nummer 1 is '+p.n+' met '+fmt(p.g)+' doelpunten!':'De ranglijst is nog niet beschikbaar.'}},
@@ -1000,7 +1381,6 @@ view();
  function addMessage(text,who){var el=document.createElement('div');el.className='fan-msg '+who;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight}
  function normalize(t){return t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[?!.,]/g,' ')}
  function answerQuestion(question){var q=normalize(question),best=null,score=0;
-  // Spelersnamen worden herkend vanuit de actuele ranglijst.
   if(typeof P!=='undefined'&&Array.isArray(P)){
    var found=P.find(function(p){return q.indexOf(normalize(p.n))>-1});
    if(found)return '⚽ '+found.n+' staat op dit moment op plek '+(P.slice().sort(function(a,b){return b.g-a.g}).indexOf(found)+1)+ ' met '+fmt(found.g)+' doelpunten.\nClub: '+(found.t||'Niet opgegeven')+'.';
@@ -1016,8 +1396,6 @@ view();
  form.addEventListener('submit',function(e){e.preventDefault();send()});
  document.querySelectorAll('[data-chat]').forEach(function(b){b.addEventListener('click',function(){send(b.getAttribute('data-chat'))})});
 })();
-
-
 </script>
 <div id="fan-chat" aria-live="polite">
  <section id="fan-chat-panel" aria-label="Chat met de topscorer-assistent">
@@ -1029,7 +1407,5 @@ view();
  </section>
  <button id="fan-chat-launch" type="button" aria-expanded="false" aria-controls="fan-chat-panel"><span class="chat-orb">✦</span> Vraag het de assistent</button>
 </div>
-
-
 </body>
 </html>
