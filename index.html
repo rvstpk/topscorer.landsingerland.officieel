@@ -160,7 +160,7 @@ dt{color:var(--muted)}dd{font-weight:500;text-align:right}
 .sec{font:600 1rem Archivo,sans-serif;color:#fff;padding:11px;border-radius:999px;cursor:pointer;border:1px solid rgba(255,255,255,.5);background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.06));box-shadow:inset 0 1px 1px rgba(255,255,255,.6)}
 @media (max-width:480px){.ad form{grid-template-columns:1fr}}
 
-#dlg{--cp:polygon(0 7%,10% 3.5%,50% 0,90% 3.5%,100% 7%,100% 86%,50% 100%,0 86%);--fg:#2a1d00;--fg2:rgba(42,29,0,.72);width:min(360px,calc(100% - 28px));border:0;border-radius:0;color:var(--fg);overflow:hidden;max-height:none;clip-path:var(--cp);background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%);box-shadow:none}
+#dlg{--cp:polygon(0 7%,10% 3.5%,50% 0,90% 3.5%,100% 7%,100% 86%,50% 100%,0 86%);--fg:#2a1d00;--fg2:rgba(42,29,0,.72);width:min(360px,calc(100% - 44px));border:0;border-radius:0;color:var(--fg);overflow:visible;max-height:none;clip-path:var(--cp);background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%);box-shadow:none}
 #dlg::before{display:none}
 #dlg::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:4;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.6) 50%,transparent 65%);transform:translateX(-130%);animation:foil 4s ease-in-out infinite}
 @keyframes foil{0%{transform:translateX(-130%)}55%,100%{transform:translateX(130%)}}
@@ -169,7 +169,7 @@ dt{color:var(--muted)}dd{font-weight:500;text-align:right}
 #dlg .fcw{position:relative;margin:8px;padding:34px 20px 74px;clip-path:var(--cp);background:linear-gradient(160deg,rgba(255,255,255,.45),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 20%,#f7e49c),#ecc752 55%,#d6a92f)}
 #dlg .fcw>:not(.drk){position:relative}
 #dlg .drk{color:var(--fg);opacity:.07;right:6px;top:48px;font-size:11rem}
-#dlg .x{position:absolute;top:22px;right:26px;z-index:5;width:34px;height:34px;color:var(--fg);border-color:rgba(60,40,0,.4);background:rgba(255,255,255,.45);box-shadow:inset 0 1px 1px rgba(255,255,255,.8)}
+#dlg .x{position:absolute;top:22px;right:26px;z-index:8;width:34px;height:34px;color:var(--fg);border-color:rgba(60,40,0,.4);background:rgba(255,255,255,.45);box-shadow:inset 0 1px 1px rgba(255,255,255,.8)}
 #dlg .ftop{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center}
 #dlg .fl{display:grid;gap:5px;justify-items:start}
 #dlg #s1{display:block;font:700 4.2rem/.9 "Archivo Narrow",sans-serif;color:var(--fg);text-shadow:none}
@@ -241,6 +241,14 @@ dialog{margin:auto}
 #dlg .fx i:nth-child(2){opacity:.4}
 #dlg .fx i:nth-child(3){opacity:.55}
 @media (prefers-reduced-motion:reduce){#dlg .fcw::before{animation:none}}
+
+/* Standaard verborgen, wordt alleen getoond bij rang 1 */
+#dlg .gems{display:none;}
+#dlg.is-rank-1 .gems{display:block;position:absolute;inset:-14px -18px;width:calc(100% + 36px);height:calc(100% + 28px);z-index:6;pointer-events:none;overflow:visible;filter:drop-shadow(0 6px 10px rgba(0,0,0,.65))}
+#dlg .gems .glint{animation:glintPulse 3s ease-in-out infinite alternate}
+#dlg .gems .glint2{animation:glintPulse 3s ease-in-out 1.5s infinite alternate}
+@keyframes glintPulse{0%{opacity:.35;transform:scale(.82)}100%{opacity:1;transform:scale(1.18)}}
+@media (prefers-reduced-motion:reduce){#dlg .gems .glint,#dlg .gems .glint2{animation:none;opacity:.8}}
 
 .podium{grid-template-columns:1fr 1.15fr 1fr;gap:18px;margin:-112px 0 34px;align-items:end}
 .pcol{display:flex;flex-direction:column;min-width:0}
@@ -351,6 +359,216 @@ dialog{margin:auto}
 
 <dialog id="dlg" class="fc" aria-labelledby="dn">
 <button class="x" id="close" aria-label="Sluiten">×</button>
+<svg class="gems" viewBox="-22 -18 444 596" preserveAspectRatio="none" aria-hidden="true">
+<defs>
+<linearGradient id="g-light" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#ffffff"/>
+<stop offset="30%" stop-color="#fff4b8"/>
+<stop offset="70%" stop-color="#f5c842"/>
+<stop offset="100%" stop-color="#c28e15"/>
+</linearGradient>
+<linearGradient id="g-mid" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="#ffe785"/>
+<stop offset="45%" stop-color="#daa520"/>
+<stop offset="100%" stop-color="#8c5f08"/>
+</linearGradient>
+<linearGradient id="g-dark" x1="100%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="#b88414"/>
+<stop offset="50%" stop-color="#754c04"/>
+<stop offset="100%" stop-color="#3d2400"/>
+</linearGradient>
+<linearGradient id="g-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#fff9d6"/>
+<stop offset="25%" stop-color="#f2c43d"/>
+<stop offset="50%" stop-color="#9e6d0b"/>
+<stop offset="75%" stop-color="#ffe885"/>
+<stop offset="100%" stop-color="#784f04"/>
+</linearGradient>
+<radialGradient id="g-spark" cx="50%" cy="50%" r="50%">
+<stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+<stop offset="30%" stop-color="#fff5b8" stop-opacity="0.8"/>
+<stop offset="100%" stop-color="#ffd60a" stop-opacity="0"/>
+</radialGradient>
+</defs>
+
+<!-- Gouden buitenste omlijning langs het schild -->
+<path d="M 0 39 L 40 19.6 L 200 0 L 360 19.6 L 400 39 L 400 481.6 L 200 560 L 0 481.6 Z" fill="none" stroke="url(#g-rim)" stroke-width="5" stroke-linejoin="miter"/>
+<path d="M 4 42 L 42 23.5 L 200 4.5 L 358 23.5 L 396 42 L 396 478.5 L 200 555 L 4 478.5 Z" fill="none" stroke="#fff7cc" stroke-width="1.2" opacity="0.85"/>
+
+<!-- LINKERBOVENHOEK 3D KRISTALLEN -->
+<g>
+<polygon points="-14,32 10,6 22,38 4,62" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
+<polygon points="-14,32 10,6 5,36" fill="url(#g-light)"/>
+<polygon points="10,6 22,38 5,36" fill="url(#g-mid)"/>
+<polygon points="-14,32 5,36 4,62" fill="url(#g-dark)"/>
+<polygon points="5,36 22,38 4,62" fill="url(#g-mid)"/>
+<!-- Overlappend kristal over hoek -->
+<polygon points="2,24 38,8 48,34 18,52" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.8"/>
+<polygon points="2,24 38,8 26,30" fill="#ffffff" opacity="0.9"/>
+<polygon points="38,8 48,34 26,30" fill="url(#g-mid)"/>
+<polygon points="2,24 26,30 18,52" fill="url(#g-mid)"/>
+<polygon points="26,30 48,34 18,52" fill="url(#g-dark)"/>
+</g>
+
+<!-- BOVENRAND KRISTALCLUSTER -->
+<g>
+<polygon points="55,14 82,2 94,22 66,28" fill="url(#g-light)" stroke="#fff3b0" stroke-width="0.6"/>
+<polygon points="55,14 82,2 75,16" fill="#ffffff" opacity="0.85"/>
+<polygon points="82,2 94,22 75,16" fill="url(#g-dark)"/>
+<polygon points="118,6 146,-6 156,14 128,18" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.6"/>
+<polygon points="118,6 146,-6 138,8" fill="url(#g-light)"/>
+<!-- Kroon-top midden -->
+<polygon points="184,2 200,-12 216,2 200,16" fill="url(#g-light)" stroke="#fff8d6" stroke-width="0.8"/>
+<polygon points="184,2 200,-12 200,3" fill="#ffffff"/>
+<polygon points="200,-12 216,2 200,3" fill="url(#g-mid)"/>
+<polygon points="184,2 200,3 200,16" fill="url(#g-mid)"/>
+<polygon points="200,3 216,2 200,16" fill="url(#g-dark)"/>
+<!-- Rechts bovenrand -->
+<polygon points="244,14 254,-6 282,6 272,18" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.6"/>
+<polygon points="254,-6 282,6 262,8" fill="url(#g-light)"/>
+<polygon points="306,22 318,2 345,14 334,28" fill="url(#g-light)" stroke="#fff3b0" stroke-width="0.6"/>
+<polygon points="318,2 345,14 325,16" fill="#ffffff" opacity="0.85"/>
+</g>
+
+<!-- RECHTERBOVENHOEK 3D KRISTALLEN -->
+<g>
+<polygon points="390,6 414,32 396,62 378,38" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
+<polygon points="390,6 414,32 395,36" fill="url(#g-light)"/>
+<polygon points="390,6 395,36 378,38" fill="url(#g-dark)"/>
+<polygon points="395,36 414,32 396,62" fill="url(#g-dark)"/>
+<polygon points="362,8 398,24 382,52 352,34" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.8"/>
+<polygon points="362,8 398,24 374,30" fill="#ffffff" opacity="0.9"/>
+<polygon points="362,8 374,30 352,34" fill="url(#g-mid)"/>
+<polygon points="374,30 398,24 382,52" fill="url(#g-dark)"/>
+</g>
+
+<!-- LINKERRAND KRISTALLEN (OVERLAPPEND OP DE KAART) -->
+<g>
+<polygon points="-12,86 6,64 16,102 -4,124" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
+<polygon points="-12,86 6,64 3,95" fill="url(#g-light)"/>
+<polygon points="3,95 16,102 -4,124" fill="url(#g-dark)"/>
+
+<polygon points="-6,120 15,104 20,148 -2,164" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.7"/>
+<polygon points="-6,120 15,104 8,134" fill="#ffffff" opacity="0.85"/>
+<polygon points="15,104 20,148 8,134" fill="url(#g-mid)"/>
+<polygon points="-6,120 8,134 -2,164" fill="url(#g-dark)"/>
+
+<polygon points="-14,168 8,150 18,196 -6,216" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
+<polygon points="-14,168 8,150 4,182" fill="url(#g-light)"/>
+<polygon points="4,182 18,196 -6,216" fill="url(#g-dark)"/>
+
+<polygon points="-8,214 14,194 22,248 -4,268" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.8"/>
+<polygon points="-8,214 14,194 9,230" fill="#ffffff" opacity="0.9"/>
+<polygon points="14,194 22,248 9,230" fill="url(#g-mid)"/>
+<polygon points="-8,214 9,230 -4,268" fill="url(#g-dark)"/>
+
+<polygon points="-15,270 7,252 17,304 -7,326" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
+<polygon points="-15,270 7,252 3,288" fill="url(#g-light)"/>
+<polygon points="3,288 17,304 -7,326" fill="url(#g-dark)"/>
+
+<polygon points="-10,322 18,298 28,366 -6,392" fill="url(#g-light)" stroke="#fff8d6" stroke-width="0.8"/>
+<polygon points="-10,322 18,298 12,344" fill="#ffffff" opacity="0.9"/>
+<polygon points="18,298 28,366 12,344" fill="url(#g-mid)"/>
+<polygon points="-10,322 12,344 -6,392" fill="url(#g-dark)"/>
+<polygon points="12,344 28,366 -6,392" fill="url(#g-mid)"/>
+
+<polygon points="-16,388 10,368 22,428 -8,448" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
+<polygon points="-16,388 10,368 5,408" fill="url(#g-light)"/>
+<polygon points="5,408 22,428 -8,448" fill="url(#g-dark)"/>
+</g>
+
+<!-- RECHTERRAND KRISTALLEN (OVERLAPPEND OP DE KAART) -->
+<g>
+<polygon points="394,64 412,86 404,124 384,102" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
+<polygon points="394,64 412,86 397,95" fill="url(#g-light)"/>
+<polygon points="397,95 404,124 384,102" fill="url(#g-dark)"/>
+
+<polygon points="385,104 406,120 402,164 380,148" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.7"/>
+<polygon points="385,104 406,120 392,134" fill="#ffffff" opacity="0.85"/>
+<polygon points="385,104 392,134 380,148" fill="url(#g-mid)"/>
+<polygon points="392,134 406,120 402,164" fill="url(#g-dark)"/>
+
+<polygon points="392,150 414,168 406,216 382,196" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
+<polygon points="392,150 414,168 396,182" fill="url(#g-light)"/>
+<polygon points="396,182 406,216 382,196" fill="url(#g-dark)"/>
+
+<polygon points="386,194 408,214 404,268 378,248" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.8"/>
+<polygon points="386,194 408,214 391,230" fill="#ffffff" opacity="0.9"/>
+<polygon points="386,194 391,230 378,248" fill="url(#g-mid)"/>
+<polygon points="391,230 408,214 404,268" fill="url(#g-dark)"/>
+
+<polygon points="393,252 415,270 407,326 383,304" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
+<polygon points="393,252 415,270 397,288" fill="url(#g-light)"/>
+<polygon points="397,288 407,326 383,304" fill="url(#g-dark)"/>
+
+<polygon points="382,298 410,322 406,392 372,366" fill="url(#g-light)" stroke="#fff8d6" stroke-width="0.8"/>
+<polygon points="382,298 410,322 388,344" fill="#ffffff" opacity="0.9"/>
+<polygon points="382,298 388,344 372,366" fill="url(#g-mid)"/>
+<polygon points="388,344 410,322 406,392" fill="url(#g-dark)"/>
+
+<polygon points="390,368 416,388 408,448 378,428" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
+<polygon points="390,368 416,388 395,408" fill="url(#g-light)"/>
+<polygon points="395,408 408,448 378,428" fill="url(#g-dark)"/>
+</g>
+
+<!-- ONDERRAND & HOEKCLUSTERS (ZWARE 3D DIAMANTEN) -->
+<g>
+<polygon points="-14,442 18,424 38,476 -2,494" fill="url(#g-light)" stroke="#fff8d6" stroke-width="0.9"/>
+<polygon points="-14,442 18,424 12,458" fill="#ffffff" opacity="0.95"/>
+<polygon points="18,424 38,476 12,458" fill="url(#g-mid)"/>
+<polygon points="-14,442 12,458 -2,494" fill="url(#g-dark)"/>
+<polygon points="12,458 38,476 -2,494" fill="url(#g-mid)"/>
+
+<polygon points="14,468 58,464 74,504 28,512" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.8"/>
+<polygon points="14,468 58,464 44,486" fill="url(#g-light)"/>
+<polygon points="44,486 74,504 28,512" fill="url(#g-dark)"/>
+
+<polygon points="62,488 106,482 120,518 76,528" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.8"/>
+<polygon points="62,488 106,482 90,504" fill="#ffffff" opacity="0.85"/>
+<polygon points="90,504 120,518 76,528" fill="url(#g-dark)"/>
+
+<polygon points="112,508 156,506 168,540 124,548" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
+<polygon points="112,508 156,506 140,526" fill="url(#g-light)"/>
+<polygon points="140,526 168,540 124,548" fill="url(#g-dark)"/>
+
+<polygon points="166,534 200,522 234,534 200,570" fill="url(#g-light)" stroke="#ffffff" stroke-width="1"/>
+<polygon points="166,534 200,522 200,544" fill="#ffffff"/>
+<polygon points="200,522 234,534 200,544" fill="url(#g-mid)"/>
+<polygon points="166,534 200,544 200,570" fill="url(#g-mid)"/>
+<polygon points="200,544 234,534 200,570" fill="url(#g-dark)"/>
+
+<polygon points="244,506 288,508 276,548 232,540" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
+<polygon points="244,506 288,508 260,526" fill="url(#g-light)"/>
+<polygon points="260,526 276,548 232,540" fill="url(#g-dark)"/>
+
+<polygon points="294,482 338,488 324,528 280,518" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.8"/>
+<polygon points="294,482 338,488 310,504" fill="#ffffff" opacity="0.85"/>
+<polygon points="310,504 324,528 280,518" fill="url(#g-dark)"/>
+
+<polygon points="342,464 386,468 372,512 326,504" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.8"/>
+<polygon points="342,464 386,468 356,486" fill="url(#g-light)"/>
+<polygon points="356,486 372,512 326,504" fill="url(#g-dark)"/>
+
+<polygon points="382,424 414,442 402,494 362,476" fill="url(#g-light)" stroke="#fff8d6" stroke-width="0.9"/>
+<polygon points="382,424 414,442 388,458" fill="#ffffff" opacity="0.95"/>
+<polygon points="382,424 388,458 362,476" fill="url(#g-mid)"/>
+<polygon points="388,458 414,442 402,494" fill="url(#g-dark)"/>
+</g>
+
+<!-- LICHTSCHITTERINGEN OP DE FACETTEN -->
+<g class="glint" style="transform-origin:12px 344px">
+<circle cx="12" cy="344" r="18" fill="url(#g-spark)"/>
+<path d="M 12 326 L 14 342 L 30 344 L 14 346 L 12 362 L 10 346 L -6 344 L 10 342 Z" fill="#ffffff"/>
+</g>
+<g class="glint2" style="transform-origin:388px 458px">
+<circle cx="388" cy="458" r="16" fill="url(#g-spark)"/>
+<path d="M 388 442 L 390 456 L 404 458 L 390 460 L 388 474 L 386 460 L 372 458 L 386 456 Z" fill="#ffffff"/>
+</g>
+<g class="glint" style="transform-origin:200px 544px">
+<circle cx="200" cy="544" r="15" fill="url(#g-spark)"/>
+<path d="M 200 530 L 201.5 542.5 L 214 544 L 201.5 545.5 L 200 558 L 198.5 545.5 L 186 544 L 198.5 542.5 Z" fill="#ffffff"/>
+</g>
+</svg>
 <div class="shell"><div class="fcw">
 <div class="fx" aria-hidden="true"><i></i><i></i><i></i><u></u><u></u><b></b><b></b></div>
 <div class="drk" id="rk" aria-hidden="true"></div>
@@ -492,6 +710,10 @@ function open(p){
  $("ini").textContent=p.n.replace(/\s*\(.*\)$/,"").split(" ").map(function(w){return w[0]}).join("").slice(0,2).toUpperCase();
  d.classList.toggle("top",false);
  d.dataset.tier="r";d.dataset.rank=["bronze","silver","gold","red"][tierOf(p.g)];
+ 
+ // Controleer of de speler op de 1e plaats staat (index 0)
+ d.classList.toggle("is-rank-1", rank === 0);
+
  $("sr").textContent="Rang "+TIERS[tierOf(p.g)].n+" · "+(rank?Math.round(p.g/best*100)+"% van het aantal van de nummer 1":"De nummer 1 van deze lijst");
  $("sm").style.width="0";
  var dd=$("dd");dd.innerHTML="";
