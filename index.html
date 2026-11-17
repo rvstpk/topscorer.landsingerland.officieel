@@ -298,49 +298,93 @@ dialog{margin:auto}
 #dlg[data-rank="silver"] .shell{background:linear-gradient(135deg,#fff 0,#dde2e9 28%,#8f98a3 52%,#f1f4f8 76%,#7a838e 100%)}
 #dlg[data-rank="bronze"] .shell{background:linear-gradient(135deg,#ffdcb4 0,#e29c5c 28%,#a15a22 52%,#f2b57c 76%,#7a3f12 100%)}
 #dlg[data-rank="red"] .shell{background:linear-gradient(135deg,#ff9aa4 0,#e0313f 28%,#8c0f1c 52%,#f0505c 76%,#5c0710 100%)}
+
+/* ===== VERBETERDE UITLEGVIDEO KAARTEN & STAGE ===== */
 .vid{max-width:960px;margin:0 auto;padding:10px 20px 64px}
 .stage{position:relative;aspect-ratio:16/9;width:100%;overflow:hidden;container-type:inline-size;color:#fff;border-radius:22px;border:1px solid rgba(255,255,255,.45);background:#04100a;--tint:#b87333;box-shadow:0 20px 50px rgba(0,0,0,.35),inset 0 1px 2px rgba(255,255,255,.5)}
 .stage:fullscreen{border-radius:0;border:0}
-.vbg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,#1f7a42,transparent 60%),radial-gradient(ellipse at 75% 45%,color-mix(in srgb,var(--tint) 45%,transparent),transparent 55%),linear-gradient(180deg,#04100a,#0b2e1a 60%,#0f3d22)}
+.vbg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,#1f7a42,transparent 60%),radial-gradient(ellipse at 74% 44%,color-mix(in srgb,var(--tint) 52%,transparent),transparent 54%),linear-gradient(180deg,#04100a,#0b2e1a 60%,#0f3d22)}
 .vbg::before{content:"";position:absolute;inset:0;filter:blur(8px);background:conic-gradient(from 150deg at 10% -8%,rgba(255,255,215,.35),rgba(255,255,215,0) 34deg),conic-gradient(from 176deg at 90% -8%,rgba(255,255,215,.35),rgba(255,255,215,0) 34deg);animation:sway 7s ease-in-out infinite alternate;transform-origin:50% 0}
-.vtag{position:absolute;top:3cqw;left:4cqw;font:700 max(10px,1.5cqw) "Archivo Narrow",sans-serif;letter-spacing:.16em;padding:.6cqw 1.6cqw;border-radius:999px;color:#2a1c00;background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:0 0 1.6cqw rgba(255,214,10,.55)}
-.vmain{position:absolute;inset:7cqw 4cqw 14cqw;display:grid;grid-template-columns:1.1fr .9fr;grid-template-rows:100%;gap:3cqw;align-items:center}
-.vtx h3{font:700 6.4cqw/.95 "Archivo Narrow","Arial Narrow",sans-serif;text-transform:uppercase;text-shadow:0 0 3cqw color-mix(in srgb,var(--tint) 60%,transparent)}
-.vtx p{margin-top:1.6cqw;font-size:max(12px,2.2cqw);color:#d8ead9}
-.vcw{position:relative;justify-self:center;height:100%;aspect-ratio:3/3.9;opacity:0;filter:drop-shadow(0 0 2.4cqw var(--tint)) drop-shadow(0 0 .7cqw var(--tint))}
-.vring{position:absolute;left:50%;top:50%;width:90%;aspect-ratio:1;margin:-45% 0 0 -45%;border-radius:50%;border:.5cqw solid #fff;opacity:0;pointer-events:none}
+.vtag{position:absolute;top:2.8cqw;left:3.6cqw;z-index:3;font:700 max(10px,1.4cqw) "Archivo Narrow",sans-serif;letter-spacing:.16em;padding:.55cqw 1.5cqw;border-radius:999px;color:#2a1c00;background:linear-gradient(180deg,rgba(255,255,255,.75),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:0 0 1.6cqw rgba(255,214,10,.55)}
+
+/* Ruimere opzet zodat de volledige schildkaart scherp en onafgesneden zichtbaar is */
+.vmain{position:absolute;inset:5.2cqw 3.8cqw 11.8cqw;display:grid;grid-template-columns:1.08fr .92fr;grid-template-rows:100%;gap:2.5cqw;align-items:center}
+.vtx{padding-right:1cqw}
+.vtx h3{font:700 5.4cqw/.96 "Archivo Narrow","Arial Narrow",sans-serif;text-transform:uppercase;text-shadow:0 2px 14px rgba(0,0,0,.55),0 0 3cqw color-mix(in srgb,var(--tint) 70%,transparent)}
+.vtx p{margin-top:1.2cqw;font-size:max(11px,2cqw);line-height:1.35;color:#d8ead9}
+
+/* De kaart zelf past nu 100% in de hoogte met juiste aspect-ratio (3 : 4.15) */
+.vcw{position:relative;justify-self:center;height:96%;max-height:100%;aspect-ratio:3/4.15;opacity:0;filter:drop-shadow(0 6px 18px rgba(0,0,0,.55)) drop-shadow(0 0 2.2cqw var(--tint))}
+.vring{position:absolute;left:50%;top:50%;width:105%;aspect-ratio:1;margin:-52.5% 0 0 -52.5%;border-radius:50%;border:.45cqw solid #fff;opacity:0;pointer-events:none;box-shadow:0 0 2cqw var(--tint)}
 .vc2{position:absolute;inset:0;--cp:polygon(0 7%,10% 3.5%,50% 0,90% 3.5%,100% 7%,100% 86%,50% 100%,0 86%)}
 .vsh{position:absolute;inset:0;overflow:hidden;clip-path:var(--cp)}
+
+/* Rijke metallic randen per rangkleur */
 .fr{position:absolute;inset:0;opacity:0}
-.f0{opacity:1;background:linear-gradient(135deg,#ffdcb4 0,#e29c5c 28%,#a15a22 52%,#f2b57c 76%,#7a3f12 100%)}
-.f1{background:linear-gradient(135deg,#fff 0,#dde2e9 28%,#8f98a3 52%,#f1f4f8 76%,#7a838e 100%)}
-.f2{background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%)}
-.f3{background:linear-gradient(135deg,#ff9aa4 0,#e0313f 28%,#8c0f1c 52%,#f0505c 76%,#5c0710 100%)}
-.vin2{position:absolute;inset:.9cqw;clip-path:var(--cp);background:linear-gradient(160deg,rgba(255,255,255,.28),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 72%,#000),color-mix(in srgb,var(--tint) 48%,#000));color:#fff1c4;padding:3.4cqw 2cqw 6.4cqw;display:flex;flex-direction:column;justify-content:center;gap:1.4cqw}
-.vtop2{display:flex;justify-content:space-between;align-items:center;gap:1cqw}
-.vl2{display:grid;gap:.3cqw;justify-items:start}
-.vl2 b{font:700 7.6cqw/.9 "Archivo Narrow",sans-serif}
-.vk{font-size:max(8px,.95cqw);letter-spacing:.1em;opacity:.8}
-.vln{width:3cqw;height:.15cqw;background:currentColor;opacity:.5}
-.vrn{font:700 2.4cqw/1 "Archivo Narrow",sans-serif;text-transform:uppercase}
-.vcl{font-size:max(8px,1cqw);padding:.2cqw .8cqw;border-radius:999px;border:.1cqw solid rgba(255,241,196,.55);background:rgba(255,255,255,.14);box-shadow:inset .25cqw 0 0 var(--tint)}
-.vpor{flex:none;width:9.6cqw;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font:700 3.4cqw "Archivo Narrow",sans-serif;color:#fff;text-shadow:0 .1cqw .5cqw rgba(0,0,0,.4);background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.65),transparent 55%),color-mix(in srgb,var(--tint) 88%,#fff);box-shadow:inset 0 -.8cqw 1.4cqw rgba(0,0,0,.3),0 0 0 .35cqw rgba(255,255,255,.55)}
-.vnm{text-align:center;font:700 2.7cqw "Archivo Narrow",sans-serif;border-top:.15cqw solid rgba(255,241,196,.5);padding-top:1cqw}
-.vmt{height:1.3cqw;border-radius:999px;background:rgba(0,0,0,.4);border:.1cqw solid rgba(255,226,120,.55);position:relative;box-shadow:0 0 1.2cqw rgba(255,190,0,.25)}
-.vmt i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe46b,#ffc400 55%,#ff9f0a);box-shadow:0 0 .6cqw #ffd60a,0 0 1.6cqw rgba(255,200,0,.85),0 0 3cqw rgba(255,180,0,.6)}
-.vmt i::before{content:"";position:absolute;right:-.3cqw;top:50%;width:1.2cqw;height:1.2cqw;margin-top:-.6cqw;border-radius:50%;background:#fff8cf;box-shadow:0 0 .9cqw .3cqw #ffe566,0 0 2cqw .7cqw rgba(255,190,0,.8)}
-.vsm{text-align:center;font-size:max(9px,1.15cqw);opacity:.85}
-.vsheen{position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.5) 50%,transparent 62%)}
-.vlad{position:absolute;left:4cqw;right:4cqw;bottom:4.2cqw;display:grid;grid-template-columns:repeat(4,1fr);gap:1.4cqw}
-.lp{--on:0;display:grid;justify-items:center;padding:.9cqw .6cqw;border-radius:1.8cqw;border:.15cqw solid rgba(255,255,255,calc(.28 + var(--on)*.42));background:linear-gradient(180deg,rgba(255,255,255,calc(var(--on)*.4)),rgba(255,255,255,0) 55%),color-mix(in srgb,var(--c) calc(var(--on)*100%),rgba(255,255,255,.06));opacity:calc(.5 + var(--on)*.5);box-shadow:0 0 calc(var(--on)*1.8cqw) var(--c)}
-.lp b{font:700 max(11px,2cqw) "Archivo Narrow",sans-serif}
-.lp span{font-size:max(9px,1.3cqw);opacity:.85}
-.vbar{position:absolute;left:0;right:0;bottom:0;height:max(7px,1.2cqw);cursor:pointer;background:rgba(255,255,255,.15)}
+.f0{opacity:1;background:linear-gradient(135deg,#ffe4c4 0,#e29c5c 28%,#9e551d 52%,#f4ba82 76%,#70380d 100%)}
+.f1{background:linear-gradient(135deg,#ffffff 0,#e2e7ee 28%,#8d96a2 52%,#f5f8fc 76%,#6f7884 100%)}
+.f2{background:linear-gradient(135deg,#fff5bd 0,#f5ce4b 28%,#c7961c 52%,#fae082 76%,#a87807 100%)}
+.f3{background:linear-gradient(135deg,#ffa6af 0,#e63241 28%,#8c0d1a 52%,#f55663 76%,#54050d 100%)}
+
+/* Binnenzijde van de kaart: strak gecentreerd en goed leesbaar */
+.vin2{
+ position:absolute;inset:.75cqw;clip-path:var(--cp);
+ background:linear-gradient(160deg,rgba(255,255,255,.3),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 76%,#040d08),color-mix(in srgb,var(--tint) 50%,#040d08));
+ color:#fff5d1;padding:2.6cqw 1.8cqw 4.8cqw;
+ display:flex;flex-direction:column;justify-content:space-between;gap:.6cqw;
+}
+.vin2::before{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ background:conic-gradient(from 160deg at 50% -10%,rgba(255,255,215,.32),transparent 42deg);
+}
+.vtop2{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:.8cqw}
+.vl2{display:grid;gap:.2cqw;justify-items:start}
+.vl2 b{font:700 5.6cqw/.88 "Archivo Narrow",sans-serif;text-shadow:0 2px 8px rgba(0,0,0,.35);font-variant-numeric:tabular-nums}
+.vk{font-size:max(7px,.85cqw);letter-spacing:.11em;opacity:.85;font-weight:600}
+.vln{width:2.8cqw;height:.15cqw;background:currentColor;opacity:.45;margin:.15cqw 0}
+.vrn{font:700 2cqw/1 "Archivo Narrow",sans-serif;text-transform:uppercase;letter-spacing:.03em}
+.vcl{font-size:max(7px,.9cqw);padding:.18cqw .75cqw;border-radius:999px;border:.1cqw solid rgba(255,241,196,.6);background:rgba(255,255,255,.16);box-shadow:inset .22cqw 0 0 var(--tint);margin-top:.15cqw}
+
+/* Speler-avatar cirkel rechtsboven op de kaart */
+.vpor{
+ flex:none;width:7.8cqw;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;
+ font:700 2.7cqw "Archivo Narrow",sans-serif;color:#fff;text-shadow:0 .12cqw .5cqw rgba(0,0,0,.45);
+ background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.68),transparent 54%),color-mix(in srgb,var(--tint) 88%,#fff);
+ box-shadow:inset 0 -.6cqw 1.2cqw rgba(0,0,0,.32),0 0 0 .28cqw rgba(255,255,255,.62),0 .4cqw 1cqw rgba(0,0,0,.35);
+}
+
+/* Naam in het midden */
+.vnm{
+ position:relative;z-index:2;text-align:center;font:700 2.2cqw/1.05 "Archivo Narrow",sans-serif;
+ letter-spacing:.03em;border-top:.14cqw solid rgba(255,241,196,.48);padding-top:.7cqw;
+ text-shadow:0 1px 6px rgba(0,0,0,.35);
+}
+
+/* Voortgangsbalk en subtekst onderin het schild (blijft netjes binnen de punt!) */
+.vbot2{position:relative;z-index:2;display:grid;gap:.45cqw;padding:0 .6cqw}
+.vmt{height:1.05cqw;border-radius:999px;background:rgba(0,0,0,.45);border:.1cqw solid rgba(255,226,120,.6);position:relative;box-shadow:inset 0 1px 3px rgba(0,0,0,.5),0 0 1cqw rgba(255,190,0,.25)}
+.vmt i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.75),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe46b,#ffc400 55%,#ff9f0a);box-shadow:0 0 .5cqw #ffd60a,0 0 1.4cqw rgba(255,200,0,.85)}
+.vmt i::before{content:"";position:absolute;right:-.25cqw;top:50%;width:.95cqw;height:.95cqw;margin-top:-.475cqw;border-radius:50%;background:#fff8cf;box-shadow:0 0 .7cqw .2cqw #ffe566,0 0 1.6cqw .5cqw rgba(255,190,0,.85)}
+.vsm{text-align:center;font-size:max(8px,.98cqw);opacity:.92;font-weight:500}
+.vsheen{position:absolute;inset:0;z-index:4;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.6) 50%,transparent 65%)}
+
+/* Rangen-balk onderaan de video */
+.vlad{position:absolute;left:3.8cqw;right:3.8cqw;bottom:2.8cqw;z-index:3;display:grid;grid-template-columns:repeat(4,1fr);gap:1.2cqw}
+.lp{--on:0;display:grid;justify-items:center;padding:.7cqw .5cqw;border-radius:1.4cqw;border:.14cqw solid rgba(255,255,255,calc(.28 + var(--on)*.48));background:linear-gradient(180deg,rgba(255,255,255,calc(var(--on)*.42)),rgba(255,255,255,0) 55%),color-mix(in srgb,var(--c) calc(var(--on)*100%),rgba(255,255,255,.07));opacity:calc(.55 + var(--on)*.45);box-shadow:0 0 calc(var(--on)*1.8cqw) var(--c);transition:transform .2s}
+.lp b{font:700 max(10px,1.85cqw) "Archivo Narrow",sans-serif;text-transform:uppercase;letter-spacing:.02em}
+.lp span{font-size:max(8px,1.2cqw);opacity:.88}
+.vbar{position:absolute;left:0;right:0;bottom:0;z-index:4;height:max(7px,1.1cqw);cursor:pointer;background:rgba(255,255,255,.15)}
 .vbar i{display:block;height:100%;width:0;background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe46b,#ffc400,#ff9f0a);box-shadow:0 0 1.4cqw #ffd60a}
 .vctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px}
 .vctl button{font:600 .95rem Archivo,sans-serif;color:#fff;cursor:pointer;padding:9px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.6);background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(8,28,16,.85));box-shadow:inset 0 1px 1px rgba(255,255,255,.7)}
 #vtime{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums}
-@media (max-width:640px){.vtx h3{font-size:6cqw}}
+@media (max-width:640px){
+ .stage{aspect-ratio:4/3.2}
+ .vmain{inset:8cqw 4cqw 16cqw;grid-template-columns:1fr 1fr;gap:2cqw}
+ .vtx h3{font-size:5.2cqw}
+ .vtx p{font-size:2.6cqw}
+ .vlad{bottom:3.6cqw}
+}
 @media (prefers-reduced-motion:reduce){.vbg::before{animation:none}}
 
 #rows .pc{transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s,filter .35s,box-shadow .35s}
@@ -634,7 +678,7 @@ body.locked #auth .x{display:none}
 <div class="vin2">
 <div class="vtop2"><div class="vl2"><b id="vg">0</b><span class="vk">DOELPUNTEN</span><span class="vln"></span><span class="vk">RANG</span><span class="vrn" id="vrn">BRONS</span><span class="vcl">Jouw club</span></div><div class="vpor">JN</div></div>
 <div class="vnm">JOUW NAAM</div>
-<div class="vmt"><i id="vmf"></i></div><div class="vsm" id="vsm"></div>
+<div class="vbot2"><div class="vmt"><i id="vmf"></i></div><div class="vsm" id="vsm"></div></div>
 </div><span class="vsheen" id="vsheen"></span></div></div></div>
 </div>
 <div class="vlad" id="vlad"></div>
