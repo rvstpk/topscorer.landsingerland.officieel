@@ -299,33 +299,66 @@ dialog{margin:auto}
 #dlg[data-rank="bronze"] .shell{background:linear-gradient(135deg,#ffdcb4 0,#e29c5c 28%,#a15a22 52%,#f2b57c 76%,#7a3f12 100%)}
 #dlg[data-rank="red"] .shell{background:linear-gradient(135deg,#ff9aa4 0,#e0313f 28%,#8c0f1c 52%,#f0505c 76%,#5c0710 100%)}
 .vid{max-width:960px;margin:0 auto;padding:10px 20px 64px}
-.stage{position:relative;aspect-ratio:16/9;width:100%;overflow:hidden;container-type:inline-size;color:#fff;border-radius:22px;border:1px solid rgba(255,255,255,.45);background:#04100a;--tint:#b87333;transition:--tint .7s;box-shadow:0 20px 50px rgba(0,0,0,.35),inset 0 1px 2px rgba(255,255,255,.5)}
+.stage{position:relative;aspect-ratio:16/9;width:100%;overflow:hidden;container-type:inline-size;color:#fff;border-radius:22px;border:1px solid rgba(255,255,255,.45);background:#04100a;--tint:#b87333;box-shadow:0 20px 50px rgba(0,0,0,.35),inset 0 1px 2px rgba(255,255,255,.5)}
 .stage:fullscreen{border-radius:0;border:0}
 .vbg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,#1f7a42,transparent 60%),radial-gradient(ellipse at 75% 45%,color-mix(in srgb,var(--tint) 45%,transparent),transparent 55%),linear-gradient(180deg,#04100a,#0b2e1a 60%,#0f3d22)}
 .vbg::before{content:"";position:absolute;inset:0;filter:blur(8px);background:conic-gradient(from 150deg at 10% -8%,rgba(255,255,215,.35),rgba(255,255,215,0) 34deg),conic-gradient(from 176deg at 90% -8%,rgba(255,255,215,.35),rgba(255,255,215,0) 34deg);animation:sway 7s ease-in-out infinite alternate;transform-origin:50% 0}
 .vtag{position:absolute;top:3cqw;left:4cqw;font:700 max(10px,1.5cqw) "Archivo Narrow",sans-serif;letter-spacing:.16em;padding:.6cqw 1.6cqw;border-radius:999px;color:#2a1c00;background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:0 0 1.6cqw rgba(255,214,10,.55)}
-.vmain{position:absolute;inset:7cqw 4cqw 14cqw;display:grid;grid-template-columns:1.15fr .85fr;gap:3cqw;align-items:center}
-.vtx h3{font:700 6.4cqw/.95 "Archivo Narrow","Arial Narrow",sans-serif;text-transform:uppercase;animation:vin .7s cubic-bezier(.2,.8,.2,1) both;text-shadow:0 0 3cqw color-mix(in srgb,var(--tint) 60%,transparent)}
-.vtx p{margin-top:1.6cqw;font-size:max(12px,2.2cqw);color:#d8ead9;animation:vin .7s .12s cubic-bezier(.2,.8,.2,1) both}
-@keyframes vin{from{opacity:0;transform:translateY(2.4cqw)}to{opacity:1;transform:none}}
-.vcw{justify-self:center;height:100%;aspect-ratio:3/3.6;opacity:0;transform:scale(.8) translateY(3cqw);transition:opacity .5s,transform .6s cubic-bezier(.2,.9,.3,1.2);filter:drop-shadow(0 0 2.6cqw var(--tint)) drop-shadow(0 0 .8cqw var(--tint))}
-.vcw.show{opacity:1;transform:none}
-.vcard{width:100%;height:100%;display:grid;align-content:center;justify-items:center;gap:.4cqw;clip-path:polygon(0 7%,10% 3.5%,50% 0,90% 3.5%,100% 7%,100% 86%,50% 100%,0 86%);background:linear-gradient(160deg,rgba(255,255,255,.55),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 100%,#fff),var(--tint) 55%,color-mix(in srgb,var(--tint) 60%,#000));color:#fff;text-shadow:0 .2cqw .8cqw rgba(0,0,0,.35);padding-bottom:3cqw}
-.vrn{font:700 max(12px,2.4cqw) "Archivo Narrow",sans-serif;letter-spacing:.16em;text-transform:uppercase}
-.vcard b{font:700 11cqw/.9 "Archivo Narrow",sans-serif}
-.vgl{font-size:max(10px,1.6cqw);letter-spacing:.12em;text-transform:uppercase;opacity:.9}
+.vmain{position:absolute;inset:7cqw 4cqw 14cqw;display:grid;grid-template-columns:1.1fr .9fr;grid-template-rows:100%;gap:3cqw;align-items:center}
+.vtx h3{font:700 6.4cqw/.95 "Archivo Narrow","Arial Narrow",sans-serif;text-transform:uppercase;text-shadow:0 0 3cqw color-mix(in srgb,var(--tint) 60%,transparent)}
+.vtx p{margin-top:1.6cqw;font-size:max(12px,2.2cqw);color:#d8ead9}
+.vcw{position:relative;justify-self:center;height:100%;aspect-ratio:3/3.9;opacity:0;filter:drop-shadow(0 0 2.4cqw var(--tint)) drop-shadow(0 0 .7cqw var(--tint))}
+.vring{position:absolute;left:50%;top:50%;width:90%;aspect-ratio:1;margin:-45% 0 0 -45%;border-radius:50%;border:.5cqw solid #fff;opacity:0;pointer-events:none}
+.vc2{position:absolute;inset:0;--cp:polygon(0 7%,10% 3.5%,50% 0,90% 3.5%,100% 7%,100% 86%,50% 100%,0 86%)}
+.vsh{position:absolute;inset:0;overflow:hidden;clip-path:var(--cp)}
+.fr{position:absolute;inset:0;opacity:0}
+.f0{opacity:1;background:linear-gradient(135deg,#ffdcb4 0,#e29c5c 28%,#a15a22 52%,#f2b57c 76%,#7a3f12 100%)}
+.f1{background:linear-gradient(135deg,#fff 0,#dde2e9 28%,#8f98a3 52%,#f1f4f8 76%,#7a838e 100%)}
+.f2{background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%)}
+.f3{background:linear-gradient(135deg,#ff9aa4 0,#e0313f 28%,#8c0f1c 52%,#f0505c 76%,#5c0710 100%)}
+.vin2{position:absolute;inset:.9cqw;clip-path:var(--cp);background:linear-gradient(160deg,rgba(255,255,255,.28),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 72%,#000),color-mix(in srgb,var(--tint) 48%,#000));color:#fff1c4;padding:3.4cqw 2cqw 6.4cqw;display:flex;flex-direction:column;justify-content:center;gap:1.4cqw}
+.vtop2{display:flex;justify-content:space-between;align-items:center;gap:1cqw}
+.vl2{display:grid;gap:.3cqw;justify-items:start}
+.vl2 b{font:700 7.6cqw/.9 "Archivo Narrow",sans-serif}
+.vk{font-size:max(8px,.95cqw);letter-spacing:.1em;opacity:.8}
+.vln{width:3cqw;height:.15cqw;background:currentColor;opacity:.5}
+.vrn{font:700 2.4cqw/1 "Archivo Narrow",sans-serif;text-transform:uppercase}
+.vcl{font-size:max(8px,1cqw);padding:.2cqw .8cqw;border-radius:999px;border:.1cqw solid rgba(255,241,196,.55);background:rgba(255,255,255,.14);box-shadow:inset .25cqw 0 0 var(--tint)}
+.vpor{flex:none;width:9.6cqw;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font:700 3.4cqw "Archivo Narrow",sans-serif;color:#fff;text-shadow:0 .1cqw .5cqw rgba(0,0,0,.4);background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.65),transparent 55%),color-mix(in srgb,var(--tint) 88%,#fff);box-shadow:inset 0 -.8cqw 1.4cqw rgba(0,0,0,.3),0 0 0 .35cqw rgba(255,255,255,.55)}
+.vnm{text-align:center;font:700 2.7cqw "Archivo Narrow",sans-serif;border-top:.15cqw solid rgba(255,241,196,.5);padding-top:1cqw}
+.vmt{height:1.3cqw;border-radius:999px;background:rgba(0,0,0,.4);border:.1cqw solid rgba(255,226,120,.55);position:relative;box-shadow:0 0 1.2cqw rgba(255,190,0,.25)}
+.vmt i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe46b,#ffc400 55%,#ff9f0a);box-shadow:0 0 .6cqw #ffd60a,0 0 1.6cqw rgba(255,200,0,.85),0 0 3cqw rgba(255,180,0,.6)}
+.vmt i::before{content:"";position:absolute;right:-.3cqw;top:50%;width:1.2cqw;height:1.2cqw;margin-top:-.6cqw;border-radius:50%;background:#fff8cf;box-shadow:0 0 .9cqw .3cqw #ffe566,0 0 2cqw .7cqw rgba(255,190,0,.8)}
+.vsm{text-align:center;font-size:max(9px,1.15cqw);opacity:.85}
+.vsheen{position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.5) 50%,transparent 62%)}
 .vlad{position:absolute;left:4cqw;right:4cqw;bottom:4.2cqw;display:grid;grid-template-columns:repeat(4,1fr);gap:1.4cqw}
-.lp{display:grid;justify-items:center;padding:.9cqw .6cqw;border-radius:1.8cqw;border:.15cqw solid rgba(255,255,255,.28);background:rgba(255,255,255,.06);opacity:.5;transition:all .5s}
+.lp{--on:0;display:grid;justify-items:center;padding:.9cqw .6cqw;border-radius:1.8cqw;border:.15cqw solid rgba(255,255,255,calc(.28 + var(--on)*.42));background:linear-gradient(180deg,rgba(255,255,255,calc(var(--on)*.4)),rgba(255,255,255,0) 55%),color-mix(in srgb,var(--c) calc(var(--on)*100%),rgba(255,255,255,.06));opacity:calc(.5 + var(--on)*.5);box-shadow:0 0 calc(var(--on)*1.8cqw) var(--c)}
 .lp b{font:700 max(11px,2cqw) "Archivo Narrow",sans-serif}
 .lp span{font-size:max(9px,1.3cqw);opacity:.85}
-.lp.on{opacity:1;color:#fff;border-color:rgba(255,255,255,.7);background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,0) 55%),var(--c);box-shadow:inset 0 .15cqw .3cqw rgba(255,255,255,.7),0 0 1.8cqw var(--c);text-shadow:0 .1cqw .4cqw rgba(0,0,0,.4)}
 .vbar{position:absolute;left:0;right:0;bottom:0;height:max(7px,1.2cqw);cursor:pointer;background:rgba(255,255,255,.15)}
 .vbar i{display:block;height:100%;width:0;background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe46b,#ffc400,#ff9f0a);box-shadow:0 0 1.4cqw #ffd60a}
 .vctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px}
 .vctl button{font:600 .95rem Archivo,sans-serif;color:#fff;cursor:pointer;padding:9px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.6);background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(8,28,16,.85));box-shadow:inset 0 1px 1px rgba(255,255,255,.7)}
 #vtime{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums}
-@media (max-width:640px){.vmain{grid-template-columns:1.2fr .8fr}.vtx h3{font-size:6cqw}}
-@media (prefers-reduced-motion:reduce){.vbg::before,.vtx h3,.vtx p{animation:none}.vcw{transition:none}}
+@media (max-width:640px){.vtx h3{font-size:6cqw}}
+@media (prefers-reduced-motion:reduce){.vbg::before{animation:none}}
+
+#rows .pc{transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s,filter .35s,box-shadow .35s}
+#rows.fcs .pc{opacity:.6;filter:saturate(.75);transform:scale(.97)}
+#rows.fcs .pc.fc-on{opacity:1;filter:none;transform:scale(1.035);z-index:2;box-shadow:inset 0 1px 2px rgba(255,255,255,.9),inset 0 -8px 16px rgba(0,0,0,.2),0 20px 40px rgba(0,0,0,.32),0 0 44px color-mix(in srgb,var(--tint) 75%,transparent)}
+@media (prefers-reduced-motion:reduce){#rows .pc{transition:none}#rows.fcs .pc.fc-on{transform:none}}
+
+.adm{margin-top:12px;padding:10px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.45);background:rgba(0,0,0,.28);color:#fff1c4}
+.adm[hidden]{display:none}
+.adm h3{font:700 .95rem "Archivo Narrow",sans-serif;margin:0 0 8px;text-align:center}
+.ar{display:flex;gap:6px;align-items:center;justify-content:center}
+.ar input{width:80px;text-align:center;font:inherit;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,241,196,.5);border-radius:10px;padding:6px}
+.ar button,.pq button{font:600 .85rem Archivo,sans-serif;color:#2a1c00;cursor:pointer;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.7);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
+.adm small{display:block;text-align:center;margin-top:6px;min-height:1em;opacity:.85}
+.pq{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.22)}
+.pq span{min-width:0;overflow-wrap:anywhere}
+.pq div{display:flex;gap:6px;flex:none}
+.pq .no{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.5)}
 </style>
 </head>
 <body>
@@ -348,13 +381,19 @@ dialog{margin:auto}
 <div class="vbg"></div>
 <span class="vtag">UITLEG · RANGEN</span>
 <div class="vmain">
-<div class="vtx"><h3 id="vt"></h3><p id="vs"></p></div>
-<div class="vcw" id="vcw"><div class="vcard"><span class="vrn" id="vrn"></span><b id="vg">0</b><span class="vgl">doelpunten</span></div></div>
+<div class="vtx" id="vtx"><h3 id="vt"></h3><p id="vs"></p></div>
+<div class="vcw" id="vcw"><div class="vring" id="vring"></div>
+<div class="vc2"><div class="vsh"><i class="fr f0"></i><i class="fr f1" id="f1"></i><i class="fr f2" id="f2"></i><i class="fr f3" id="f3"></i>
+<div class="vin2">
+<div class="vtop2"><div class="vl2"><b id="vg">0</b><span class="vk">DOELPUNTEN</span><span class="vln"></span><span class="vk">RANG</span><span class="vrn" id="vrn">BRONS</span><span class="vcl">Jouw club</span></div><div class="vpor">JN</div></div>
+<div class="vnm">JOUW NAAM</div>
+<div class="vmt"><i id="vmf"></i></div><div class="vsm" id="vsm"></div>
+</div><span class="vsheen" id="vsheen"></span></div></div></div>
 </div>
 <div class="vlad" id="vlad"></div>
 <div class="vbar" id="vbar"><i id="vp"></i></div>
 </div>
-<div class="vctl"><button id="vplay" type="button">Pauze</button><button id="vrep" type="button">Opnieuw</button><button id="vfs" type="button">Volledig scherm</button><span id="vtime">0:00 / 0:30</span></div>
+<div class="vctl"><button id="vplay" type="button">Pauze</button><button id="vrep" type="button">Opnieuw</button><button id="vfs" type="button">Volledig scherm</button><span id="vtime">0:00 / 0:10</span></div>
 </section>
 
 <dialog id="dlg" class="fc" aria-labelledby="dn">
@@ -390,47 +429,36 @@ dialog{margin:auto}
 <stop offset="100%" stop-color="#ffd60a" stop-opacity="0"/>
 </radialGradient>
 </defs>
-
-<!-- Gouden buitenste omlijning langs het schild -->
 <path d="M 0 39 L 40 19.6 L 200 0 L 360 19.6 L 400 39 L 400 481.6 L 200 560 L 0 481.6 Z" fill="none" stroke="url(#g-rim)" stroke-width="5" stroke-linejoin="miter"/>
 <path d="M 4 42 L 42 23.5 L 200 4.5 L 358 23.5 L 396 42 L 396 478.5 L 200 555 L 4 478.5 Z" fill="none" stroke="#fff7cc" stroke-width="1.2" opacity="0.85"/>
-
-<!-- LINKERBOVENHOEK 3D KRISTALLEN -->
 <g>
 <polygon points="-14,32 10,6 22,38 4,62" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
 <polygon points="-14,32 10,6 5,36" fill="url(#g-light)"/>
 <polygon points="10,6 22,38 5,36" fill="url(#g-mid)"/>
 <polygon points="-14,32 5,36 4,62" fill="url(#g-dark)"/>
 <polygon points="5,36 22,38 4,62" fill="url(#g-mid)"/>
-<!-- Overlappend kristal over hoek -->
 <polygon points="2,24 38,8 48,34 18,52" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.8"/>
 <polygon points="2,24 38,8 26,30" fill="#ffffff" opacity="0.9"/>
 <polygon points="38,8 48,34 26,30" fill="url(#g-mid)"/>
 <polygon points="2,24 26,30 18,52" fill="url(#g-mid)"/>
 <polygon points="26,30 48,34 18,52" fill="url(#g-dark)"/>
 </g>
-
-<!-- BOVENRAND KRISTALCLUSTER -->
 <g>
 <polygon points="55,14 82,2 94,22 66,28" fill="url(#g-light)" stroke="#fff3b0" stroke-width="0.6"/>
 <polygon points="55,14 82,2 75,16" fill="#ffffff" opacity="0.85"/>
 <polygon points="82,2 94,22 75,16" fill="url(#g-dark)"/>
 <polygon points="118,6 146,-6 156,14 128,18" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.6"/>
 <polygon points="118,6 146,-6 138,8" fill="url(#g-light)"/>
-<!-- Kroon-top midden -->
 <polygon points="184,2 200,-12 216,2 200,16" fill="url(#g-light)" stroke="#fff8d6" stroke-width="0.8"/>
 <polygon points="184,2 200,-12 200,3" fill="#ffffff"/>
 <polygon points="200,-12 216,2 200,3" fill="url(#g-mid)"/>
 <polygon points="184,2 200,3 200,16" fill="url(#g-mid)"/>
 <polygon points="200,3 216,2 200,16" fill="url(#g-dark)"/>
-<!-- Rechts bovenrand -->
 <polygon points="244,14 254,-6 282,6 272,18" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.6"/>
 <polygon points="254,-6 282,6 262,8" fill="url(#g-light)"/>
 <polygon points="306,22 318,2 345,14 334,28" fill="url(#g-light)" stroke="#fff3b0" stroke-width="0.6"/>
 <polygon points="318,2 345,14 325,16" fill="#ffffff" opacity="0.85"/>
 </g>
-
-<!-- RECHTERBOVENHOEK 3D KRISTALLEN -->
 <g>
 <polygon points="390,6 414,32 396,62 378,38" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
 <polygon points="390,6 414,32 395,36" fill="url(#g-light)"/>
@@ -441,121 +469,93 @@ dialog{margin:auto}
 <polygon points="362,8 374,30 352,34" fill="url(#g-mid)"/>
 <polygon points="374,30 398,24 382,52" fill="url(#g-dark)"/>
 </g>
-
-<!-- LINKERRAND KRISTALLEN (OVERLAPPEND OP DE KAART) -->
 <g>
 <polygon points="-12,86 6,64 16,102 -4,124" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
 <polygon points="-12,86 6,64 3,95" fill="url(#g-light)"/>
 <polygon points="3,95 16,102 -4,124" fill="url(#g-dark)"/>
-
 <polygon points="-6,120 15,104 20,148 -2,164" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.7"/>
 <polygon points="-6,120 15,104 8,134" fill="#ffffff" opacity="0.85"/>
 <polygon points="15,104 20,148 8,134" fill="url(#g-mid)"/>
 <polygon points="-6,120 8,134 -2,164" fill="url(#g-dark)"/>
-
 <polygon points="-14,168 8,150 18,196 -6,216" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
 <polygon points="-14,168 8,150 4,182" fill="url(#g-light)"/>
 <polygon points="4,182 18,196 -6,216" fill="url(#g-dark)"/>
-
 <polygon points="-8,214 14,194 22,248 -4,268" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.8"/>
 <polygon points="-8,214 14,194 9,230" fill="#ffffff" opacity="0.9"/>
 <polygon points="14,194 22,248 9,230" fill="url(#g-mid)"/>
 <polygon points="-8,214 9,230 -4,268" fill="url(#g-dark)"/>
-
 <polygon points="-15,270 7,252 17,304 -7,326" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
 <polygon points="-15,270 7,252 3,288" fill="url(#g-light)"/>
 <polygon points="3,288 17,304 -7,326" fill="url(#g-dark)"/>
-
 <polygon points="-10,322 18,298 28,366 -6,392" fill="url(#g-light)" stroke="#fff8d6" stroke-width="0.8"/>
 <polygon points="-10,322 18,298 12,344" fill="#ffffff" opacity="0.9"/>
 <polygon points="18,298 28,366 12,344" fill="url(#g-mid)"/>
 <polygon points="-10,322 12,344 -6,392" fill="url(#g-dark)"/>
 <polygon points="12,344 28,366 -6,392" fill="url(#g-mid)"/>
-
 <polygon points="-16,388 10,368 22,428 -8,448" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
 <polygon points="-16,388 10,368 5,408" fill="url(#g-light)"/>
 <polygon points="5,408 22,428 -8,448" fill="url(#g-dark)"/>
 </g>
-
-<!-- RECHTERRAND KRISTALLEN (OVERLAPPEND OP DE KAART) -->
 <g>
 <polygon points="394,64 412,86 404,124 384,102" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
 <polygon points="394,64 412,86 397,95" fill="url(#g-light)"/>
 <polygon points="397,95 404,124 384,102" fill="url(#g-dark)"/>
-
 <polygon points="385,104 406,120 402,164 380,148" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.7"/>
 <polygon points="385,104 406,120 392,134" fill="#ffffff" opacity="0.85"/>
 <polygon points="385,104 392,134 380,148" fill="url(#g-mid)"/>
 <polygon points="392,134 406,120 402,164" fill="url(#g-dark)"/>
-
 <polygon points="392,150 414,168 406,216 382,196" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
 <polygon points="392,150 414,168 396,182" fill="url(#g-light)"/>
 <polygon points="396,182 406,216 382,196" fill="url(#g-dark)"/>
-
 <polygon points="386,194 408,214 404,268 378,248" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.8"/>
 <polygon points="386,194 408,214 391,230" fill="#ffffff" opacity="0.9"/>
 <polygon points="386,194 391,230 378,248" fill="url(#g-mid)"/>
 <polygon points="391,230 408,214 404,268" fill="url(#g-dark)"/>
-
 <polygon points="393,252 415,270 407,326 383,304" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
 <polygon points="393,252 415,270 397,288" fill="url(#g-light)"/>
 <polygon points="397,288 407,326 383,304" fill="url(#g-dark)"/>
-
 <polygon points="382,298 410,322 406,392 372,366" fill="url(#g-light)" stroke="#fff8d6" stroke-width="0.8"/>
 <polygon points="382,298 410,322 388,344" fill="#ffffff" opacity="0.9"/>
 <polygon points="382,298 388,344 372,366" fill="url(#g-mid)"/>
 <polygon points="388,344 410,322 406,392" fill="url(#g-dark)"/>
-
 <polygon points="390,368 416,388 408,448 378,428" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
 <polygon points="390,368 416,388 395,408" fill="url(#g-light)"/>
 <polygon points="395,408 408,448 378,428" fill="url(#g-dark)"/>
 </g>
-
-<!-- ONDERRAND & HOEKCLUSTERS (ZWARE 3D DIAMANTEN) -->
 <g>
 <polygon points="-14,442 18,424 38,476 -2,494" fill="url(#g-light)" stroke="#fff8d6" stroke-width="0.9"/>
 <polygon points="-14,442 18,424 12,458" fill="#ffffff" opacity="0.95"/>
 <polygon points="18,424 38,476 12,458" fill="url(#g-mid)"/>
 <polygon points="-14,442 12,458 -2,494" fill="url(#g-dark)"/>
 <polygon points="12,458 38,476 -2,494" fill="url(#g-mid)"/>
-
 <polygon points="14,468 58,464 74,504 28,512" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.8"/>
 <polygon points="14,468 58,464 44,486" fill="url(#g-light)"/>
 <polygon points="44,486 74,504 28,512" fill="url(#g-dark)"/>
-
 <polygon points="62,488 106,482 120,518 76,528" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.8"/>
 <polygon points="62,488 106,482 90,504" fill="#ffffff" opacity="0.85"/>
 <polygon points="90,504 120,518 76,528" fill="url(#g-dark)"/>
-
 <polygon points="112,508 156,506 168,540 124,548" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
 <polygon points="112,508 156,506 140,526" fill="url(#g-light)"/>
 <polygon points="140,526 168,540 124,548" fill="url(#g-dark)"/>
-
 <polygon points="166,534 200,522 234,534 200,570" fill="url(#g-light)" stroke="#ffffff" stroke-width="1"/>
 <polygon points="166,534 200,522 200,544" fill="#ffffff"/>
 <polygon points="200,522 234,534 200,544" fill="url(#g-mid)"/>
 <polygon points="166,534 200,544 200,570" fill="url(#g-mid)"/>
 <polygon points="200,544 234,534 200,570" fill="url(#g-dark)"/>
-
 <polygon points="244,506 288,508 276,548 232,540" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.7"/>
 <polygon points="244,506 288,508 260,526" fill="url(#g-light)"/>
 <polygon points="260,526 276,548 232,540" fill="url(#g-dark)"/>
-
 <polygon points="294,482 338,488 324,528 280,518" fill="url(#g-light)" stroke="#fff7cc" stroke-width="0.8"/>
 <polygon points="294,482 338,488 310,504" fill="#ffffff" opacity="0.85"/>
 <polygon points="310,504 324,528 280,518" fill="url(#g-dark)"/>
-
 <polygon points="342,464 386,468 372,512 326,504" fill="url(#g-mid)" stroke="#fff3b0" stroke-width="0.8"/>
 <polygon points="342,464 386,468 356,486" fill="url(#g-light)"/>
 <polygon points="356,486 372,512 326,504" fill="url(#g-dark)"/>
-
 <polygon points="382,424 414,442 402,494 362,476" fill="url(#g-light)" stroke="#fff8d6" stroke-width="0.9"/>
 <polygon points="382,424 414,442 388,458" fill="#ffffff" opacity="0.95"/>
 <polygon points="382,424 388,458 362,476" fill="url(#g-mid)"/>
 <polygon points="388,458 414,442 402,494" fill="url(#g-dark)"/>
 </g>
-
-<!-- LICHTSCHITTERINGEN OP DE FACETTEN -->
 <g class="glint" style="transform-origin:12px 344px">
 <circle cx="12" cy="344" r="18" fill="url(#g-spark)"/>
 <path d="M 12 326 L 14 342 L 30 344 L 14 346 L 12 362 L 10 346 L -6 344 L 10 342 Z" fill="#ffffff"/>
@@ -579,6 +579,7 @@ dialog{margin:auto}
 <div class="dh"><div><h2 id="dn"></h2><p id="dm"></p></div></div>
 <div class="st"><span class="meter"><i id="sm"></i></span><small id="sr"></small></div>
 <div id="dd"></div>
+<div class="adm" id="adm" hidden></div>
 </div></div>
 </dialog>
 
@@ -626,7 +627,7 @@ const firebaseConfig={
 /* ================================================================================================ */
 let ok=firebaseConfig.apiKey!=="PLAK_HIER";
 let fbMsg=ok?"Even geduld, Firebase wordt geladen.":"Firebase is nog niet ingesteld.";
-let initializeApp,getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,getFirestore,collection,doc,setDoc,onSnapshot;
+let initializeApp,getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,getFirestore,collection,doc,setDoc,onSnapshot,query,where,updateDoc;
 var BASE=[
 {n:"Cristiano Ronaldo",c:"Portugal",g:950,m:1280,i:143,y:"2002-heden",a:true,t:"Sporting, Man. United, Real Madrid, Juventus, Al-Nassr",h:"5x Ballon d’Or, 5x Champions League"},
 {n:"Lionel Messi",c:"Argentinië",g:890,m:1130,i:115,y:"2004-heden",a:true,t:"Barcelona, PSG, Inter Miami",h:"8x Ballon d’Or, WK-winnaar 2022"},
@@ -650,7 +651,7 @@ function rebuild(){
  Object.keys(us).forEach(function(em){var u=us[em],n=u.first+" "+u.last;
   if(CL[n])n+=" (#"+u.num+")";
   CL[n]=[u.club,clubColor(u.club),true];
-  extra.push({n:n,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar"})});
+  extra.push({n:n,id:u.id,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar"})});
  P=BASE.concat(extra);
  P.sort(function(a,b){return b.g-a.g});
  P.forEach(function(p){CL[p.n][1]=tierColor(p.g)});
@@ -665,6 +666,17 @@ var f="all",q="",s="goals",body=document.getElementById("rows");
 function num(x){return x.toLocaleString("nl-NL")}
 function val(p){return p.g}
 function ini(n){return n.replace(/\s*\(.*\)$/,"").split(" ").map(function(w){return w[0]}).join("").slice(0,2).toUpperCase()}
+var FT=false;
+function focusTick(){
+ FT=false;var cards=[].slice.call(document.querySelectorAll("#rows .pc"));
+ document.getElementById("rows").classList.toggle("fcs",cards.length>0);
+ if(!cards.length)return;
+ var mid=innerHeight*.5,bd=1e9,bt=0;
+ cards.forEach(function(c){var r=c.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-mid);c._t=Math.round(r.top);c._d=d;if(d<bd){bd=d;bt=c._t}});
+ cards.forEach(function(c){c.classList.toggle("fc-on",bd<innerHeight*.6&&Math.abs(c._t-bt)<6)})
+}
+addEventListener("scroll",function(){if(!FT){FT=true;requestAnimationFrame(focusTick)}},{passive:true});
+addEventListener("resize",focusTick);
 function view(){
  var r=P.filter(function(p){
   return (p.n+" "+p.t+" "+CL[p.n][0]).toLowerCase().indexOf(q)>-1});
@@ -696,6 +708,7 @@ function view(){
  });
  requestAnimationFrame(function(){document.querySelectorAll(".meter i").forEach(function(e){e.style.width=e.dataset.w+"%"});count()});
  document.getElementById("empty").hidden=r.length>0;
+ focusTick();
 }
 function spin(e,n){
  if(matchMedia("(prefers-reduced-motion:reduce)").matches){e.textContent=num(n);return}
@@ -710,10 +723,7 @@ function open(p){
  $("ini").textContent=p.n.replace(/\s*\(.*\)$/,"").split(" ").map(function(w){return w[0]}).join("").slice(0,2).toUpperCase();
  d.classList.toggle("top",false);
  d.dataset.tier="r";d.dataset.rank=["bronze","silver","gold","red"][tierOf(p.g)];
- 
- // Controleer of de speler op de 1e plaats staat (index 0)
  d.classList.toggle("is-rank-1", rank === 0);
-
  $("sr").textContent="Rang "+TIERS[tierOf(p.g)].n+" · "+(rank?Math.round(p.g/best*100)+"% van het aantal van de nummer 1":"De nummer 1 van deze lijst");
  $("sm").style.width="0";
  var dd=$("dd");dd.innerHTML="";
@@ -722,6 +732,17 @@ function open(p){
   var w=document.createElement("div");w.className="chips";
   x[1].split(", ").forEach(function(t){var c=document.createElement("span");c.textContent=t;w.appendChild(c)});
   dd.appendChild(w)});
+ var ad=$("adm");ad.innerHTML="";ad.hidden=!(isAdmin()&&p.id);
+ if(!ad.hidden){
+  var ah=document.createElement("h3");ah.textContent="Beheer · goals aanpassen";ad.appendChild(ah);
+  var row=document.createElement("div");row.className="ar";
+  var inp=document.createElement("input");inp.type="number";inp.min="0";inp.value=p.g;inp.setAttribute("aria-label","Aantal goals");
+  var am=document.createElement("small");
+  var mk=function(t,fn){var b=document.createElement("button");b.type="button";b.textContent=t;b.onclick=fn;return b};
+  var save=function(v){v=Math.max(0,Math.round(+v)||0);inp.value=v;am.textContent="Opslaan…";
+   updateDoc(doc(db,"players",p.id),{goals:v}).then(function(){am.textContent="Opgeslagen";$("s1").textContent=num(v)}).catch(function(x){am.textContent=msg(x)})};
+  row.appendChild(mk("−1",function(){save(+inp.value-1)}));row.appendChild(inp);row.appendChild(mk("+1",function(){save(+inp.value+1)}));row.appendChild(mk("Opslaan",function(){save(inp.value)}));
+  ad.appendChild(row);ad.appendChild(am)}
  d.showModal();
  requestAnimationFrame(function(){requestAnimationFrame(function(){$("sm").style.width=p.g/best*100+"%"})});
  spin($("s1"),p.g);
@@ -730,10 +751,11 @@ document.getElementById("q").oninput=function(e){q=e.target.value.toLowerCase().
 document.getElementById("close").onclick=function(){document.getElementById("dlg").close()};
 document.getElementById("dlg").onclick=function(e){if(e.target===this)this.close()};
 var $=function(i){return document.getElementById(i)};
-var PL=[],CU=null,wantProf=false;
+var PL=[],ALL=[],MYDOC=null,CU=null,wantProf=false;
 var app=null,auth=null,db=null;
 function getUsers(){var o={};PL.forEach(function(u){o[u.id]=u});return o}
-function me(){if(!CU)return null;var u=PL.filter(function(x){return x.id===CU.uid})[0];return u?Object.assign({},u,{email:CU.email}):null}
+function me(){if(!CU||!MYDOC)return null;return Object.assign({},MYDOC,{email:CU.email})}
+function isAdmin(){var u=me();return !!(u&&u.admin===true)}
 function paint(){var u=me();$("acc").textContent=CU?(u?u.first:"Profiel"):"Inloggen"}
 function msg(e){var c=(e&&e.code)||"";
  if(c==="auth/email-already-in-use")return "Er bestaat al een account met dit e-mailadres.";
@@ -741,7 +763,7 @@ function msg(e){var c=(e&&e.code)||"";
  if(c==="auth/invalid-email")return "Dit e-mailadres lijkt niet te kloppen.";
  if(c==="auth/too-many-requests")return "Te veel pogingen. Probeer het later opnieuw.";
  if(c==="auth/network-request-failed")return "Geen verbinding. Probeer het opnieuw.";
- if(c==="permission-denied")return "Opslaan is niet toegestaan. Controleer de Firestore-regels.";
+ if(c==="permission-denied"||c==="firestore/permission-denied")return "Opslaan is niet toegestaan. Controleer de Firestore-regels.";
  return "Er ging iets mis. Probeer het opnieuw."}
 function tab(t){var l=t==="l";$("fl").hidden=!l;$("fr").hidden=l;$("tbl").setAttribute("aria-pressed",l);$("tbr").setAttribute("aria-pressed",!l);$("at").textContent=l?"Inloggen":"Account maken"}
 function openAuth(t){tab(t);$("el").textContent=auth?"":fbMsg;$("er").textContent=auth?"":fbMsg;$("auth").showModal()}
@@ -750,8 +772,22 @@ function showProf(){
  var add=function(t,c,x){var n=document.createElement(t);if(c)n.className=c;n.textContent=x;pf.appendChild(n);return n};
  add("p","pk","Mijn profiel");add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
  [["Doelpunten",u.goals||0],["Club",u.club],["Leeftijd",u.age+" jaar"],["E-mail",u.email]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
+ if(!u.approved){add("p","pk",u.rejected?"Je aanvraag is afgewezen.":"Je account wacht op goedkeuring van een beheerder. Daarna sta je in de lijst met topscorers.").style.marginTop="10px"}
+ if(u.admin===true){
+  var wait=ALL.filter(function(x){return !x.approved&&!x.rejected});
+  add("p","pk","Aanvragen om goed te keuren ("+wait.length+")").style.marginTop="14px";
+  wait.forEach(function(x){
+   var r=document.createElement("div");r.className="pq";
+   var t=document.createElement("span");t.textContent=x.first+" "+x.last+" · "+x.club+" · #"+x.num;
+   var bx=document.createElement("div");
+   var set=function(data){updateDoc(doc(db,"players",x.id),data).catch(function(e){alert(msg(e))})};
+   var yes=document.createElement("button");yes.type="button";yes.textContent="Goedkeuren";yes.onclick=function(){set({approved:true})};
+   var no=document.createElement("button");no.type="button";no.className="no";no.textContent="Weigeren";no.onclick=function(){set({rejected:true})};
+   bx.appendChild(yes);bx.appendChild(no);r.appendChild(t);r.appendChild(bx);pf.appendChild(r)});
+  if(!wait.length)add("p","pk","Geen openstaande aanvragen.")
+ }
  add("button","go","Uitloggen").onclick=function(){signOut(auth).then(function(){$("prof").close()})};
- add("p","pk","Versie 3 · goals alleen aanpasbaar via Firebase").style.marginTop="14px";
+ add("p","pk",u.admin===true?"Je bent beheerder: je kunt goals aanpassen in de kaart van een speler.":"Goals worden alleen door een beheerder aangepast.").style.marginTop="14px";
  $("prof").style.setProperty("--tint",tierColor(u.goals||0));$("prof").dataset.rank=["bronze","silver","gold","red"][tierOf(u.goals||0)];$("prof").dataset.tier="r";if(!$("prof").open)$("prof").showModal();
 }
 $("acc").onclick=function(){CU?(me()?showProf():(wantProf=true)):openAuth("l")};
@@ -773,46 +809,55 @@ $("fr").onsubmit=function(e){e.preventDefault();
  if(pw.length<8){err.textContent="Wachtwoord moet minstens 8 tekens hebben.";return}
  wantProf=true;
  createUserWithEmailAndPassword(auth,em,pw).then(function(c){
-  return setDoc(doc(db,"players",c.user.uid),{first:v("rn"),last:v("ra"),num:num,club:v("rc"),age:age,goals:0})
+  return setDoc(doc(db,"players",c.user.uid),{first:v("rn"),last:v("ra"),num:num,club:v("rc"),age:age,goals:0,approved:false})
  }).then(function(){$("fr").reset();err.textContent="";$("auth").close()}).catch(function(x){wantProf=false;err.textContent=msg(x)})
 };
 document.querySelectorAll("[data-close]").forEach(function(b){b.onclick=function(){b.closest("dialog").close()}});
 ["auth","prof"].forEach(function(i){$(i).onclick=function(e){if(e.target===this)this.close()}});
-var SC=[
-{d:3.5,t:"Hoe stijg je in rang?",s:"Jouw kaart krijgt de kleur van je rang",c:-1},
-{d:4.5,t:"Alles begint bij doelpunten",s:"Elk doelpunt dat je scoort telt mee",c:0,a:0,b:0},
-{d:4.5,t:"Brons",s:"0 tot 10 doelpunten",c:0,a:0,b:9},
-{d:4.5,t:"Zilver",s:"10 tot 20 doelpunten",c:1,a:10,b:19},
-{d:4.5,t:"Goud",s:"20 tot 30 doelpunten",c:2,a:20,b:29},
-{d:5,t:"Rood",s:"30 doelpunten en meer",c:3,a:30,b:39},
-{d:4,t:"Scoor meer, stijg hoger",s:"Je rang past zich automatisch aan",c:-1,all:true}
-];
-var VT=0,VPLAY=false,VLAST=0,VI=-1,VTOT=SC.reduce(function(a,x){return a+x.d},0),VSTART=false;
-var vst=$("stage"),vlad=$("vlad");
-TIERS.forEach(function(t,i){var d=document.createElement("div"),a=document.createElement("b"),b=document.createElement("span");d.className="lp";d.style.setProperty("--c",t.c);a.textContent=t.n;b.textContent=t.r+(i<3?" goals":" goals");d.appendChild(a);d.appendChild(b);vlad.appendChild(d)});
+var VTOT=10,C0=1.4,C1=8,GMAX=39,TH=[0,10,20,30],VT=0,VPLAY=false,VLAST=0,VSTART=false,VPH=-1,vst=$("stage"),vlad=$("vlad");
+function vg(t){if(t<=C0)return 0;var x=Math.min((t-C0)/(C1-C0),1);return GMAX*(1-Math.cos(Math.PI*x))/2}
+var ST=[C0,C1,C1,C1];
+for(var vk=1;vk<4;vk++){for(var vtt=C0;vtt<=C1;vtt+=.002){if(Math.round(vg(vtt))>=TH[vk]){ST[vk]=vtt;break}}}
+var PH=[{s:0,t:"Hoe stijg je in rang?",u:"Je kaart krijgt de kleur van je rang"}];
+TIERS.forEach(function(t,i){PH.push({s:ST[i],t:t.n,u:i<3?t.r+" doelpunten":"30 doelpunten en meer"})});
+PH.push({s:8.3,t:"Scoor meer, stijg hoger",u:"Je rang past zich automatisch aan"});
+TIERS.forEach(function(t,i){var d=document.createElement("div"),a=document.createElement("b"),b=document.createElement("span");d.className="lp";d.style.setProperty("--c",t.c);a.textContent=t.n;b.textContent=t.r+" goals";d.appendChild(a);d.appendChild(b);vlad.appendChild(d)});
+function ss(a,b,x){x=Math.max(0,Math.min(1,(x-a)/(b-a)));return x*x*(3-2*x)}
+function hx(c){return [1,3,5].map(function(i){return parseInt(c.substr(i,2),16)})}
+function mixc(a,b,p){var A=hx(a),B=hx(b);return "rgb("+A.map(function(v,i){return Math.round(v+(B[i]-v)*p)}).join(",")+")"}
 function vfmt(x){x=Math.floor(x);return Math.floor(x/60)+":"+("0"+x%60).slice(-2)}
 function vrender(){
- var acc=0,i=0;for(;i<SC.length-1;i++){if(VT<acc+SC[i].d)break;acc+=SC[i].d}
- var sc=SC[i],lt=VT-acc;
- if(i!==VI){VI=i;["vt","vs"].forEach(function(id){var e=$(id);e.textContent=id==="vt"?sc.t:sc.s;e.style.animation="none";void e.offsetWidth;e.style.animation=""});
-  if(sc.c>=0){vst.style.setProperty("--tint",TIERS[sc.c].c);$("vrn").textContent=TIERS[sc.c].n}
-  $("vcw").classList.toggle("show",sc.c>=0);
-  [].forEach.call(vlad.children,function(p,k){p.classList.toggle("on",sc.all?true:sc.c>=0&&k<=sc.c)})}
- if(sc.c>=0){var k=Math.min(lt/(sc.d*.8),1),e=1-Math.pow(1-k,3);$("vg").textContent=Math.round(sc.a+(sc.b-sc.a)*e)}
- $("vp").style.width=VT/VTOT*100+"%";$("vtime").textContent=vfmt(VT)+" / "+vfmt(VTOT)
+ var t=VT,g=Math.round(vg(t)),tier=g>=30?3:g>=20?2:g>=10?1:0;
+ var ph=0;for(var i=0;i<PH.length;i++){if(PH[i].s<=t)ph=i}
+ if(ph!==VPH){VPH=ph;$("vt").textContent=PH[ph].t;$("vs").textContent=PH[ph].u}
+ var nx=PH[ph+1]?PH[ph+1].s:99,op=Math.min(ss(PH[ph].s,PH[ph].s+.4,t),ss(nx,nx-.15,t)),tx=$("vtx");
+ tx.style.opacity=op;tx.style.transform="translateY("+((1-ss(PH[ph].s,PH[ph].s+.4,t))*2.4)+"cqw)";
+ var ca=hx(TIERS[0].c),sc=1,ring=0,rs=0;
+ for(var k=1;k<4;k++){var m=ss(ST[k]-.12,ST[k]+.22,t);var cb=hx(TIERS[k].c);ca=ca.map(function(v,i){return v+(cb[i]-v)*m});$("f"+k).style.opacity=m;var d=t-ST[k];if(d>0&&d<.7){sc+=.07*Math.sin(Math.PI*d/.7);ring=Math.max(ring,(1-d/.7)*.8);rs=.6+d*2.2}}
+ vst.style.setProperty("--tint","rgb("+ca.map(Math.round).join(",")+")");
+ var ap=ss(.9,1.6,t),cw=$("vcw");
+ cw.style.opacity=ap;cw.style.transform="translateY("+((1-ap)*3+Math.sin(t*2.2)*.5)+"cqw) scale("+((.86+.14*ap)*sc)+")";
+ var rg=$("vring");rg.style.opacity=ring;rg.style.transform="scale("+rs+")";
+ $("vg").textContent=g;$("vrn").textContent=TIERS[tier].n;
+ $("vmf").style.width=Math.min(g/40,1)*100+"%";
+ $("vsm").textContent=tier<3?"Nog "+(TH[tier+1]-g)+" doelpunten tot "+TIERS[tier+1].n:"Hoogste rang bereikt";
+ $("vsheen").style.transform="translateX("+(((t*.4)%1)*260-130)+"%)";
+ [].forEach.call(vlad.children,function(p,k){p.style.setProperty("--on",k===0?ss(C0-.2,C0+.2,t):ss(ST[k]-.1,ST[k]+.2,t))});
+ $("vp").style.width=t/VTOT*100+"%";$("vtime").textContent=vfmt(t)+" / "+vfmt(VTOT)
 }
 function vloop(ts){
  if(!VPLAY)return;
  VT+=Math.min((ts-VLAST)/1000,.1);VLAST=ts;
- if(VT>=VTOT){VT=VTOT-.001;VPLAY=false;vrender();$("vplay").textContent="Opnieuw afspelen";return}
+ if(VT>=VTOT){VT=VTOT;VPLAY=false;vrender();$("vplay").textContent="Opnieuw afspelen";return}
  vrender();requestAnimationFrame(vloop)
 }
 function vplay(){if(VT>=VTOT-.01)VT=0;VPLAY=true;VLAST=performance.now();$("vplay").textContent="Pauze";requestAnimationFrame(vloop)}
 function vpause(){VPLAY=false;$("vplay").textContent="Afspelen"}
 $("vplay").onclick=function(){VPLAY?vpause():vplay()};
-$("vrep").onclick=function(){VT=0;VI=-1;vplay()};
-$("vbar").onclick=function(e){var r=this.getBoundingClientRect();VT=Math.max(0,Math.min(.999,(e.clientX-r.left)/r.width))*VTOT;VI=-1;vrender();if(!VPLAY)$("vplay").textContent="Afspelen"};
+$("vrep").onclick=function(){VT=0;vplay()};
+$("vbar").onclick=function(e){var r=this.getBoundingClientRect();VT=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*VTOT;vrender();if(!VPLAY)$("vplay").textContent="Afspelen"};
 $("vfs").onclick=function(){if(vst.requestFullscreen)vst.requestFullscreen()};
+window.__vseek=function(t){VPLAY=false;VSTART=true;VT=t;vrender()};
 vrender();
 if("IntersectionObserver" in window){new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting&&!VSTART){VSTART=true;vplay()}else if(!x.isIntersecting&&VPLAY){vpause()}})},{threshold:.5}).observe(vst)}
 paint();
@@ -825,16 +870,27 @@ view();
   var m=await Promise.all([import(V+"firebase-app.js"),import(V+"firebase-auth.js"),import(V+"firebase-firestore.js")]);
   initializeApp=m[0].initializeApp;
   getAuth=m[1].getAuth;onAuthStateChanged=m[1].onAuthStateChanged;createUserWithEmailAndPassword=m[1].createUserWithEmailAndPassword;signInWithEmailAndPassword=m[1].signInWithEmailAndPassword;signOut=m[1].signOut;
-  getFirestore=m[2].getFirestore;collection=m[2].collection;doc=m[2].doc;setDoc=m[2].setDoc;onSnapshot=m[2].onSnapshot;
+  getFirestore=m[2].getFirestore;collection=m[2].collection;doc=m[2].doc;setDoc=m[2].setDoc;onSnapshot=m[2].onSnapshot;query=m[2].query;where=m[2].where;updateDoc=m[2].updateDoc;
   app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
  }catch(e){ok=false;fbMsg="Firebase kon niet geladen worden. Controleer je verbinding en de config.";return}
 
- onAuthStateChanged(auth,function(u){CU=u;paint()});
- onSnapshot(collection(db,"players"),function(s){
-  PL=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});
-  rebuild();view();paint();
-  if(wantProf&&me()){wantProf=false;showProf()}else if($("prof").open)showProf()
+ var uMine=null,uAll=null;
+ function refresh(){rebuild();view();paint();if(wantProf&&me()){wantProf=false;showProf()}else if($("prof").open)showProf()}
+ onSnapshot(query(collection(db,"players"),where("approved","==",true)),function(s){
+  PL=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});refresh()
  },function(){});
+ onAuthStateChanged(auth,function(u){
+  CU=u;MYDOC=null;ALL=[];
+  if(uMine){uMine();uMine=null}if(uAll){uAll();uAll=null}
+  paint();
+  if(!u){refresh();return}
+  uMine=onSnapshot(doc(db,"players",u.uid),function(d){
+   MYDOC=d.exists()?Object.assign({id:d.id},d.data()):null;
+   if(MYDOC&&MYDOC.admin===true&&!uAll){uAll=onSnapshot(collection(db,"players"),function(s){ALL=s.docs.map(function(x){return Object.assign({id:x.id},x.data())});refresh()},function(){})}
+   if(!(MYDOC&&MYDOC.admin===true)&&uAll){uAll();uAll=null;ALL=[]}
+   refresh()
+  },function(){})
+ });
 
 })();
 </script>
