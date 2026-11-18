@@ -32,7 +32,7 @@ html.pre-blocked body{background:radial-gradient(ellipse at 50% 0,#145230,transp
 const st=document.createElement("style");st.textContent=css;document.head.appendChild(st);
 
 const dlg=document.createElement("dialog");dlg.id="preorder";dlg.setAttribute("aria-labelledby","po-t");
-dlg.innerHTML='<div class="tk"><div class="po-top"><span class="po-tag">PRE-ORDER</span><h2 id="po-t"></h2><p id="po-p"></p></div><div class="po-perf"></div><div class="po-body"><div id="po-rows"></div><div class="po-st"><i></i><span id="po-s"></span></div><button type="button" id="po-out">Uitloggen</button></div></div>';
+dlg.innerHTML='<div class="tk"><div class="po-top"><span class="po-tag">WACHTLIJST</span><h2 id="po-t"></h2><p id="po-p"></p></div><div class="po-perf"></div><div class="po-body"><div id="po-rows"></div><div class="po-st"><i></i><span id="po-s"></span></div><button type="button" id="po-out">Uitloggen</button></div></div>';
 document.body.appendChild(dlg);
 dlg.addEventListener("cancel",e=>e.preventDefault());
 const $=id=>document.getElementById(id);
@@ -47,7 +47,7 @@ function show(d,uid,rejected){
  const add=(k,v)=>{const r=document.createElement("div");r.className="po-row";const a=document.createElement("span"),b=document.createElement("span");a.textContent=k;b.textContent=v;r.append(a,b);rows.appendChild(r)};
  add("Ticket","#"+uid.slice(0,6).toUpperCase());
  if(d){add("Naam",(d.first||"")+" "+(d.last||""));add("Club",d.club||"-");add("Rugnummer","#"+(d.num||"-"))}
- $("po-s").textContent=rejected?"Afgewezen":"Pre-order · in behandeling";
+ $("po-s").textContent=rejected?"Afgewezen":"Ticket · in behandeling";
  dlg.classList.toggle("rej",!!rejected);
  root.classList.remove("pre-check");root.classList.add("pre-blocked");
  if(!dlg.open)dlg.showModal();
