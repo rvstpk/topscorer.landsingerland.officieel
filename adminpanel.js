@@ -5,7 +5,7 @@
    - Alle gebruikers ontvangen meldingen live; wie niet actief was, krijgt ze zodra die weer op de website is. */
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import {getFirestore,collection,doc,getDoc,setDoc,addDoc,updateDoc,onSnapshot,query,where} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {getFirestore,collection,doc,getDoc,setDoc,addDoc,updateDoc,deleteDoc,onSnapshot,query,where} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const css=`
 #adm-fab{position:fixed;left:18px;bottom:18px;z-index:60;display:none;align-items:center;gap:8px;font:700 .95rem Archivo,system-ui,sans-serif;color:#2a1c00;cursor:pointer;padding:11px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.8);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:0 10px 28px rgba(0,0,0,.3),inset 0 1px 1px #fff}
@@ -52,6 +52,7 @@ html.pre-blocked #adm-fab{display:none!important}
 .ap-empty{padding:20px 0;text-align:center;opacity:.75}
 .ap-hist{padding:10px 12px;margin-top:8px;border-radius:14px;background:rgba(255,255,255,.07);font-size:.88rem}
 .ap-hist small{display:block;opacity:.7;margin-bottom:3px}
+.ap-del{margin-top:8px;font:600 .8rem Archivo,sans-serif;color:#ffd0d0;cursor:pointer;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,120,120,.6);background:rgba(214,33,58,.18)}
 #notif .ap-h{background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
 .nt-i{margin-bottom:12px;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.4);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.04))}
 .nt-i small{display:block;opacity:.7;margin-bottom:6px;font-size:.78rem}
@@ -69,7 +70,7 @@ const ap=document.createElement("dialog");ap.id="adminp";document.body.appendChi
 const nt=document.createElement("dialog");nt.id="notif";document.body.appendChild(nt);
 
 /* ---------- state ---------- */
-let db,auth,uid=null,ME=null,ALL=[],EM={},HIST=[],tab="req",mode="all",SEL=new Set(),filter="",subs=[],lastSeen=0,A=[],B=[],seen=new Set();
+let DRAFT="",LASTST="",db,auth,uid=null,ME=null,ALL=[],EM={},HIST=[],tab="req",mode="all",SEL=new Set(),filter="",subs=[],lastSeen=0,A=[],B=[],seen=new Set();
 const isAdmin=()=>!!(ME&&ME.admin===true);
 const pending=()=>ALL.filter(x=>!x.approved&&!x.rejected);
 const nameOf=x=>((x.first||"")+" "+(x.last||"")).trim()||"Onbekend";
@@ -79,7 +80,13 @@ function renderBadge(){
  const n=pending().length;
  fab.classList.toggle("on",isAdmin());
  const b=document.getElementById("adm-badge");b.textContent=n;b.classList.toggle("has",n>0);
- if(ap.open)renderPanel(true);
+refreshPanel();
+}
+function refreshPanel(){
+ if(!ap.open)return;
+ const a=document.activeElement;
+ if(tab==="msg"&&a&&ap.contains(a)&&/^(TEXTAREA|INPUT)$/.test(a.tagName))return;
+ renderPanel(true)
 }
 fab.onclick=()=>{renderPanel();ap.showModal()};
 function renderPanel(keepScroll){
@@ -89,7 +96,7 @@ function renderPanel(keepScroll){
  const tabs=h("div","ap-tabs");
  const t1=h("button","ap-tab");t1.type="button";t1.setAttribute("aria-pressed",tab==="req");t1.append("Aanvragen ",Object.assign(h("i",pending().length?"has":"",pending().length),{}));
  const t2=h("button","ap-tab","Melding sturen");t2.type="button";t2.setAttribute("aria-pressed",tab==="msg");
- t1.onclick=()=>{tab="req";renderPanel()};t2.onclick=()=>{tab="msg";renderPanel()};
+ t1.onclick=()=>{tab="req";renderPanel()};t2.onclick=()=>{tab="msg";LASTST="";renderPanel()};
  tabs.append(t1,t2);ap.appendChild(tabs);
  const body=h("div","ap-b");ap.appendChild(body);
  tab==="req"?renderReq(body):renderMsg(body);
@@ -115,31 +122,38 @@ function renderMsg(body){
  body.appendChild(h("h3",null,"Gebruikers melding sturen"));
  body.appendChild(h("p","ap-sum","In het kort: schrijf in je eigen woorden een melding en stuur die naar één gebruiker, meerdere gebruikers of de hele website. De melding komt live binnen. Was iemand niet actief, dan ziet hij of zij de melding zodra die weer op de website is."));
  body.appendChild(Object.assign(h("label",null,"Je bericht (in je eigen woorden)"),{htmlFor:"ap-text"}));
- const ta=h("textarea");ta.id="ap-text";ta.maxLength=1000;ta.placeholder="Bijvoorbeeld: Goed bezig! Morgen worden de nieuwe doelpunten bijgewerkt.";body.appendChild(ta);
- const cnt=h("small","ap-cnt","0 / 1000");ta.oninput=()=>cnt.textContent=ta.value.length+" / 1000";body.appendChild(cnt);
+ const ta=h("textarea");ta.id="ap-text";ta.maxLength=1000;ta.value=DRAFT;ta.placeholder="Bijvoorbeeld: Goed bezig! Morgen worden de nieuwe doelpunten bijgewerkt.";body.appendChild(ta);
+ const cnt=h("small","ap-cnt",DRAFT.length+" / 1000");ta.oninput=()=>{DRAFT=ta.value;cnt.textContent=ta.value.length+" / 1000"};body.appendChild(cnt);
  body.appendChild(h("label",null,"Naar wie?"));
  const seg=h("div","ap-seg"),b1=h("button",null,"Hele website"),b2=h("button",null,"Kies gebruikers");b1.type=b2.type="button";seg.append(b1,b2);body.appendChild(seg);
  const pick=h("div");body.appendChild(pick);
  const sync=()=>{b1.setAttribute("aria-pressed",mode==="all");b2.setAttribute("aria-pressed",mode==="pick");pick.innerHTML="";if(mode==="pick")buildPick(pick)};
  b1.onclick=()=>{mode="all";sync()};b2.onclick=()=>{mode="pick";sync()};sync();
  const go=h("button","ap-go","Verstuur melding");go.type="button";body.appendChild(go);
- const sts=h("div","ap-st");body.appendChild(sts);
+ const sts=h("div","ap-st",LASTST);body.appendChild(sts);
  go.onclick=async()=>{
   const text=ta.value.trim();
-  if(!text){sts.textContent="Schrijf eerst een bericht.";return}
+  if(!text){sts.textContent=LASTST="Schrijf eerst een bericht.";return}
   const all=mode==="all",to=all?[]:[...SEL];
-  if(!all&&!to.length){sts.textContent="Kies minstens één gebruiker.";return}
-  go.disabled=true;sts.textContent="Versturen…";
+  if(!all&&!to.length){sts.textContent=LASTST="Kies minstens één gebruiker.";return}
+  go.disabled=true;sts.textContent=LASTST="Versturen…";
   try{
    await addDoc(collection(db,"notifications"),{text,all,to,createdMs:Date.now(),by:uid,byName:nameOf(ME)});
-   ta.value="";cnt.textContent="0 / 1000";const n=all?"de hele website":to.length+(to.length===1?" gebruiker":" gebruikers");SEL.clear();sts.textContent="Verstuurd naar "+n+". Het komt live binnen.";sync();
-  }catch(e){sts.textContent=e&&e.code==="permission-denied"?"Geen toestemming. Controleer de Firestore-regels.":"Versturen mislukt. Probeer het opnieuw."}
+   DRAFT="";ta.value="";cnt.textContent="0 / 1000";const n=all?"de hele website":to.length+(to.length===1?" gebruiker":" gebruikers");SEL.clear();sts.textContent=LASTST="Verstuurd naar "+n+". Het komt live binnen.";sync();
+  }catch(e){sts.textContent=LASTST=e&&e.code==="permission-denied"?"Geen toestemming. Controleer de Firestore-regels.":"Versturen mislukt. Probeer het opnieuw."}
   go.disabled=false;
  };
  body.appendChild(h("h4",null,"Eerder verstuurd"));
  const hist=[...HIST].sort((a,b)=>b.createdMs-a.createdMs).slice(0,8);
  if(!hist.length)body.appendChild(h("div","ap-empty","Nog geen meldingen verstuurd."));
- hist.forEach(n=>{const d=h("div","ap-hist"),to=n.all?"Hele website":(n.to||[]).map(i=>{const p=ALL.find(x=>x.id===i);return p?nameOf(p):"?"}).join(", ");d.append(h("small",null,fmtDate(n.createdMs)+" · naar: "+to),h("div",null,n.text));body.appendChild(d)});
+ hist.forEach(n=>{const d=h("div","ap-hist"),to=n.all?"Hele website":(n.to||[]).map(i=>{const p=ALL.find(x=>x.id===i);return p?nameOf(p):"?"}).join(", ");d.append(h("small",null,fmtDate(n.createdMs)+(n.byName?" · van "+n.byName:"")+" · naar: "+to),h("div",null,n.text));
+  const del=h("button","ap-del","Verwijderen");del.type="button";
+  del.onclick=()=>{
+   if(!del.dataset.sure){del.dataset.sure="1";del.textContent="Zeker weten? Tik nogmaals";return}
+   del.disabled=true;del.textContent="Verwijderen…";
+   deleteDoc(doc(db,"notifications",n.id)).catch(()=>{del.disabled=false;del.textContent="Verwijderen mislukt, probeer opnieuw";delete del.dataset.sure});
+  };
+  d.appendChild(del);body.appendChild(d)});
 }
 function buildPick(box){
  const s=h("input");s.type="search";s.placeholder="Zoek gebruiker of club…";s.value=filter;s.setAttribute("aria-label","Zoek gebruiker");box.appendChild(s);
@@ -154,21 +168,34 @@ function buildPick(box){
 /* ---------- MELDINGEN ONTVANGEN (alle gebruikers) ---------- */
 function ready(){return uid&&ME!==null&&!document.documentElement.classList.contains("pre-blocked")&&!document.querySelector("#boot-overlay.active")}
 function unread(){const m=new Map();[...A,...B].forEach(n=>m.set(n.id,n));return [...m.values()].filter(n=>n.createdMs>lastSeen&&!seen.has(n.id)&&n.by!==uid).sort((a,b)=>a.createdMs-b.createdMs)}
+let shown=[];
+function persist(){
+ try{localStorage.setItem("nt_"+uid,String(lastSeen))}catch(e){}
+ setDoc(doc(db,"notifReads",uid),{lastSeen}).catch(()=>{});
+}
+function markSeen(list){
+ list.forEach(n=>seen.add(n.id));
+ lastSeen=Math.max(lastSeen,...list.map(n=>n.createdMs));
+ persist();
+}
 function showNotes(){
- const list=unread();
- if(!list.length){if(nt.open)nt.close();return}
- if(!ready())return;
+ const ids=new Set([...A,...B].map(n=>n.id));
+ shown=shown.filter(n=>ids.has(n.id));               /* verwijderde meldingen verdwijnen meteen */
+ const fresh=ready()?unread():[];
+ if(fresh.length){shown=shown.concat(fresh);markSeen(fresh)}   /* zodra getoond = gelezen, dus nooit meer terug */
+ if(!shown.length){if(nt.open)nt.close();return}
+ if(!ready()&&!nt.open)return;
  nt.innerHTML="";
- const head=h("div","ap-h");head.append(h("span",null,list.length>1?"MELDINGEN VAN DE BEHEERDER":"MELDING VAN DE BEHEERDER"));nt.appendChild(head);
+ const head=h("div","ap-h");head.append(h("span",null,shown.length>1?"MELDINGEN VAN DE BEHEERDER":"MELDING VAN DE BEHEERDER"));nt.appendChild(head);
  const b=h("div","ap-b");
- list.forEach(n=>{const i=h("div","nt-i");i.append(h("small",null,(n.byName?"Van "+n.byName+" · ":"")+fmtDate(n.createdMs)),h("p",null,n.text));b.appendChild(i)});
+ shown.forEach(n=>{const i=h("div","nt-i");i.append(h("small",null,(n.byName?"Van "+n.byName+" · ":"")+fmtDate(n.createdMs)),h("p",null,n.text));b.appendChild(i)});
  const ok=h("button","ap-go","Begrepen");ok.type="button";
- ok.onclick=()=>{const mx=Math.max(...list.map(n=>n.createdMs));list.forEach(n=>seen.add(n.id));lastSeen=Math.max(lastSeen,mx);setDoc(doc(db,"notifReads",uid),{lastSeen}).catch(()=>{});nt.close()};
+ ok.onclick=()=>{shown=[];nt.close()};
  b.appendChild(ok);nt.appendChild(b);
  if(!nt.open)nt.showModal();
 }
 nt.addEventListener("cancel",e=>e.preventDefault());
-setInterval(()=>{if(unread().length&&!nt.open)showNotes()},1500);
+setInterval(()=>{if((unread().length||shown.length)&&!nt.open)showNotes()},1500);
 
 /* ---------- Oude aanvragenlijst uit het profiel halen ---------- */
 const pf=document.getElementById("pf");
@@ -179,11 +206,12 @@ if(pf){const clean=()=>[...pf.children].forEach(el=>{if(el.classList.contains("p
 function start(){
  const app=getApp();db=getFirestore(app);auth=getAuth(app);
  onAuthStateChanged(auth,async u=>{
-  subs.forEach(f=>f());subs=[];uid=u?u.uid:null;ME=null;ALL=[];EM={};HIST=[];A=[];B=[];seen=new Set();SEL.clear();
+  subs.forEach(f=>f());subs=[];uid=u?u.uid:null;ME=null;ALL=[];EM={};HIST=[];A=[];B=[];seen=new Set();shown=[];SEL.clear();
   if(ap.open)ap.close();if(nt.open)nt.close();renderBadge();
   if(!u)return;
   let ls=Date.parse((u.metadata&&u.metadata.creationTime)||0)||0;
-  try{const d=await getDoc(doc(db,"notifReads",u.uid));if(d.exists()&&typeof d.data().lastSeen==="number")ls=d.data().lastSeen}catch(e){}
+  try{const d=await getDoc(doc(db,"notifReads",u.uid));if(d.exists()&&typeof d.data().lastSeen==="number")ls=Math.max(ls,d.data().lastSeen)}catch(e){}
+  try{const l=parseInt(localStorage.getItem("nt_"+u.uid)||"0",10);if(l>ls)ls=l}catch(e){}
   if(uid!==u.uid)return;lastSeen=ls;
   const map=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));
   subs.push(onSnapshot(query(collection(db,"notifications"),where("all","==",true)),s=>{A=map(s);showNotes()},()=>{}));
@@ -194,7 +222,7 @@ function start(){
    if(isAdmin()&&!adminSubs){adminSubs=true;
     subs.push(onSnapshot(collection(db,"players"),s=>{ALL=map(s);renderBadge()},()=>{}));
     subs.push(onSnapshot(collection(db,"private"),s=>{EM={};s.docs.forEach(x=>EM[x.id]=x.data().email);renderBadge()},()=>{}));
-    subs.push(onSnapshot(collection(db,"notifications"),s=>{HIST=map(s);if(ap.open&&tab==="msg")renderPanel(true)},()=>{}));
+    subs.push(onSnapshot(collection(db,"notifications"),s=>{HIST=map(s);refreshPanel()},()=>{}));
    }
    renderBadge();showNotes();
   },()=>{}));
