@@ -393,7 +393,6 @@ body.locked #auth .x{display:none}
 <symbol id="ic-flame" viewBox="0 0 24 24"><path d="M12 2C13 6 18 8 18 14A6 6 0 0 1 6 14C6 11.5 7.5 10 8.5 9C8.5 11 9.5 12 10.5 12C10.5 8 9.5 5 12 2Z" fill="url(#gfl)"/></symbol></svg>
 <header class="hero">
 <svg viewBox="0 0 960 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="20" y="20" width="920" height="260"/><line x1="480" y1="20" x2="480" y2="280"/><circle cx="480" cy="150" r="60"/><rect x="20" y="85" width="110" height="130"/><rect x="830" y="85" width="110" height="130"/></svg>
-<button class="acc" id="trkbtn" hidden style="left:16px;right:auto">Mijn tracker</button>
 <button class="acc" id="acc">Inloggen</button>
 <div><h1>Topscorers<br>Landsingerland</h1><p>de topscorers uit landsingerland. klik op de naam voor details van de spelers.</p></div>
 </header>
@@ -634,6 +633,7 @@ body.locked #auth .x{display:none}
 <label class="w">Voetbal.nl accountnaam<input id="rv" autocomplete="off" required></label>
 <label class="w">E-mail<input id="re" type="email" autocomplete="email" required></label>
 <label class="w">Wachtwoord (minstens 8 tekens)<input id="rp" type="password" autocomplete="new-password" minlength="8" required></label>
+<p class="w" style="font-size:.8rem;opacity:.75">Beheerders kunnen zien wat je op de website doet (inloggen, kaarten bekijken, zoeken).</p>
 <p class="err" id="er" role="alert"></p>
 <button class="go" type="submit">Account maken</button>
 </form>
@@ -643,12 +643,6 @@ body.locked #auth .x{display:none}
 <div class="fx" aria-hidden="true"><i></i><i></i><i></i><u></u><b></b></div>
 <button class="x" data-close aria-label="Sluiten">×</button>
 <div class="pf" id="pf"></div>
-</dialog>
-
-<dialog id="trk" class="ad" aria-labelledby="trkt">
-<div class="fx" aria-hidden="true"><i></i><i></i><i></i><u></u><b></b></div>
-<button class="x" data-close aria-label="Sluiten">×</button>
-<div class="pf" id="trkc"></div>
 </dialog>
 
 <div id="toast" popover="manual" role="status"><span></span></div>
@@ -683,7 +677,7 @@ const firebaseConfig={
 /* ================================================================================================ */
 let ok=firebaseConfig.apiKey!=="PLAK_HIER";
 let fbMsg=ok?"Even geduld, Firebase wordt geladen.":"Firebase is nog niet ingesteld.";
-let initializeApp,getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,getFirestore,collection,doc,setDoc,onSnapshot,query,where,updateDoc,getDoc,deleteDoc;
+let initializeApp,getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,getFirestore,collection,doc,setDoc,onSnapshot,query,where,updateDoc,getDoc,deleteDoc,orderBy,limit;
 var BASE=[
 {n:"Cristiano Ronaldo",c:"Portugal",g:950,m:1280,i:143,y:"2002-heden",a:true,t:"Sporting, Man. United, Real Madrid, Juventus, Al-Nassr",h:"5x Ballon d’Or, 5x Champions League"},
 {n:"Lionel Messi",c:"Argentinië",g:890,m:1130,i:115,y:"2004-heden",a:true,t:"Barcelona, PSG, Inter Miami",h:"8x Ballon d’Or, WK-winnaar 2022"},
@@ -703,11 +697,11 @@ var P=BASE.slice();
 function clubColor(c){var l=c.toLowerCase(),f=null;Object.keys(CL).forEach(function(k){if(!CL[k][2]&&CL[k][0].toLowerCase()===l)f=CL[k][1]});if(f)return f;var h=0;for(var i=0;i<l.length;i++)h=(h*31+l.charCodeAt(i))%360;return "hsl("+h+",62%,46%)"}
 function rebuild(){
  Object.keys(CL).forEach(function(k){if(CL[k][2])delete CL[k]});
- calcStreaks();var us=getUsers(),extra=[];
+ var us=getUsers(),extra=[];
  Object.keys(us).forEach(function(em){var u=us[em],n=u.first+" "+u.last;
   if(CL[n])n+=" (#"+u.num+")";
   CL[n]=[u.club,clubColor(u.club),true];
-  extra.push({n:n,id:u.id,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar",aw:Math.max(0,+u.awards||0),sk:SK[u.id]||0})});
+  extra.push({n:n,id:u.id,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar",aw:Math.max(0,+u.awards||0),sk:streakW(u.gw),gw:u.gw||[]})});
  P=BASE.concat(extra);
  P.sort(function(a,b){return b.g-a.g});
  P.forEach(function(p){CL[p.n][1]=tierColor(p.g)});
@@ -759,6 +753,7 @@ function spin(e,n){
  var t0=performance.now();(function st(t){var k=Math.min((t-t0)/1000,1);e.textContent=num(Math.round(n*(1-Math.pow(1-k,3))));if(k<1)requestAnimationFrame(st)})(t0)
 }
 function open(p){
+ logEv("card",p.n);
  var d=document.getElementById("dlg"),cl=CL[p.n],$=function(i){return document.getElementById(i)},best=P[0].g,rank=P.indexOf(p);
  d.style.setProperty("--tint",cl[1]);
  $("dc").textContent=cl[0];$("dn").textContent=p.n;$("dm").textContent=p.c+" · "+p.y;
@@ -784,7 +779,7 @@ function open(p){
   var am=document.createElement("small");
   var mk=function(t,fn){var b=document.createElement("button");b.type="button";b.textContent=t;b.onclick=fn;return b};
   var save=function(v){v=Math.max(0,Math.round(+v)||0);inp.value=v;am.textContent="Opslaan…";
-   updateDoc(doc(db,"players",p.id),{goals:v}).then(function(){am.textContent="Opgeslagen";$("s1").textContent=num(v)}).catch(function(x){am.textContent=msg(x)})};
+   (function(){var up={goals:v};if(v>p.g)up.gw=addW(p.gw);return updateDoc(doc(db,"players",p.id),up).then(function(){am.textContent="Opgeslagen";$("s1").textContent=num(v);p.g=v;if(up.gw)p.gw=up.gw;logEv("beheer","goals "+p.n+" naar "+v)})})().catch(function(x){am.textContent=msg(x)})};
   row.appendChild(mk("−1",function(){save(+inp.value-1)}));row.appendChild(inp);row.appendChild(mk("+1",function(){save(+inp.value+1)}));row.appendChild(mk("Opslaan",function(){save(inp.value)}));
   ad.appendChild(row);ad.appendChild(am);
   var h2=document.createElement("h3");h2.textContent="Awards · Gouden Schoen";h2.style.marginTop="12px";ad.appendChild(h2);
@@ -795,17 +790,17 @@ function open(p){
  requestAnimationFrame(function(){requestAnimationFrame(function(){$("sm").style.width=Math.min(p.g/30,1)*100+"%"})});
  spin($("s1"),p.g);
 }
-document.getElementById("q").oninput=function(e){q=e.target.value.toLowerCase().trim();view()};
+document.getElementById("q").oninput=function(e){q=e.target.value.toLowerCase().trim();view();clearTimeout(QT);QT=setTimeout(function(){if(q)logEv("zoek",q)},1200)};
 document.getElementById("close").onclick=function(){document.getElementById("dlg").close()};
 document.getElementById("dlg").onclick=function(e){if(e.target===this)this.close()};
 var $=function(i){return document.getElementById(i)};
-var ACT=[],SK={},actReady=false,uAct=null,TQ=[],TB=false,TT="match";
+var EV=[],evF="",SK={},uAct=null,LG=false,QT=0,LAST={},TQ=[],TB=false;
 var PL=[],ALL=[],EM={},MYDOC=null,CU=null,wantProf=false,wipShown=false,docLoaded=false;
 var app=null,auth=null,db=null;
 function getUsers(){var o={};PL.forEach(function(u){o[u.id]=u});return o}
 function me(){if(!CU||!MYDOC)return null;return Object.assign({},MYDOC,{email:CU.email})}
 function isAdmin(){var u=me();return !!(u&&u.admin===true)}
-function paint(){var u=me();$("trkbtn").hidden=!(CU&&docLoaded&&allowed());$("acc").textContent=CU?(u?u.first:"Profiel"):"Inloggen";gate()}
+function paint(){var u=me();$("acc").textContent=CU?(u?u.first:"Profiel"):"Inloggen";gate()}
 function gate(){
  var locked=!CU||!(docLoaded&&allowed());document.body.classList.toggle("locked",locked);
  if(!CU){if(!$("auth").open){tab("l");$("el").textContent=auth?"":fbMsg;$("er").textContent=auth?"":fbMsg;$("auth").showModal()}}
@@ -824,6 +819,7 @@ function msg(e){var c=(e&&e.code)||"";
 function tab(t){var l=t==="l";$("fl").hidden=!l;$("fr").hidden=l;$("tbl").setAttribute("aria-pressed",l);$("tbr").setAttribute("aria-pressed",!l);$("at").textContent=l?"Inloggen":"Account maken"}
 function openAuth(t){tab(t);$("el").textContent=auth?"":fbMsg;$("er").textContent=auth?"":fbMsg;$("auth").showModal()}
 function showProf(){
+ logEv("profiel","");
  var u=me();if(!u)return;var pf=$("pf");pf.innerHTML="";
  var add=function(t,c,x){var n=document.createElement(t);if(c)n.className=c;n.textContent=x;pf.appendChild(n);return n};
  add("div","idh","MIJN PROFIEL");
@@ -893,11 +889,12 @@ function chips(p,big){var e=document.createElement("span"),h="";e.className="chp
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function ymd(d){return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
 function wk(d){var a=d.split("-"),t=new Date(+a[0],a[1]-1,+a[2]);t.setDate(t.getDate()-(t.getDay()+6)%7);return Math.floor(Date.UTC(t.getFullYear(),t.getMonth(),t.getDate())/6048e5)}
-function streakOf(es){var w={};es.forEach(function(e){if(e.goals>0)w[wk(e.date)]=1});
- var ks=Object.keys(w).map(Number).sort(function(a,b){return a-b}),b=0,r=0,n=0,c=wk(ymd(new Date()));
- ks.forEach(function(k,i){r=i&&k===ks[i-1]+1?r+1:1;b=Math.max(b,r)});
- var x=w[c]?c:c-1;while(w[x]){n++;x--}return {cur:n,best:b}}
-function calcStreaks(){var g={};ACT.forEach(function(e){(g[e.uid]=g[e.uid]||[]).push(e)});SK={};Object.keys(g).forEach(function(u){SK[u]=streakOf(g[u]).cur})}
+function wkN(){return wk(ymd(new Date()))}
+function streakW(a){var w={};(a||[]).forEach(function(k){w[k]=1});var c=wkN(),n=0,x=w[c]?c:c-1;while(w[x]){n++;x--}return n}
+function addW(a){var c=wkN();a=a||[];return a.indexOf(c)>-1?a:a.concat(c).slice(-60)}
+function ftime(ms){return new Date(ms).toLocaleString("nl-NL",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}
+function logEv(t,d){if(!CU||!MYDOC||!db||!allowed()||(isAdmin()&&t!=="beheer"))return;var k=t+d,n=Date.now();if(LAST[k]&&n-LAST[k]<30000)return;LAST[k]=n;
+ setDoc(doc(collection(db,"activity")),{uid:CU.uid,name:((MYDOC.first||"")+" "+(MYDOC.last||"")).trim(),type:t,detail:String(d||"").slice(0,80),ms:n}).catch(function(){})}
 var PS="showPopover" in HTMLElement.prototype;if(!PS)document.getElementById("toast").classList.add("np");
 function toast(t){TQ.push(t);if(!TB){TB=true;try{PS?document.getElementById("toast").showPopover():document.getElementById("toast").classList.add("on")}catch(e){}nextToast()}}
 function nextToast(){var e=document.getElementById("toast");if(!TQ.length){TB=false;try{PS?e.hidePopover():e.classList.remove("on")}catch(x){}return}e.firstChild.textContent=TQ.shift();setTimeout(nextToast,6500)}
@@ -910,40 +907,12 @@ function checkRank(){
  if(pi>-1&&mi<pi){var ps=P.filter(function(p,i){var j=pv.indexOf(key(p));return i>mi&&j>-1&&j<pi&&p.g<m.g});
   if(ps.length)toast("Je hebt "+ps.slice(0,3).map(function(p){return p.n}).join(", ")+(ps.length>3?" en "+(ps.length-3)+" anderen":"")+" ingehaald! Je staat nu #"+(mi+1)+".")}
  try{localStorage.setItem(k,JSON.stringify(cur))}catch(e){}
- if(actReady){var sk=SK[CU.uid]||0,k2="sk_"+CU.uid,o=0;try{o=+localStorage.getItem(k2)||0}catch(e){}
+ if(true){var sk=SK[CU.uid]||0,k2="sk_"+CU.uid,o=0;try{o=+localStorage.getItem(k2)||0}catch(e){}
   if(sk>=2&&sk>o)toast("Goal streak: "+sk+" weken op rij met minstens 1 goal!");
   try{localStorage.setItem(k2,sk)}catch(e){}}
 }
-function showTrk(){
- var box=$("trkc");
- box.innerHTML='<div class="idh">MIJN TRACKER</div><h2 id="trkt">Activiteiten</h2><p class="pk">Houd je wedstrijden en trainingen bij. Je goal streak telt weken met minstens 1 goal. Je goals in de ranglijst past een beheerder aan.</p><div id="trkdyn"></div><form class="tf" id="tf" novalidate><div class="tg w"><button type="button" data-t="match" aria-pressed="true">Wedstrijd</button><button type="button" data-t="training" aria-pressed="false">Training</button></div><label>Datum<input id="td" type="date" required></label><label>Doelpunten<input id="tgl" type="number" min="0" max="30" value="0" inputmode="numeric"></label><label class="w">Notitie (optioneel)<input id="tn" maxlength="60"></label><p class="err" id="te" role="alert"></p><button class="go" type="submit">Toevoegen</button></form>';
- TT="match";$("td").max=ymd(new Date());$("td").value=ymd(new Date());
- var bs=box.querySelectorAll("[data-t]");
- [].forEach.call(bs,function(b){b.onclick=function(){TT=b.dataset.t;[].forEach.call(bs,function(x){x.setAttribute("aria-pressed",x===b)})}});
- $("tf").onsubmit=function(e){e.preventDefault();var d=$("td").value,g=+$("tgl").value,er=$("te");
-  if(!d||d>ymd(new Date())){er.textContent="Kies een datum van vandaag of eerder.";return}
-  if(!(g>=0&&g<=30&&g%1===0)){er.textContent="Doelpunten moet tussen 0 en 30 liggen.";return}
-  er.textContent="";setDoc(doc(collection(db,"activities")),{uid:CU.uid,type:TT,date:d,goals:g,note:$("tn").value.trim().slice(0,60),createdMs:Date.now()}).then(function(){$("tgl").value=0;$("tn").value=""}).catch(function(x){er.textContent=msg(x)})};
- $("trk").style.setProperty("--tint",tierColor(MYDOC.goals||0));$("trk").showModal();renderTrk();
-}
-function renderTrk(){
- var d=$("trkdyn");if(!d||!$("trk").open||!CU||!MYDOC)return;
- var mine=ACT.filter(function(e){return e.uid===CU.uid}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:b.createdMs-a.createdMs}),
- st=streakOf(mine),mi=P.findIndex(function(p){return p.id===CU.uid}),g=MYDOC.goals||0,t=tierOf(g),nx=mi>0?P[mi-1]:null,
- mt=mine.filter(function(e){return e.type==="match"}),lg=mine.reduce(function(a,e){return a+e.goals},0),mg=mt.reduce(function(a,e){return a+e.goals},0),
- cw=wk(ymd(new Date())),wb="";
- for(var k=5;k>=0;k--){var s=0;mine.forEach(function(e){if(wk(e.date)===cw-k)s+=e.goals});wb+='<i class="'+(s?"on":"")+'" style="height:'+(10+Math.min(s,6)*8)+'px" title="'+s+' goals"></i>'}
- var rows=[["Doelpunten (ranglijst)",g],["Rang",(mi>=0?"#"+(mi+1)+" · ":"")+TIERS[t].n],["Goal streak",st.cur+" weken (beste "+st.best+")"],["Awards",Math.max(0,+MYDOC.awards||0)],["Wedstrijden / trainingen",mt.length+" / "+(mine.length-mt.length)],["Gelogde goals",lg],["Gem. per wedstrijd",mt.length?(mg/mt.length).toFixed(1):"-"]];
- d.innerHTML=rows.map(function(r){return '<div class="pr"><span>'+r[0]+'</span><span>'+esc(r[1])+'</span></div>'}).join("")+
- '<span class="meter"><i style="width:'+Math.min(g/30,1)*100+'%"></i></span><p class="pk">'+(t<3?"Nog "+(TH[t+1]-g)+" goals tot "+TIERS[t+1].n:"Hoogste rang bereikt")+(nx?" · nog "+(nx.g-g+1)+" goals om "+esc(nx.n)+" in te halen":"")+'</p><div class="wkb">'+wb+'</div><p class="pk">Laatste 6 weken, gekleurd = minstens 1 goal</p>';
- var hd=document.createElement("h3");hd.className="pk";hd.textContent="Mijn activiteiten";hd.style.marginTop="14px";d.appendChild(hd);
- if(!mine.length){var em=document.createElement("p");em.className="pk";em.textContent="Nog niets gelogd. Voeg hieronder je eerste wedstrijd of training toe.";d.appendChild(em)}
- mine.slice(0,15).forEach(function(e){var r=document.createElement("div");r.className="pq";var sp=document.createElement("span");sp.textContent=e.date.split("-").reverse().join("-")+" · "+(e.type==="match"?"Wedstrijd":"Training")+" · "+e.goals+" goals"+(e.note?" · "+e.note:"");
-  var b=document.createElement("button");b.type="button";b.className="no";b.textContent="Wis";b.onclick=function(){if(!b.dataset.s){b.dataset.s=1;b.textContent="Zeker?";return}deleteDoc(doc(db,"activities",e.id))};r.append(sp,b);d.appendChild(r)});
-}
-$("trkbtn").onclick=showTrk;
 document.querySelectorAll("[data-close]").forEach(function(b){b.onclick=function(){b.closest("dialog").close()}});
-["auth","prof","rev","trk"].forEach(function(i){$(i).onclick=function(e){if(e.target===this&&!(i==="auth"&&!CU))this.close()}});
+["auth","prof","rev"].forEach(function(i){$(i).onclick=function(e){if(e.target===this&&!(i==="auth"&&!CU))this.close()}});
 $("auth").addEventListener("cancel",function(e){if(!CU)e.preventDefault()});
 $("wipok").onclick=function(){$("wip").close()};
 $("wip").addEventListener("close",function(){if(CU&&auth&&!allowed())signOut(auth)});
@@ -1007,25 +976,23 @@ view();
   var m=await Promise.all([import(V+"firebase-app.js"),import(V+"firebase-auth.js"),import(V+"firebase-firestore.js")]);
   initializeApp=m[0].initializeApp;
   getAuth=m[1].getAuth;onAuthStateChanged=m[1].onAuthStateChanged;createUserWithEmailAndPassword=m[1].createUserWithEmailAndPassword;signInWithEmailAndPassword=m[1].signInWithEmailAndPassword;signOut=m[1].signOut;
-  getFirestore=m[2].getFirestore;collection=m[2].collection;doc=m[2].doc;setDoc=m[2].setDoc;onSnapshot=m[2].onSnapshot;query=m[2].query;where=m[2].where;updateDoc=m[2].updateDoc;getDoc=m[2].getDoc;deleteDoc=m[2].deleteDoc;
+  getFirestore=m[2].getFirestore;collection=m[2].collection;doc=m[2].doc;setDoc=m[2].setDoc;onSnapshot=m[2].onSnapshot;query=m[2].query;where=m[2].where;updateDoc=m[2].updateDoc;getDoc=m[2].getDoc;deleteDoc=m[2].deleteDoc;orderBy=m[2].orderBy;limit=m[2].limit;
   app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);if(!CU){$("el").textContent="";$("er").textContent=""}
  }catch(e){ok=false;fbMsg="Firebase kon niet geladen worden. Controleer je verbinding en de config.";$("el").textContent=fbMsg;$("er").textContent=fbMsg;return}
 
  var uMine=null,uAll=null,uEm=null;
- function refresh(){rebuild();view();paint();if(wantProf&&me()){wantProf=false;if(allowed())showProf()}else if($("prof").open&&allowed())showProf();maybeWip();renderTrk();checkRank()}
+ function refresh(){rebuild();view();paint();if(wantProf&&me()){wantProf=false;if(allowed())showProf()}else if($("prof").open&&allowed())showProf();maybeWip();checkRank()}
  onSnapshot(query(collection(db,"players"),where("approved","==",true)),function(s){
   PL=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});refresh()
  },function(){});
  onAuthStateChanged(auth,function(u){
-  CU=u;MYDOC=null;ALL=[];EM={};ACT=[];actReady=false;docLoaded=false;if($("trk").open)$("trk").close();
+  CU=u;MYDOC=null;ALL=[];EM={};EV=[];LG=false;docLoaded=false;
   if(uMine){uMine();uMine=null}if(uAll){uAll();uAll=null}if(uEm){uEm();uEm=null}if(uAct){uAct();uAct=null}
   paint();
   if(!u){refresh();return}
   getDoc(doc(db,"private",u.uid)).then(function(d){if(!d.exists())return setDoc(doc(db,"private",u.uid),{email:u.email})}).catch(function(){});
-  var gA=function(s){ACT=s.docs.map(function(x){return Object.assign({id:x.id},x.data())});actReady=true;refresh()};
-  uAct=onSnapshot(collection(db,"activities"),gA,function(){uAct=onSnapshot(query(collection(db,"activities"),where("uid","==",u.uid)),gA,function(){})});
   uMine=onSnapshot(doc(db,"players",u.uid),function(d){
-   MYDOC=d.exists()?Object.assign({id:d.id},d.data()):null;docLoaded=true;
+   MYDOC=d.exists()?Object.assign({id:d.id},d.data()):null;docLoaded=true;if(MYDOC&&!LG){LG=true;logEv("login","")}
    if(MYDOC&&MYDOC.admin===true&&!uAll){uAll=onSnapshot(collection(db,"players"),function(s){ALL=s.docs.map(function(x){return Object.assign({id:x.id},x.data())});refresh()},function(){});uEm=onSnapshot(collection(db,"private"),function(s){EM={};s.docs.forEach(function(x){EM[x.id]=x.data().email});if($("rev").open){}},function(){})}
    if(!(MYDOC&&MYDOC.admin===true)&&uAll){uAll();uAll=null;ALL=[];if(uEm){uEm();uEm=null}}
    refresh()
