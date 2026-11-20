@@ -111,7 +111,7 @@ function renderReq(body){
  list.forEach(p=>{
   const c=h("div","ap-req"),top=h("div","ap-top");
   top.append(h("div","ap-av",ini(nameOf(p))),h("strong",null,nameOf(p)));c.appendChild(top);
-  row(c,"Naam",p.first||"-");row(c,"Achternaam",p.last||"-");row(c,"Rugnummer","#"+(p.num??"-"));row(c,"Club",p.club||"-");row(c,"Leeftijd",(p.age??"-")+" jaar");row(c,"E-mail",EM[p.id]||"onbekend (zie Firebase > Authentication)");
+  row(c,"Naam",p.first||"-");row(c,"Achternaam",p.last||"-");row(c,"Rugnummer","#"+(p.num??"-"));row(c,"Club",p.club||"-");row(c,"Voetbal.nl",p.voetbalnl||"-");row(c,"Leeftijd",(p.age??"-")+" jaar");row(c,"E-mail",EM[p.id]||"onbekend (zie Firebase > Authentication)");
   const bt=h("div","ap-btns"),yes=h("button","ap-yes","Goedkeuren"),no=h("button","ap-no","Weigeren");yes.type=no.type="button";
   const set=d=>{yes.disabled=no.disabled=true;updateDoc(doc(db,"players",p.id),d).catch(()=>{yes.disabled=no.disabled=false;alert("Opslaan mislukt. Controleer de Firestore-regels.")})};
   yes.onclick=()=>set({approved:true});no.onclick=()=>set({rejected:true});
