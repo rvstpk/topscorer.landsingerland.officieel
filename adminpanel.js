@@ -5,7 +5,7 @@
    - Alle gebruikers ontvangen meldingen live; wie niet actief was, krijgt ze zodra die weer op de website is. */
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import {getFirestore,collection,doc,getDoc,setDoc,addDoc,updateDoc,deleteDoc,onSnapshot,query,where} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {getFirestore,collection,doc,getDoc,setDoc,addDoc,updateDoc,deleteDoc,onSnapshot,query,where,orderBy,limit} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const css=`
 #adm-fab{position:fixed;left:18px;bottom:18px;z-index:60;display:none;align-items:center;gap:8px;font:700 .95rem Archivo,system-ui,sans-serif;color:#2a1c00;cursor:pointer;padding:11px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.8);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:0 10px 28px rgba(0,0,0,.3),inset 0 1px 1px #fff}
@@ -17,7 +17,7 @@ html.pre-blocked #adm-fab{display:none!important}
 #adminp::backdrop,#notif::backdrop{background:rgba(3,12,7,.75);backdrop-filter:blur(6px)}
 .ap-h{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;font:700 .85rem "Archivo Narrow",sans-serif;letter-spacing:.2em;color:#2a1c00;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
 .ap-x{width:34px;height:34px;border-radius:50%;border:1px solid rgba(60,40,0,.4);background:rgba(255,255,255,.45);color:#2a1c00;font-size:1.3rem;cursor:pointer;line-height:1}
-.ap-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 16px 4px}
+.ap-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:14px 16px 4px}
 .ap-tab{font:600 .95rem Archivo,sans-serif;color:#fff;cursor:pointer;padding:12px 10px;border-radius:16px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;gap:8px}
 .ap-tab[aria-pressed="true"]{background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.08));border-color:rgba(255,255,255,.8);box-shadow:inset 0 1px 1px rgba(255,255,255,.7)}
 .ap-tab i{font-style:normal;min-width:20px;height:20px;border-radius:999px;background:#d6213a;display:none;place-items:center;font-size:.72rem;padding:0 6px}
@@ -71,6 +71,8 @@ const nt=document.createElement("dialog");nt.id="notif";document.body.appendChil
 
 /* ---------- state ---------- */
 let DRAFT="",LASTST="",db,auth,uid=null,ME=null,ALL=[],EM={},HIST=[],tab="req",mode="all",SEL=new Set(),filter="",subs=[],lastSeen=0,A=[],B=[],seen=new Set();
+let EV=[],evF="";
+const EVL={login:"Ingelogd",card:"Kaart bekeken",zoek:"Zocht",profiel:"Profiel geopend",beheer:"Beheer"};
 const isAdmin=()=>!!(ME&&ME.admin===true);
 const pending=()=>ALL.filter(x=>!x.approved&&!x.rejected);
 const nameOf=x=>((x.first||"")+" "+(x.last||"")).trim()||"Onbekend";
@@ -85,7 +87,7 @@ refreshPanel();
 function refreshPanel(){
  if(!ap.open)return;
  const a=document.activeElement;
- if(tab==="msg"&&a&&ap.contains(a)&&/^(TEXTAREA|INPUT)$/.test(a.tagName))return;
+ if((tab==="msg"||tab==="act")&&a&&ap.contains(a)&&/^(TEXTAREA|INPUT)$/.test(a.tagName))return;
  renderPanel(true)
 }
 fab.onclick=()=>{renderPanel();ap.showModal()};
@@ -97,9 +99,9 @@ function renderPanel(keepScroll){
  const t1=h("button","ap-tab");t1.type="button";t1.setAttribute("aria-pressed",tab==="req");t1.append("Aanvragen ",Object.assign(h("i",pending().length?"has":"",pending().length),{}));
  const t2=h("button","ap-tab","Melding sturen");t2.type="button";t2.setAttribute("aria-pressed",tab==="msg");
  t1.onclick=()=>{tab="req";renderPanel()};t2.onclick=()=>{tab="msg";LASTST="";renderPanel()};
- tabs.append(t1,t2);ap.appendChild(tabs);
+ const t3=h("button","ap-tab","Activiteit");t3.type="button";t3.setAttribute("aria-pressed",tab==="act");t3.onclick=()=>{tab="act";renderPanel()};tabs.append(t1,t2,t3);ap.appendChild(tabs);
  const body=h("div","ap-b");ap.appendChild(body);
- tab==="req"?renderReq(body):renderMsg(body);
+ tab==="req"?renderReq(body):tab==="act"?renderAct(body):renderMsg(body);
  if(keepScroll)ap.scrollTop=sc;
 }
 function row(parent,k,v){const r=h("div","ap-row");r.append(h("span",null,k),h("span",null,v));parent.appendChild(r)}
@@ -155,6 +157,23 @@ function renderMsg(body){
   };
   d.appendChild(del);body.appendChild(d)});
 }
+function renderAct(body){
+ body.appendChild(h("h3",null,"Gebruikersactiviteit"));
+ body.appendChild(h("p","ap-sum","Hier zie je wat gebruikers op de website doen: inloggen, kaarten bekijken, zoeken en het profiel openen. Je ziet de laatste 300 acties."));
+ const s=h("input");s.type="search";s.placeholder="Filter op naam of actie…";s.value=evF;s.setAttribute("aria-label","Filter");body.appendChild(s);
+ const box=h("div");body.appendChild(box);
+ const draw=()=>{box.innerHTML="";const q=evF.toLowerCase().trim(),seenU={},sum=[];
+  EV.forEach(e=>{if(e.type==="beheer")return;let u=seenU[e.uid];if(!u){u=seenU[e.uid]={name:e.name||"Onbekend",n:0,ms:e.ms};sum.push(u)}u.n++});
+  box.appendChild(h("h4",null,"Per gebruiker (laatst actief eerst)"));
+  if(!sum.length)box.appendChild(h("div","ap-empty","Nog geen activiteit."));
+  sum.forEach(u=>{const r=h("div","ap-row");r.append(h("span",null,u.name),h("span",null,u.n+" acties · "+fmtDate(u.ms)));box.appendChild(r)});
+  box.appendChild(h("h4",null,"Alle acties"));
+  const l=EV.filter(e=>!q||((e.name||"")+" "+(EVL[e.type]||e.type)+" "+(e.detail||"")).toLowerCase().includes(q));
+  if(!l.length)box.appendChild(h("div","ap-empty","Geen acties gevonden."));
+  l.slice(0,100).forEach(e=>{const d=h("div","ap-hist");d.append(h("small",null,fmtDate(e.ms)+" · "+(e.name||"Onbekend")),h("div",null,(EVL[e.type]||e.type)+(e.detail?": "+e.detail:"")));box.appendChild(d)});
+ };
+ s.oninput=()=>{evF=s.value;draw()};draw();
+}
 function buildPick(box){
  const s=h("input");s.type="search";s.placeholder="Zoek gebruiker of club…";s.value=filter;s.setAttribute("aria-label","Zoek gebruiker");box.appendChild(s);
  const list=h("div","ap-list");box.appendChild(list);
@@ -206,7 +225,7 @@ if(pf){const clean=()=>[...pf.children].forEach(el=>{if(el.classList.contains("p
 function start(){
  const app=getApp();db=getFirestore(app);auth=getAuth(app);
  onAuthStateChanged(auth,async u=>{
-  subs.forEach(f=>f());subs=[];uid=u?u.uid:null;ME=null;ALL=[];EM={};HIST=[];A=[];B=[];seen=new Set();shown=[];SEL.clear();
+  subs.forEach(f=>f());subs=[];uid=u?u.uid:null;ME=null;ALL=[];EM={};HIST=[];EV=[];A=[];B=[];seen=new Set();shown=[];SEL.clear();
   if(ap.open)ap.close();if(nt.open)nt.close();renderBadge();
   if(!u)return;
   let ls=Date.parse((u.metadata&&u.metadata.creationTime)||0)||0;
@@ -223,6 +242,7 @@ function start(){
     subs.push(onSnapshot(collection(db,"players"),s=>{ALL=map(s);renderBadge()},()=>{}));
     subs.push(onSnapshot(collection(db,"private"),s=>{EM={};s.docs.forEach(x=>EM[x.id]=x.data().email);renderBadge()},()=>{}));
     subs.push(onSnapshot(collection(db,"notifications"),s=>{HIST=map(s);refreshPanel()},()=>{}));
+    subs.push(onSnapshot(query(collection(db,"activity"),orderBy("ms","desc"),limit(300)),s=>{EV=map(s);refreshPanel()},()=>{}));
    }
    renderBadge();showNotes();
   },()=>{}));
