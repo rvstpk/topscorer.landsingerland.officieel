@@ -331,7 +331,7 @@ function start(){
     subs.push(onSnapshot(query(collection(db,"activity"),orderBy("ms","desc"),limit(300)),s=>{EV=map(s);refreshPanel()},()=>{}));
    }
    renderBadge();showNotes();
-  },()=>{}));
+  },e=>console.error("Admin-paneel: eigen speler lezen mislukt (Firestore-regels of verbinding)",e)));
  });
 }
 let tries=0;(function wait(){if(getApps().length)start();else if(tries++<150)setTimeout(wait,100)})();
