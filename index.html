@@ -400,6 +400,100 @@ html:has(dialog[open]),html:has(dialog[open]) body{overflow:hidden}
 #dlg[open] .cardw{animation:cardin .65s cubic-bezier(.2,.9,.3,1.1),edge 2.6s ease-in-out .65s infinite}
 @media (prefers-reduced-motion:reduce){#dlg[open] .cardw{animation:none}}
 #dlg .x{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:14px;z-index:20;color:#fff;background:rgba(0,0,0,.55);border-color:rgba(255,255,255,.6)}
+
+/* uitleg-kaart = zelfde stijl als echte kaart */
+#vcard{--cp:polygon(0 7%,10% 3.5%,50% 0,90% 3.5%,100% 7%,100% 86%,50% 100%,0 86%);--fg:#fff1c4;--fg2:rgba(255,241,196,.8);--glow:#ffd60a;position:absolute;top:0;left:50%;width:360px;transform-origin:top center;color:var(--fg);font:400 1rem/1.5 Archivo,system-ui,sans-serif;filter:drop-shadow(0 0 5px var(--glow)) drop-shadow(0 0 16px var(--glow))}
+#vcard #vg{display:block;font:700 4.2rem/.9 "Archivo Narrow",sans-serif;color:var(--fg);text-shadow:none}
+#vcard .meter i{transition:none}
+#vcard h2,#vcard p{margin:0}
+#vcard .fcw{position:relative;margin:8px;padding:34px 20px 74px;clip-path:var(--cp);background:linear-gradient(160deg,rgba(255,255,255,.45),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 20%,#f7e49c),#ecc752 55%,#d6a92f)}
+#vcard .fcw>:not(.drk){position:relative}
+#vcard .drk{color:var(--fg);opacity:.07;right:6px;top:48px;font-size:11rem}
+#vcard .ftop{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center}
+#vcard .fl{display:grid;gap:5px;justify-items:start}
+#vcard .sl{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--fg2);opacity:1}
+#vcard .ln{display:block;width:44px;height:2px;background:var(--fg2);opacity:.5}
+#vcard .rkl{font:700 1.5rem "Archivo Narrow",sans-serif}
+#vcard .dc{color:var(--fg);font-size:.78rem;padding:3px 10px;border-color:rgba(60,40,0,.35);background:rgba(255,255,255,.4);box-shadow:inset 3px 0 0 var(--tint),inset 0 1px 1px rgba(255,255,255,.8)}
+#vcard .por{justify-self:end;width:min(150px,40vw);aspect-ratio:1;display:grid;place-items:center;border-radius:50%;font:700 3.4rem "Archivo Narrow",sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.4);background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.6),transparent 50%),var(--tint);box-shadow:inset 0 -10px 18px rgba(0,0,0,.3),0 0 0 4px rgba(255,255,255,.55),0 8px 18px rgba(60,40,0,.3)}
+#vcard .dh{display:block;padding:0;margin-top:10px;text-align:center;border-top:2px solid var(--fg2);padding-top:10px}
+#vcard .dh h2{color:var(--fg);text-shadow:none;margin:0;font-size:clamp(1.7rem,8vw,2.2rem)}
+#vcard .dh p{color:var(--fg2);margin-top:4px}
+#vcard .st{padding:0;margin-top:10px}
+#vcard .st .meter{height:14px;margin:4px 0 6px;background:rgba(60,40,0,.2);border-color:rgba(255,255,255,.7)}
+#vcard .st small{color:var(--fg2);opacity:1;text-align:center}
+#vcard .chips{justify-content:center;gap:6px}
+#vcard .chips span{color:var(--fg);background:rgba(255,255,255,.4);border-color:rgba(60,40,0,.35);box-shadow:inset 0 1px 1px rgba(255,255,255,.8);padding:3px 10px;font-size:.78rem}
+#vcard.top{--fg:#f6e6a8;--fg2:rgba(246,230,168,.78)}
+#vcard.top .fcw{background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 32%,#101c4a),#0a1233)}
+#vcard.top .dc,#vcard.top .chips span,#vcard.top .x{background:rgba(255,255,255,.1);border-color:rgba(246,230,168,.55)}
+#vcard.top .st .meter{background:rgba(255,255,255,.12)}
+#vcard .drk{display:none}
+#vcard .rkl{font-size:2.6rem;line-height:.95}
+#vcard .rkl::before{content:"RANG";display:block;font:600 .68rem Archivo,sans-serif;letter-spacing:.14em;color:var(--fg2);margin-bottom:2px}
+#vcard[data-tier="1"]{background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%)}
+#vcard[data-tier="2"]{background:linear-gradient(135deg,#ffffff 0,#dde2e9 28%,#8f98a3 52%,#f1f4f8 76%,#7a838e 100%)}
+#vcard[data-tier="3"]{background:linear-gradient(135deg,#ffdcb4 0,#e29c5c 28%,#a15a22 52%,#f2b57c 76%,#7a3f12 100%)}
+#vcard[data-tier="r"]{background:linear-gradient(135deg,#d6ae45 0,#a8801f 28%,#6e5010 52%,#c4a035 76%,#4f3908 100%)}
+#vcard[data-tier="r"]{--fg:#fff1c4;--fg2:rgba(255,241,196,.8);background:linear-gradient(135deg,#e2bd5a 0,#b38a26 25%,#5e430a 55%,#c9a23c 78%,#3b2905 100%)}
+#vcard[data-tier="r"] .fcw{background:linear-gradient(160deg,rgba(255,255,255,.28),rgba(255,255,255,0) 45%),linear-gradient(180deg,color-mix(in srgb,var(--tint) 72%,#000),color-mix(in srgb,var(--tint) 48%,#000))}
+#vcard[data-tier="r"] .por{background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.65),transparent 55%),color-mix(in srgb,var(--tint) 88%,#fff)}
+#vcard[data-tier="r"] .st .meter i{background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),linear-gradient(90deg,#fff1c4,#e8c86a)}
+#vcard[data-tier="r"] .dc,#vcard[data-tier="r"] .chips span,#vcard[data-tier="r"] .x{background:rgba(255,255,255,.14);border-color:rgba(255,241,196,.55)}
+#vcard[data-tier="r"] .st .meter{background:rgba(0,0,0,.25)}
+#vcard[data-tier] .st .meter{overflow:visible;height:16px;margin:10px 0 12px;background:rgba(10,5,0,.45);border-color:rgba(255,226,120,.55);box-shadow:inset 0 2px 4px rgba(0,0,0,.5),0 0 14px rgba(255,190,0,.25)}
+#vcard[data-tier] .st .meter i{background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe46b,#ffc400 55%,#ff9f0a);animation:glow 2.2s ease-in-out infinite}
+#vcard[data-tier] .st .meter i::before{content:"";position:absolute;right:-3px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:#fff8cf;box-shadow:0 0 10px 3px #ffe566,0 0 22px 8px rgba(255,190,0,.8)}
+@media (prefers-reduced-motion:reduce){#vcard[data-tier] .st .meter i{animation:none;box-shadow:inset 0 1px 1px rgba(255,255,255,.95),0 0 12px #ffd60a,0 0 26px rgba(255,190,0,.7)}}
+#vcard[data-tier="1"]{--glow:#ffd60a}
+#vcard[data-tier="2"]{--glow:#e3ecf8}
+#vcard[data-tier="3"]{--glow:#ff9a4a}
+#vcard[data-tier="r"]{--glow:#e0a400}
+#vcard[data-tier="1"],#vcard[data-tier="2"],#vcard[data-tier="3"],#vcard[data-tier="r"]{background:none}
+#vcard .shell{position:relative;overflow:hidden;clip-path:var(--cp);background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%)}
+#vcard .shell::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:4;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.6) 50%,transparent 65%);transform:translateX(-130%);animation:foil 4s ease-in-out infinite}
+#vcard[data-tier="1"] .shell{background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%)}
+#vcard[data-tier="2"] .shell{background:linear-gradient(135deg,#ffffff 0,#dde2e9 28%,#8f98a3 52%,#f1f4f8 76%,#7a838e 100%)}
+#vcard[data-tier="3"] .shell{background:linear-gradient(135deg,#ffdcb4 0,#e29c5c 28%,#a15a22 52%,#f2b57c 76%,#7a3f12 100%)}
+#vcard[data-tier="r"] .shell{background:linear-gradient(135deg,#e2bd5a 0,#b38a26 25%,#5e430a 55%,#c9a23c 78%,#3b2905 100%)}
+#vcard .fcw>.fx{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+#vcard .fcw::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:conic-gradient(from var(--ang,160deg) at 50% -10%,rgba(255,255,215,.34),rgba(255,255,215,0) 40deg);animation:sweep 6s ease-in-out infinite alternate}
+#vcard .fx i{opacity:.5}
+#vcard .fx i:nth-child(2){opacity:.4}
+#vcard .fx i:nth-child(3){opacity:.55}
+@media (prefers-reduced-motion:reduce){#vcard .fcw::before{animation:none}}
+#vcard[data-rank="gold"],#prof[data-rank="gold"]{--glow:#ffd60a}
+#vcard[data-rank="silver"]{--glow:#e3ecf8}
+#vcard[data-rank="bronze"]{--glow:#ff9a4a}
+#vcard[data-rank="red"]{--glow:#ff3b4a}
+#vcard[data-rank="gold"] .shell{background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%)}
+#vcard[data-rank="silver"] .shell{background:linear-gradient(135deg,#fff 0,#dde2e9 28%,#8f98a3 52%,#f1f4f8 76%,#7a838e 100%)}
+#vcard[data-rank="bronze"] .shell{background:linear-gradient(135deg,#ffdcb4 0,#e29c5c 28%,#a15a22 52%,#f2b57c 76%,#7a3f12 100%)}
+#vcard[data-rank="red"] .shell{background:linear-gradient(135deg,#ff9aa4 0,#e0313f 28%,#8c0f1c 52%,#f0505c 76%,#5c0710 100%)}
+/* categorie-balk (spelers / clubs) */
+.cats{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;position:relative}
+.cats button{min-height:44px;font:700 1rem "Archivo Narrow",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#fff;cursor:pointer;padding:10px 24px;border-radius:999px;border:1px solid rgba(255,255,255,.55);background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.05));box-shadow:inset 0 1px 1px rgba(255,255,255,.6)}
+.cats button[aria-pressed="true"]{color:#2a1c00;border-color:rgba(255,255,255,.85);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:inset 0 1px 1px #fff,0 0 14px rgba(255,214,10,.5)}
+.hero .cathint{margin-top:12px}
+/* profiel bewerken */
+.pf .btns.w{grid-column:1/-1;margin-top:0}
+.pf input[type=file]{display:none}
+/* uitleg-video: telefoon = staand formaat, kaart op echte grootte */
+@media (max-width:640px){
+.vid{padding-left:12px;padding-right:12px}
+.stage{aspect-ratio:10/17}
+.vtag{top:4cqw;left:4cqw;font-size:max(10px,2.8cqw);padding:.8cqw 2.6cqw}
+.vmain{inset:13cqw 4cqw 31cqw;grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:2.5cqw;align-items:start}
+.vtx{text-align:center}
+.vtx h3{font-size:8cqw}
+.vtx p{font-size:max(12px,3.6cqw);margin-top:1.2cqw}
+.vcw{width:100%;height:100%;aspect-ratio:auto;justify-self:stretch}
+.vlad{grid-template-columns:1fr 1fr;gap:2cqw;bottom:5cqw}
+.lp{padding:1.4cqw 1cqw;border-radius:3cqw}
+.lp b{font-size:max(12px,3.6cqw)}
+.lp span{font-size:max(10px,2.8cqw)}
+.vbar{height:max(7px,1.6cqw)}
+}
 </style>
 </head>
 <body>
@@ -409,11 +503,11 @@ html:has(dialog[open]),html:has(dialog[open]) body{overflow:hidden}
 <header class="hero">
 <svg viewBox="0 0 960 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="20" y="20" width="920" height="260"/><line x1="480" y1="20" x2="480" y2="280"/><circle cx="480" cy="150" r="60"/><rect x="20" y="85" width="110" height="130"/><rect x="830" y="85" width="110" height="130"/></svg>
 <button class="acc" id="acc">Inloggen</button>
-<div><h1>Topscorers<br>Landsingerland</h1><p>de topscorers uit landsingerland. klik op de naam voor details van de spelers.</p></div>
+<div><h1>Topscorers<br>Landsingerland</h1><p>de topscorers uit landsingerland. klik op de naam voor details van de spelers.</p><nav class="cats" aria-label="Categorie"><button type="button" id="ctp" aria-pressed="true">Spelers</button><button type="button" id="ctc" aria-pressed="false">Clubs</button></nav><p class="cathint" id="cathint" hidden>Per club zie je de speler die het meeste scoort voor die club.</p></div>
 </header>
 <main>
 <div class="podium" id="podium"></div>
-<div class="bar"><h2 class="sh">Ranglijst</h2>
+<div class="bar"><h2 class="sh" id="rt">Ranglijst</h2>
 <input id="q" type="search" placeholder="Zoek speler, club of land" aria-label="Zoeken">
 </div>
 <div class="grid" id="rows"></div>
@@ -427,12 +521,11 @@ html:has(dialog[open]),html:has(dialog[open]) body{overflow:hidden}
 <div class="vmain">
 <div class="vtx" id="vtx"><h3 id="vt"></h3><p id="vs"></p></div>
 <div class="vcw" id="vcw"><div class="vring" id="vring"></div>
-<div class="vc2"><div class="vsh"><i class="fr f0"></i><i class="fr f1" id="f1"></i><i class="fr f2" id="f2"></i><i class="fr f3" id="f3"></i>
-<div class="vin2">
-<div class="vtop2"><div class="vl2"><b id="vg">0</b><span class="vk">DOELPUNTEN</span><span class="vln"></span><span class="vk">RANG</span><span class="vrn" id="vrn">BRONS</span><span class="vcl">Jouw club</span></div><div class="vpor">JN</div></div>
-<div class="vnm">JOUW NAAM</div>
-<div class="vmt"><i id="vmf"></i></div><div class="vsm" id="vsm"></div>
-</div><span class="vsheen" id="vsheen"></span></div></div></div>
+<div id="vcard" data-tier="r" data-rank="bronze"><div class="shell"><div class="fcw"><div class="fx" aria-hidden="true"><i></i><i></i><i></i><u></u><u></u><b></b><b></b></div>
+<div class="ftop"><div class="fl"><b id="vg">0</b><span class="sl">Doelpunten</span><span class="ln"></span><span class="rkl" id="vrn">Brons</span><span class="dc">Jouw club</span></div><div class="por">JN</div></div>
+<div class="dh"><div><h2>Jouw naam</h2><p>Speler · rugnummer #10</p></div></div>
+<div class="st"><span class="meter"><i id="vmf"></i></span><small id="vsm"></small></div>
+<span class="vsheen" id="vsheen" style="display:none"></span></div></div></div></div>
 </div>
 <div class="vlad" id="vlad"></div>
 <div class="vbar" id="vbar"><i id="vp"></i></div>
@@ -650,7 +743,7 @@ html:has(dialog[open]),html:has(dialog[open]) body{overflow:hidden}
 <label class="w">Voetbal.nl accountnaam<input id="rv" autocomplete="off" required></label>
 <label class="w">E-mail<input id="re" type="email" autocomplete="email" required></label>
 <label class="w">Wachtwoord (minstens 8 tekens)<input id="rp" type="password" autocomplete="new-password" minlength="8" required></label>
-<p class="w" style="font-size:.8rem;opacity:.75">Beheerders kunnen zien wat je op de website doet (inloggen, kaarten bekijken, zoeken).</p>
+<p class="w" style="font-size:.8rem;opacity:.75">Beheerders kunnen zien wat je op de website doet (inloggen, kaarten bekijken, zoeken, profiel bewerken).</p>
 <p class="err" id="er" role="alert"></p>
 <button class="go" type="submit">Account maken</button>
 </form>
@@ -694,6 +787,7 @@ const firebaseConfig={
 /* ================================================================================================ */
 let ok=firebaseConfig.apiKey!=="PLAK_HIER";
 let fbMsg=ok?"Even geduld, Firebase wordt geladen.":"Firebase is nog niet ingesteld.";
+let reauthenticateWithCredential,EmailAuthProvider,verifyBeforeUpdateEmail;
 let initializeApp,getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,getFirestore,collection,doc,setDoc,onSnapshot,query,where,updateDoc,getDoc,deleteDoc,orderBy,limit;
 var BASE=[
 {n:"Cristiano Ronaldo",c:"Portugal",g:950,m:1280,i:143,y:"2002-heden",a:true,t:"Sporting, Man. United, Real Madrid, Juventus, Al-Nassr",h:"5x Ballon d’Or, 5x Champions League"},
@@ -718,7 +812,7 @@ function rebuild(){
  Object.keys(us).forEach(function(em){var u=us[em],n=u.first+" "+u.last;
   if(CL[n])n+=" (#"+u.num+")";
   CL[n]=[u.club,clubColor(u.club),true];
-  extra.push({n:n,id:u.id,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar",aw:Math.max(0,+u.awards||0),sk:streakW(u.gw),gw:u.gw||[]})});
+  extra.push({n:n,id:u.id,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar",aw:Math.max(0,+u.awards||0),sk:streakW(u.gw),gw:u.gw||[],ph:u.photo})});
  P=BASE.concat(extra);
  P.sort(function(a,b){return b.g-a.g});
  P.forEach(function(p){CL[p.n][1]=tierColor(p.g)});
@@ -729,35 +823,54 @@ function count(){
  if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
  document.querySelectorAll("[data-n]").forEach(function(e){var n=+e.dataset.n,t0=performance.now();(function st(t){var k=Math.min((t-t0)/1200,1);e.textContent=num(Math.round(n*(1-Math.pow(1-k,3))));if(k<1)requestAnimationFrame(st)})(t0)})
 }
-var f="all",q="",s="goals",body=document.getElementById("rows");
+var f="all",q="",s="goals",cat="players",body=document.getElementById("rows");
 function num(x){return x.toLocaleString("nl-NL")}
 function val(p){return p.g}
 function ini(n){return n.replace(/\s*\(.*\)$/,"").split(" ").map(function(w){return w[0]}).join("").slice(0,2).toUpperCase()}
+var PHRE=/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/;
+function phOk(x){return typeof x==="string"&&x.length<300000&&PHRE.test(x)}
+function phSet(el,src,txt){
+ if(phOk(src)){el.style.backgroundImage='url("'+src+'")';el.style.backgroundSize="cover";el.style.backgroundPosition="center";el.textContent=""}
+ else{el.style.backgroundImage="";el.style.backgroundSize="";el.style.backgroundPosition="";el.textContent=txt}
+}
+function rowsFor(){
+ var rs;
+ if(cat==="clubs"){
+  /* per club: de speler die het meeste scoort voor die club */
+  var m={};
+  P.forEach(function(p){var c=String(CL[p.n][0]||"").replace(/\s+/g," ").trim();if(!c)return;var k=c.toLowerCase();if(!m[k]||p.g>m[k].p.g)m[k]={p:p,club:c}});
+  rs=Object.keys(m).map(function(k){var e=m[k];return {p:e.p,top:"Topscorer · "+e.p.n,main:e.club}});
+  rs=rs.filter(function(x){return (x.main+" "+x.p.n).toLowerCase().indexOf(q)>-1});
+  rs.sort(function(a,b){return b.p.g-a.p.g||a.main.localeCompare(b.main,"nl")});
+ }else{
+  rs=P.filter(function(p){return (p.n+" "+p.t+" "+CL[p.n][0]).toLowerCase().indexOf(q)>-1}).map(function(p){return {p:p,top:CL[p.n][0],main:p.n}});
+  rs.sort(function(a,b){return s==="name"?a.p.n.localeCompare(b.p.n,"nl"):val(b.p)-val(a.p)});
+ }
+ return rs;
+}
 function view(){
- var r=P.filter(function(p){
-  return (p.n+" "+p.t+" "+CL[p.n][0]).toLowerCase().indexOf(q)>-1});
- r.sort(function(a,b){return s==="name"?a.n.localeCompare(b.n,"nl"):val(b)-val(a)});
- var max=Math.max.apply(null,r.map(function(p){return p.g}).concat(1));
+ var r=rowsFor();
+ document.getElementById("rt").textContent=cat==="clubs"?"Clubranglijst":"Ranglijst";
  var pod=document.getElementById("podium"),ns=q?0:3;pod.innerHTML="";pod.hidden=!ns;
- r.slice(0,ns).forEach(function(p,k){
+ r.slice(0,ns).forEach(function(x,k){var p=x.p;
   var col=document.createElement("div");col.className="pcol pcol"+(k+1);
   var b=document.createElement("button");b.className="pc pc"+(k+1);b.style.setProperty("--tint",CL[p.n][1]);
   b.innerHTML='<span class="nb"></span><span class="av"></span><span class="pcl"></span><span class="pn"></span><span class="pg"></span><span class="meter"><i></i></span>';
-  var c=b.children;c[0].textContent="#"+(k+1);c[1].textContent=ini(p.n);c[2].textContent=CL[p.n][0];c[3].textContent=p.n;c[4].textContent=num(p.g);c[4].dataset.n=p.g;
+  var c=b.children;c[0].textContent="#"+(k+1);phSet(c[1],p.ph,ini(p.n));c[2].textContent=x.top;c[3].textContent=x.main;c[4].textContent=num(p.g);c[4].dataset.n=p.g;
   b.appendChild(chips(p));b.querySelector("i").dataset.w=Math.min(p.g/30,1)*100;
   b.onclick=function(){open(p)};
   var st=document.createElement("div");st.className="step";st.textContent=k+1;
   col.appendChild(b);col.appendChild(st);pod.appendChild(col);
  });
  body.innerHTML="";
- r.slice(q?0:3).forEach(function(p,k0){var k=k0+(q?0:3);
+ r.slice(q?0:3).forEach(function(x,k0){var p=x.p,k=k0+(q?0:3);
   var tr=document.createElement("button");tr.className="pc sm";
   tr.style.setProperty("--tint",CL[p.n][1]);
   tr.innerHTML='<span class="nb"></span><span class="av"></span><span class="mid"><span class="pn"></span><span class="cb"><span class="dot"></span><span class="ct"></span></span></span><span class="gl"><b class="pg"></b><em>goals</em></span>';
   tr.querySelector(".nb").textContent="#"+(k+1);
-  tr.querySelector(".av").textContent=ini(p.n);
-  tr.querySelector(".ct").textContent=CL[p.n][0];
-  tr.querySelector(".pn").textContent=p.n;
+  phSet(tr.querySelector(".av"),p.ph,ini(p.n));
+  tr.querySelector(".ct").textContent=x.top;
+  tr.querySelector(".pn").textContent=x.main;
   var b=tr.querySelector(".pg");b.textContent=num(p.g);b.dataset.n=p.g;
   tr.querySelector(".mid").appendChild(chips(p));tr.onclick=function(){open(p)};
   body.appendChild(tr);
@@ -776,7 +889,7 @@ function open(p){
  $("dc").textContent=cl[0];$("dn").textContent=p.n;$("dm").textContent=p.c+" · "+p.y;
  $("rk").textContent=rank+1;
  $("rkl").textContent="#"+(rank+1);
- $("ini").textContent=p.n.replace(/\s*\(.*\)$/,"").split(" ").map(function(w){return w[0]}).join("").slice(0,2).toUpperCase();
+ phSet($("ini"),p.ph,p.n.replace(/\s*\(.*\)$/,"").split(" ").map(function(w){return w[0]}).join("").slice(0,2).toUpperCase());
  d.classList.toggle("top",false);
  d.dataset.tier="r";d.dataset.rank=["bronze","silver","gold","red"][tierOf(p.g)];
  d.classList.toggle("is-rank-1",rank===0);d.classList.toggle("is-rank-2",rank===1);d.classList.toggle("is-rank-3",rank===2);
@@ -812,7 +925,7 @@ document.getElementById("close").onclick=function(){document.getElementById("dlg
 document.getElementById("dlg").onclick=function(e){if(e.target===this||e.target.classList.contains("sc"))this.close()};
 var $=function(i){return document.getElementById(i)};
 var EV=[],evF="",SK={},uAct=null,LG=false,QT=0,LAST={},TQ=[],TB=false;
-var PL=[],ALL=[],EM={},MYDOC=null,CU=null,wantProf=false,wipShown=false,docLoaded=false;
+var PL=[],ALL=[],EM={},MYDOC=null,CU=null,wantProf=false,wipShown=false,docLoaded=false,EDITING=false,PHOTO;
 var app=null,auth=null,db=null;
 function getUsers(){var o={};PL.forEach(function(u){o[u.id]=u});return o}
 function me(){if(!CU||!MYDOC)return null;return Object.assign({},MYDOC,{email:CU.email})}
@@ -832,15 +945,16 @@ function msg(e){var c=(e&&e.code)||"";
  if(c==="auth/too-many-requests")return "Te veel pogingen. Probeer het later opnieuw.";
  if(c==="auth/network-request-failed")return "Geen verbinding. Probeer het opnieuw.";
  if(c==="permission-denied"||c==="firestore/permission-denied")return "Opslaan is niet toegestaan. Controleer de Firestore-regels.";
+ if(c==="auth/requires-recent-login")return "Log opnieuw in en probeer het nog eens.";
  return "Er ging iets mis. Probeer het opnieuw."}
 function tab(t){var l=t==="l";$("fl").hidden=!l;$("fr").hidden=l;$("tbl").setAttribute("aria-pressed",l);$("tbr").setAttribute("aria-pressed",!l);$("at").textContent=l?"Inloggen":"Account maken"}
 function openAuth(t){tab(t);$("el").textContent=auth?"":fbMsg;$("er").textContent=auth?"":fbMsg;$("auth").showModal()}
 function showProf(){
- logEv("profiel","");
+ EDITING=false;logEv("profiel","");
  var u=me();if(!u)return;var pf=$("pf");pf.innerHTML="";
  var add=function(t,c,x){var n=document.createElement(t);if(c)n.className=c;n.textContent=x;pf.appendChild(n);return n};
  add("div","idh","MIJN PROFIEL");
- add("div","avb",ini(u.first+" "+u.last));
+ phSet(add("div","avb",""),u.photo,ini(u.first+" "+u.last));
  add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
  [["Naam",u.first],["Achternaam",u.last],["Rugnummer","#"+u.num],["Club",u.club],["Voetbal.nl",u.voetbalnl||"-"],["Leeftijd",u.age+" jaar"],["E-mail",u.email],["Doelpunten",u.goals||0]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
  if(!u.approved){add("p","pk",u.rejected?"Je aanvraag is afgewezen.":"Je account wacht op goedkeuring van een beheerder. Daarna sta je in de lijst met topscorers.").style.marginTop="10px"}
@@ -856,16 +970,92 @@ function showProf(){
    bx.appendChild(yes);r.appendChild(t);r.appendChild(bx);pf.appendChild(r)});
   if(!wait.length)add("p","pk","Geen openstaande aanvragen.")
  }
+ var eb=add("button","sec","Profiel bewerken");eb.style.marginTop="16px";eb.onclick=editProf;
  add("button","go","Uitloggen").onclick=function(){signOut(auth).then(function(){$("prof").close()})};
  add("p","pk",u.admin===true?"Je bent beheerder: je kunt goals aanpassen in de kaart van een speler.":"Goals worden alleen door een beheerder aangepast.").style.marginTop="14px";
  $("prof").style.setProperty("--tint",tierColor(u.goals||0));$("prof").dataset.rank=["bronze","silver","gold","red"][tierOf(u.goals||0)];$("prof").dataset.tier="r";if(!$("prof").open)$("prof").showModal();
+}
+function readPhoto(file){
+ return new Promise(function(res,rej){
+  var fr=new FileReader();fr.onerror=rej;
+  fr.onload=function(){var im=new Image();im.onerror=rej;
+   im.onload=function(){
+    var S=256,c=document.createElement("canvas");c.width=c.height=S;
+    var x=c.getContext("2d"),m=Math.min(im.width,im.height),sx=(im.width-m)/2,sy=(im.height-m)/2;
+    x.fillStyle="#fff";x.fillRect(0,0,S,S);x.drawImage(im,sx,sy,m,m,0,0,S,S);
+    var q=.82,d=c.toDataURL("image/jpeg",q);
+    while(d.length>150000&&q>.4){q-=.1;d=c.toDataURL("image/jpeg",q)}
+    res(d)};
+   im.src=fr.result};
+  fr.readAsDataURL(file)})
+}
+function editProf(){
+ var u=me();if(!u||!CU)return;EDITING=true;PHOTO=undefined;
+ var pf=$("pf");pf.innerHTML="";
+ var add=function(t,c,x){var n=document.createElement(t);if(c)n.className=c;n.textContent=x;pf.appendChild(n);return n};
+ add("div","idh","PROFIEL BEWERKEN");
+ var ints=ini(u.first+" "+u.last),av=add("div","avb","");phSet(av,u.photo,ints);
+ var fm=document.createElement("form");fm.className="tf";fm.noValidate=true;pf.appendChild(fm);
+ var inputs={};
+ var fld=function(key,label,type,val,wide,ac){var l=document.createElement("label");if(wide)l.className="w";l.appendChild(document.createTextNode(label));
+  var i=document.createElement("input");i.type=type;i.value=val==null?"":val;if(ac)i.autocomplete=ac;if(type==="number")i.inputMode="numeric";
+  l.appendChild(i);fm.appendChild(l);inputs[key]=i;return i};
+ var err=document.createElement("p");err.className="err";err.setAttribute("role","alert");
+ /* foto */
+ var pr=document.createElement("div");pr.className="btns w";
+ var file=document.createElement("input");file.type="file";file.accept="image/*";
+ var pick=document.createElement("button");pick.type="button";pick.className="sec";pick.textContent="Foto kiezen";
+ var del=document.createElement("button");del.type="button";del.className="sec";del.textContent="Foto verwijderen";
+ pick.onclick=function(){file.click()};
+ file.onchange=function(){var f=file.files&&file.files[0];if(!f)return;err.textContent="";
+  readPhoto(f).then(function(d){PHOTO=d;phSet(av,d,"")}).catch(function(){err.textContent="Deze foto kon niet gelezen worden. Kies een andere foto."});
+  file.value=""};
+ del.onclick=function(){PHOTO="";phSet(av,"",ints)};
+ pr.appendChild(pick);pr.appendChild(del);fm.appendChild(pr);fm.appendChild(file);
+ fld("first","Naam","text",u.first,false,"given-name");
+ fld("last","Achternaam","text",u.last,false,"family-name");
+ var rn=fld("num","Rugnummer","number",u.num,false);rn.min="1";rn.max="99";
+ var ra=fld("age","Leeftijd","number",u.age,false);ra.min="5";ra.max="99";
+ fld("club","Club","text",u.club,true,"organization");
+ fld("vnl","Voetbal.nl accountnaam","text",u.voetbalnl||"",true,"off");
+ fld("mail","E-mail","email",u.email||"",true,"email");
+ fld("pw","Huidig wachtwoord (alleen nodig als je je e-mail wijzigt)","password","",true,"current-password");
+ fm.appendChild(err);
+ var bt=document.createElement("div");bt.className="btns w";
+ var sv=document.createElement("button");sv.type="submit";sv.className="go";sv.textContent="Opslaan";
+ var cn=document.createElement("button");cn.type="button";cn.className="sec";cn.textContent="Annuleren";
+ cn.onclick=function(){showProf()};
+ bt.appendChild(sv);bt.appendChild(cn);fm.appendChild(bt);
+ fm.onsubmit=function(e){e.preventDefault();
+  var g=function(k){return inputs[k].value.trim()};
+  var nv={first:g("first"),last:g("last"),num:+g("num"),club:g("club"),voetbalnl:g("vnl"),age:+g("age")},mail=g("mail");
+  if(!nv.first||!nv.last||!nv.club||!nv.voetbalnl||!mail||!g("num")||!g("age")){err.textContent="Vul alle velden in.";return}
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){err.textContent="Dit e-mailadres lijkt niet te kloppen.";return}
+  if(!(nv.num>=1&&nv.num<=99&&nv.num%1===0)){err.textContent="Rugnummer moet tussen 1 en 99 liggen.";return}
+  if(!(nv.age>=5&&nv.age<=99&&nv.age%1===0)){err.textContent="Leeftijd moet tussen 5 en 99 liggen.";return}
+  var LB={first:"Naam",last:"Achternaam",num:"Rugnummer",club:"Club",voetbalnl:"Voetbal.nl",age:"Leeftijd"},ch={},det=[];
+  Object.keys(nv).forEach(function(k){if(nv[k]!==u[k]){ch[k]=nv[k];det.push(LB[k]+" → "+nv[k])}});
+  if(PHOTO!==undefined&&PHOTO!==(u.photo||"")){ch.photo=PHOTO;det.push(PHOTO?"Foto gewijzigd":"Foto verwijderd")}
+  var newMail=mail.toLowerCase()!==String(u.email||"").toLowerCase();
+  if(!det.length&&!newMail){err.textContent="Je hebt niets gewijzigd.";return}
+  if(newMail&&!g("pw")){err.textContent="Vul je huidige wachtwoord in om je e-mail te wijzigen.";return}
+  sv.disabled=true;err.textContent="Opslaan…";
+  var step=Promise.resolve();
+  if(newMail)step=reauthenticateWithCredential(CU,EmailAuthProvider.credential(CU.email,g("pw"))).then(function(){return verifyBeforeUpdateEmail(CU,mail)}).then(function(){det.push("E-mail (bevestiging verstuurd)")});
+  step.then(function(){return Object.keys(ch).length?updateDoc(doc(db,"players",CU.uid),ch):null})
+   .then(function(){logEv("bewerkt",det.join("; "));EDITING=false;showProf();toast(newMail?"Opgeslagen. Bevestig je nieuwe e-mail via de mail die we je gestuurd hebben.":"Je profiel is opgeslagen.")})
+   .catch(function(x){sv.disabled=false;var c=(x&&x.code)||"";
+    err.textContent=(c==="auth/wrong-password"||c==="auth/invalid-credential")?"Je wachtwoord klopt niet.":c==="auth/requires-recent-login"?"Log opnieuw in en probeer het nog eens.":msg(x)})
+ };
+ var P2=$("prof");P2.style.setProperty("--tint",tierColor(u.goals||0));if(!P2.open)P2.showModal();
+ $("pf").scrollTop=0;P2.scrollTop=0;
 }
 function showRev(x){
  var d=$("rev"),pf=$("revc");pf.innerHTML="";
  var add=function(t,c,v){var n=document.createElement(t);if(c)n.className=c;n.textContent=v;pf.appendChild(n);return n};
  add("div","idh","SPELERSPAS · AANVRAAG");
  var nm=x.first+" "+x.last;
- add("div","avb",ini(nm));
+ phSet(add("div","avb",""),x.photo,ini(nm));
  add("h2","",nm).id="revt";
  [["Naam",x.first],["Achternaam",x.last],["Rugnummer","#"+x.num],["Club",x.club],["Voetbal.nl",x.voetbalnl||"-"],["Leeftijd",x.age+" jaar"],["E-mail",EM[x.id]||"onbekend (zie Firebase > Authentication)"]].forEach(function(r){var row=add("div","pr","");[r[0],r[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;row.appendChild(s)})});
  var bt=document.createElement("div");bt.className="btns";pf.appendChild(bt);
@@ -910,8 +1100,8 @@ function wkN(){return wk(ymd(new Date()))}
 function streakW(a){var w={};(a||[]).forEach(function(k){w[k]=1});var c=wkN(),n=0,x=w[c]?c:c-1;while(w[x]){n++;x--}return n}
 function addW(a){var c=wkN();a=a||[];return a.indexOf(c)>-1?a:a.concat(c).slice(-60)}
 function ftime(ms){return new Date(ms).toLocaleString("nl-NL",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}
-function logEv(t,d){if(!CU||!MYDOC||!db||!allowed()||(isAdmin()&&t!=="beheer"))return;var k=t+d,n=Date.now();if(LAST[k]&&n-LAST[k]<30000)return;LAST[k]=n;
- setDoc(doc(collection(db,"activity")),{uid:CU.uid,name:((MYDOC.first||"")+" "+(MYDOC.last||"")).trim(),type:t,detail:String(d||"").slice(0,80),ms:n}).catch(function(){})}
+function logEv(t,d){if(!CU||!MYDOC||!db||!allowed()||(isAdmin()&&t!=="beheer"&&t!=="bewerkt"))return;var k=t+d,n=Date.now();if(LAST[k]&&n-LAST[k]<30000)return;LAST[k]=n;
+ setDoc(doc(collection(db,"activity")),{uid:CU.uid,name:((MYDOC.first||"")+" "+(MYDOC.last||"")).trim(),type:t,detail:String(d||"").slice(0,200),ms:n}).catch(function(){})}
 var PS="showPopover" in HTMLElement.prototype;if(!PS)document.getElementById("toast").classList.add("np");
 function toast(t){TQ.push(t);if(!TB){TB=true;try{PS?document.getElementById("toast").showPopover():document.getElementById("toast").classList.add("on")}catch(e){}nextToast()}}
 function nextToast(){var e=document.getElementById("toast");if(!TQ.length){TB=false;try{PS?e.hidePopover():e.classList.remove("on")}catch(x){}return}e.firstChild.textContent=TQ.shift();setTimeout(nextToast,6500)}
@@ -932,6 +1122,7 @@ document.querySelectorAll("[data-close]").forEach(function(b){b.onclick=function
 ["auth","prof","rev"].forEach(function(i){$(i).onclick=function(e){if(e.target===this&&!(i==="auth"&&!CU))this.close()}});
 $("auth").addEventListener("cancel",function(e){if(!CU)e.preventDefault()});
 $("wipok").onclick=function(){$("wip").close()};
+$("prof").addEventListener("close",function(){EDITING=false});
 $("wip").addEventListener("close",function(){if(CU&&auth&&!allowed())signOut(auth)});
 var VTOT=10,C0=1.4,C1=8,GMAX=39,TH=[0,10,20,30],VT=0,VPLAY=false,VLAST=0,VSTART=false,VPH=-1,vst=$("stage"),vlad=$("vlad");
 function vg(t){if(t<=C0)return 0;var x=Math.min((t-C0)/(C1-C0),1);return GMAX*(1-Math.cos(Math.PI*x))/2}
@@ -951,8 +1142,8 @@ function vrender(){
  if(ph!==VPH){VPH=ph;$("vt").textContent=PH[ph].t;$("vs").textContent=PH[ph].u}
  var nx=PH[ph+1]?PH[ph+1].s:99,op=Math.min(ss(PH[ph].s,PH[ph].s+.4,t),ss(nx,nx-.15,t)),tx=$("vtx");
  tx.style.opacity=op;tx.style.transform="translateY("+((1-ss(PH[ph].s,PH[ph].s+.4,t))*2.4)+"cqw)";
- var ca=hx(TIERS[0].c),sc=1,ring=0,rs=0;
- for(var k=1;k<4;k++){var m=ss(ST[k]-.12,ST[k]+.22,t);var cb=hx(TIERS[k].c);ca=ca.map(function(v,i){return v+(cb[i]-v)*m});$("f"+k).style.opacity=m;var d=t-ST[k];if(d>0&&d<.7){sc+=.07*Math.sin(Math.PI*d/.7);ring=Math.max(ring,(1-d/.7)*.8);rs=.6+d*2.2}}
+ $("vcard").dataset.rank=["bronze","silver","gold","red"][tier];var ca=hx(TIERS[0].c),sc=1,ring=0,rs=0;
+ for(var k=1;k<4;k++){var m=ss(ST[k]-.12,ST[k]+.22,t);var cb=hx(TIERS[k].c);ca=ca.map(function(v,i){return v+(cb[i]-v)*m});var d=t-ST[k];if(d>0&&d<.7){sc+=.07*Math.sin(Math.PI*d/.7);ring=Math.max(ring,(1-d/.7)*.8);rs=.6+d*2.2}}
  vst.style.setProperty("--tint","rgb("+ca.map(Math.round).join(",")+")");
  var ap=ss(.9,1.6,t),cw=$("vcw");
  cw.style.opacity=ap;cw.style.transform="translateY("+((1-ap)*3+Math.sin(t*2.2)*.5)+"cqw) scale("+((.86+.14*ap)*sc)+")";
@@ -976,6 +1167,12 @@ $("vplay").onclick=function(){VPLAY?vpause():vplay()};
 $("vrep").onclick=function(){VT=0;vplay()};
 $("vbar").onclick=function(e){var r=this.getBoundingClientRect();VT=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*VTOT;vrender();if(!VPLAY)$("vplay").textContent="Afspelen"};
 $("vfs").onclick=function(){if(vst.requestFullscreen)vst.requestFullscreen()};
+function vfit(){var c=$("vcard"),h=c.offsetHeight,w=$("vcw");if(!h)return;
+ var mob=matchMedia("(max-width:640px)").matches;
+ w.style.aspectRatio=mob?"":"360/"+h;
+ var sc=mob?Math.min(w.clientWidth/360,w.clientHeight/h):w.clientHeight/h;
+ c.style.transform="translateX(-50%) scale("+sc+")"}
+if("ResizeObserver" in window)new ResizeObserver(vfit).observe(vst);addEventListener("load",vfit);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(vfit);vfit();
 window.__vseek=function(t){VPLAY=false;VSTART=true;VT=t;vrender()};
 vrender();
 if("IntersectionObserver" in window){new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting&&!VSTART){VSTART=true;vplay()}else if(!x.isIntersecting&&VPLAY){vpause()}})},{threshold:.5}).observe(vst)}
@@ -983,6 +1180,8 @@ if("IntersectionObserver" in window){new IntersectionObserver(function(en){en.fo
  [["silver","s",215,8,1.04],["bronze","b",24,52,.9]].forEach(function(k){
   var h=g.outerHTML.replace(/#[0-9a-fA-F]{6}\b/g,function(c){var v=hx(c).map(function(x){return x/255}),l=(Math.max.apply(0,v)+Math.min.apply(0,v))/2;return "hsl("+k[2]+","+k[3]+"%,"+Math.min(100,l*100*k[4]).toFixed(1)+"%)"}).replace(/gems-gold/g,"gems-"+k[0]).replace(/id="g-/g,'id="'+k[1]+'g-').replace(/url\(#g-/g,"url(#"+k[1]+"g-");
   g.insertAdjacentHTML("afterend",h)})})();
+function setCat(c){cat=c;$("ctp").setAttribute("aria-pressed",c==="players");$("ctc").setAttribute("aria-pressed",c==="clubs");$("cathint").hidden=c!=="clubs";view()}
+$("ctp").onclick=function(){setCat("players")};$("ctc").onclick=function(){setCat("clubs")};
 paint();
 rebuild();
 view();
@@ -992,13 +1191,13 @@ view();
   var V="https://www.gstatic.com/firebasejs/10.14.1/";
   var m=await Promise.all([import(V+"firebase-app.js"),import(V+"firebase-auth.js"),import(V+"firebase-firestore.js")]);
   initializeApp=m[0].initializeApp;
-  getAuth=m[1].getAuth;onAuthStateChanged=m[1].onAuthStateChanged;createUserWithEmailAndPassword=m[1].createUserWithEmailAndPassword;signInWithEmailAndPassword=m[1].signInWithEmailAndPassword;signOut=m[1].signOut;
+  getAuth=m[1].getAuth;onAuthStateChanged=m[1].onAuthStateChanged;createUserWithEmailAndPassword=m[1].createUserWithEmailAndPassword;signInWithEmailAndPassword=m[1].signInWithEmailAndPassword;signOut=m[1].signOut;reauthenticateWithCredential=m[1].reauthenticateWithCredential;EmailAuthProvider=m[1].EmailAuthProvider;verifyBeforeUpdateEmail=m[1].verifyBeforeUpdateEmail;
   getFirestore=m[2].getFirestore;collection=m[2].collection;doc=m[2].doc;setDoc=m[2].setDoc;onSnapshot=m[2].onSnapshot;query=m[2].query;where=m[2].where;updateDoc=m[2].updateDoc;getDoc=m[2].getDoc;deleteDoc=m[2].deleteDoc;orderBy=m[2].orderBy;limit=m[2].limit;
   app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);if(!CU){$("el").textContent="";$("er").textContent=""}
  }catch(e){ok=false;fbMsg="Firebase kon niet geladen worden. Controleer je verbinding en de config.";$("el").textContent=fbMsg;$("er").textContent=fbMsg;return}
 
  var uMine=null,uAll=null,uEm=null;
- function refresh(){rebuild();view();paint();if(wantProf&&me()){wantProf=false;if(allowed())showProf()}else if($("prof").open&&allowed())showProf();maybeWip();checkRank()}
+ function refresh(){rebuild();view();paint();if(wantProf&&me()){wantProf=false;if(allowed())showProf()}else if($("prof").open&&allowed()&&!EDITING)showProf();maybeWip();checkRank()}
  onSnapshot(query(collection(db,"players"),where("approved","==",true)),function(s){
   PL=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});refresh()
  },function(){});
@@ -1007,7 +1206,7 @@ view();
   if(uMine){uMine();uMine=null}if(uAll){uAll();uAll=null}if(uEm){uEm();uEm=null}if(uAct){uAct();uAct=null}
   paint();
   if(!u){refresh();return}
-  getDoc(doc(db,"private",u.uid)).then(function(d){if(!d.exists())return setDoc(doc(db,"private",u.uid),{email:u.email})}).catch(function(){});
+  getDoc(doc(db,"private",u.uid)).then(function(d){if(!d.exists())return setDoc(doc(db,"private",u.uid),{email:u.email});if(d.data().email!==u.email)return updateDoc(doc(db,"private",u.uid),{email:u.email})}).catch(function(){});
   uMine=onSnapshot(doc(db,"players",u.uid),function(d){
    MYDOC=d.exists()?Object.assign({id:d.id},d.data()):null;docLoaded=true;if(MYDOC&&!LG){LG=true;logEv("login","")}
    if(MYDOC&&MYDOC.admin===true&&!uAll){uAll=onSnapshot(collection(db,"players"),function(s){ALL=s.docs.map(function(x){return Object.assign({id:x.id},x.data())});refresh()},function(){});uEm=onSnapshot(collection(db,"private"),function(s){EM={};s.docs.forEach(function(x){EM[x.id]=x.data().email});if($("rev").open){}},function(){})}
