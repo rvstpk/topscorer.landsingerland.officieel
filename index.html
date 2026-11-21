@@ -901,21 +901,7 @@ function open(p){
   var w=document.createElement("div");w.className="chips";
   x[1].split(", ").forEach(function(t){var c=document.createElement("span");c.textContent=t;w.appendChild(c)});
   dd.appendChild(w)});
- $("bdg").replaceChildren(chips(p,1));var ad=$("adm");ad.innerHTML="";ad.hidden=!(isAdmin()&&p.id);
- if(!ad.hidden){
-  var ah=document.createElement("h3");ah.textContent="Beheer · goals en awards";ad.appendChild(ah);
-  var row=document.createElement("div");row.className="ar";
-  var inp=document.createElement("input");inp.type="number";inp.min="0";inp.value=p.g;inp.setAttribute("aria-label","Aantal goals");
-  var am=document.createElement("small");
-  var mk=function(t,fn){var b=document.createElement("button");b.type="button";b.textContent=t;b.onclick=fn;return b};
-  var save=function(v){v=Math.max(0,Math.round(+v)||0);inp.value=v;am.textContent="Opslaan…";
-   (function(){var up={goals:v};if(v>p.g)up.gw=addW(p.gw);return updateDoc(doc(db,"players",p.id),up).then(function(){am.textContent="Opgeslagen";$("s1").textContent=num(v);p.g=v;if(up.gw)p.gw=up.gw;logEv("beheer","goals "+p.n+" naar "+v)})})().catch(function(x){am.textContent=msg(x)})};
-  row.appendChild(mk("−1",function(){save(+inp.value-1)}));row.appendChild(inp);row.appendChild(mk("+1",function(){save(+inp.value+1)}));row.appendChild(mk("Opslaan",function(){save(inp.value)}));
-  ad.appendChild(row);ad.appendChild(am);
-  var h2=document.createElement("h3");h2.textContent="Awards · Gouden Schoen";h2.style.marginTop="12px";ad.appendChild(h2);
-  var r2=document.createElement("div");r2.className="ar";var i2=document.createElement("input");i2.type="number";i2.min="0";i2.value=p.aw||0;i2.setAttribute("aria-label","Aantal awards");var m2=document.createElement("small");
-  var sv2=function(v){v=Math.max(0,Math.round(+v)||0);i2.value=v;m2.textContent="Opslaan…";updateDoc(doc(db,"players",p.id),{awards:v}).then(function(){m2.textContent="Opgeslagen";p.aw=v;$("bdg").replaceChildren(chips(p,1))}).catch(function(x){m2.textContent=msg(x)})};
-  r2.append(mk("−1",function(){sv2(+i2.value-1)}),i2,mk("+1",function(){sv2(+i2.value+1)}),mk("Opslaan",function(){sv2(i2.value)}));ad.append(r2,m2)}
+ $("bdg").replaceChildren(chips(p,1));var ad=$("adm");ad.innerHTML="";ad.hidden=true;
  d.showModal();d.scrollTop=0;
  requestAnimationFrame(function(){requestAnimationFrame(function(){$("sm").style.width=Math.min(p.g/30,1)*100+"%"})});
  spin($("s1"),p.g);
@@ -972,7 +958,7 @@ function showProf(){
  }
  var eb=add("button","sec","Profiel bewerken");eb.style.marginTop="16px";eb.onclick=editProf;
  add("button","go","Uitloggen").onclick=function(){signOut(auth).then(function(){$("prof").close()})};
- add("p","pk",u.admin===true?"Je bent beheerder: je kunt goals aanpassen in de kaart van een speler.":"Goals worden alleen door een beheerder aangepast.").style.marginTop="14px";
+ add("p","pk",u.admin===true?"Je bent beheerder: goals en awards pas je aan in het admin paneel.":"Goals worden alleen door een beheerder aangepast.").style.marginTop="14px";
  $("prof").style.setProperty("--tint",tierColor(u.goals||0));$("prof").dataset.rank=["bronze","silver","gold","red"][tierOf(u.goals||0)];$("prof").dataset.tier="r";if(!$("prof").open)$("prof").showModal();
 }
 function readPhoto(file){
