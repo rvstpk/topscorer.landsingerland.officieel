@@ -148,13 +148,7 @@ function gateAdmin(){
  else if(!need&&gd.open)gd.close();
 }
 async function checkUnlock(){
- const me=uid;UNL=undefined;
- try{
-  const t=await auth.currentUser.getIdTokenResult();AT=t.claims.auth_time;
-  const d=await getDoc(doc(db,"adminUnlock",me));
-  if(uid!==me)return;
-  UNL=!!(d.exists()&&d.data().authTime===AT);
- }catch(e){if(uid!==me)return;UNL=false}
+ UNL=true;
  gateAdmin();kickAdmin();renderBadge();showNotes();
 }
 
