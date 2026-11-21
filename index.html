@@ -504,7 +504,8 @@ html:has(dialog[open]),html:has(dialog[open]) body{overflow:hidden}
 html{scroll-behavior:smooth}
 #rt,#vh,#team,#contact,#partners{scroll-margin-top:100px}
 /* ===== LIQUID GLASS TOPBALK ===== */
-.tb{--tbo:76px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:20;display:flex;align-items:center;gap:10px 18px;
+:root{--tbo:76px}
+.tb{position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:20;display:flex;align-items:center;gap:10px 18px;
  width:min(1180px,calc(100% - 24px));margin:10px auto calc(var(--tbo) * -1);padding:8px 10px 8px 12px;color:#fff;isolation:isolate;
  border-radius:30px;border:1px solid rgba(255,255,255,.34);
  background:linear-gradient(135deg,rgba(255,255,255,.26),rgba(255,255,255,.06) 42%,rgba(255,255,255,.14)),rgba(6,28,16,.46);
@@ -647,6 +648,55 @@ body::before{content:"";position:fixed;inset:-10%;z-index:-1;pointer-events:none
 .pcol2 .step::before{background:linear-gradient(90deg,#fff,#dfe5ec)}.pcol2 .step::after{background:linear-gradient(180deg,#7d8793,#444c56)}
 .pcol3 .step::before{background:linear-gradient(90deg,#ffd2a6,#eba46a)}.pcol3 .step::after{background:linear-gradient(180deg,#7d4318,#43230a)}
 @media (prefers-reduced-motion:reduce){.pcol{animation:none;transform:none!important}.pcol .av,.pcol .pg,.pcol .pn{transform:none!important}body::before{animation:none}}
+
+/* ===== ROLLEN (hoofdbeheerder / beheerders) ===== */
+.role-note{grid-column:1/-1;display:grid;gap:4px;padding:14px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.34);color:#fff;background:var(--glass-bg);backdrop-filter:blur(18px) saturate(1.8);-webkit-backdrop-filter:blur(18px) saturate(1.8);box-shadow:var(--glass-sh)}
+.role-note b{font:700 1.1rem "Archivo Narrow",sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#ffe27a}
+.role-note span{font-size:.9rem;line-height:1.45;color:#d8ead9}
+.tmr.owner{border-color:#ffd60a;box-shadow:inset 0 1px 2px rgba(255,255,255,.9),0 0 0 2px rgba(255,214,10,.55),0 0 22px rgba(255,214,10,.45)}
+.rl-o{font-weight:700;color:#8a5a00}.rl-a{opacity:.9}
+
+/* ===== PODIUM OP TELEFOON: weer drie kolommen met trap (2 - 1 - 3) ===== */
+@media (max-width:640px){
+ .podium{grid-template-columns:1fr 1.14fr 1fr;gap:8px;margin-top:-90px;align-items:end}
+ .pcol1{order:2}.pcol2{order:1}.pcol3{order:3}
+ .pcol .nb{display:none}
+ .pcol .pc{padding:12px 4px 10px;border-radius:18px;gap:0}
+ .pcol1 .pc{padding:16px 4px 14px}
+ .pcol .av{width:46px;font-size:1.1rem}.pcol1 .av{width:60px;font-size:1.4rem}
+ .pcol .pcl{font-size:.62rem;max-width:100%}.pcol .pcl .ctag{font-size:.62rem;padding:1px 6px}
+ .pcol .pn,.pcol1 .pn{font-size:.82rem;line-height:1.1;white-space:normal;overflow-wrap:anywhere;text-align:center}
+ .pcol1 .pn{font-size:.95rem}
+ .pcol .pg{font-size:1.7rem;margin:2px 0}.pcol1 .pg{font-size:2.2rem}
+ .pcol .meter,.pcol .chips{display:none}
+ .step{display:grid;margin-top:10px;font-size:1.7rem;padding-top:6px}
+ .pcol1 .step{height:84px}.pcol2 .step{height:62px}.pcol3 .step{height:44px}
+ .step::before{top:-7px;height:7px;width:calc(100% + 7px);clip-path:polygon(0 100%,7px 0,100% 0,calc(100% - 7px) 100%)}
+ .step::after{top:-7px;width:7px;height:calc(100% + 7px);clip-path:polygon(0 7px,100% 0,100% calc(100% - 7px),0 100%)}
+ .pcol .pc{box-shadow:inset 0 1px 2px rgba(255,255,255,.7),inset 0 -8px 16px rgba(0,0,0,.25),1px 1px 0 var(--ex),2px 2px 0 var(--ex),3px 3px 0 var(--ex),4px 4px 0 var(--ex),0 18px 28px rgba(0,0,0,.35),0 0 20px color-mix(in srgb,var(--tint) 45%,transparent)}
+}
+
+/* ===== GEOPENDE KAART: levendige randen + 3D ===== */
+@property --ea{syntax:"<angle>";inherits:false;initial-value:0deg}
+@property --cx{syntax:"<angle>";inherits:true;initial-value:0deg}
+@property --cy{syntax:"<angle>";inherits:true;initial-value:0deg}
+#dlg{transition:--cx .45s cubic-bezier(.2,.9,.3,1),--cy .45s cubic-bezier(.2,.9,.3,1);--ex:#5e430a}
+#dlg[data-tier="1"]{--ex:#7a5a10}#dlg[data-tier="2"]{--ex:#59616b}#dlg[data-tier="3"]{--ex:#5c2f0e}#dlg[data-tier="r"]{--ex:#2a1c03}
+/* de rand: een lichtstraal die rond de gouden rand loopt + metaalglans die langzaam schuift */
+#dlg .shell::before{content:"";position:absolute;inset:0;z-index:6;pointer-events:none;padding:9px;
+ background:conic-gradient(from var(--ea),rgba(255,255,255,0) 0 58%,rgba(255,255,255,.95) 78%,rgba(255,255,255,0) 92%);
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+ mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;animation:edgeSpin 3.2s linear infinite}
+@keyframes edgeSpin{to{--ea:360deg}}
+#dlg .shell,#dlg[data-tier] .shell{background-size:260% 260%;animation:edgeFlow 7s ease-in-out infinite alternate}
+@keyframes edgeFlow{from{background-position:0 0}to{background-position:100% 100%}}
+/* 3D: de kaart zweeft en kantelt mee met je muis of vinger, met echte dikte */
+#dlg .sc{animation:cardSway 9s ease-in-out infinite alternate;will-change:transform}
+@keyframes cardSway{from{transform:perspective(1100px) rotateY(calc(var(--cy) - 5deg)) rotateX(calc(var(--cx) + 2deg))}to{transform:perspective(1100px) rotateY(calc(var(--cy) + 5deg)) rotateX(calc(var(--cx) - 2deg))}}
+#dlg .cardw{filter:drop-shadow(1px 2px 0 var(--ex)) drop-shadow(2px 3px 0 var(--ex)) drop-shadow(3px 5px 0 var(--ex)) drop-shadow(0 0 5px var(--glow)) drop-shadow(0 0 16px var(--glow))}
+@keyframes edge3d{0%,100%{filter:drop-shadow(1px 2px 0 var(--ex)) drop-shadow(2px 3px 0 var(--ex)) drop-shadow(3px 5px 0 var(--ex)) drop-shadow(0 0 4px var(--glow)) drop-shadow(0 0 12px var(--glow))}50%{filter:drop-shadow(1px 2px 0 var(--ex)) drop-shadow(2px 3px 0 var(--ex)) drop-shadow(3px 5px 0 var(--ex)) drop-shadow(0 0 9px var(--glow)) drop-shadow(0 0 24px var(--glow)) drop-shadow(0 0 46px var(--glow))}}
+#dlg[open] .cardw{animation:cardin .65s cubic-bezier(.2,.9,.3,1.1),edge3d 2.6s ease-in-out .65s infinite}
+@media (prefers-reduced-motion:reduce){#dlg .shell::before,#dlg .shell,#dlg[data-tier] .shell,#dlg .sc{animation:none}#dlg .sc{transform:none}#dlg[open] .cardw{animation:none}}
 </style>
 </head>
 <body>
@@ -965,7 +1015,7 @@ body::before{content:"";position:fixed;inset:-10%;z-index:-1;pointer-events:none
   L.forEach(function(a,i){if(i===c)a.setAttribute("aria-current","true");else a.removeAttribute("aria-current")});
   place(L[c]);
  }
- function size(){tb.style.setProperty("--tbo",(tb.offsetHeight+10)+"px");place(L[cur])}
+ function size(){document.documentElement.style.setProperty("--tbo",(tb.offsetHeight+10)+"px");place(L[cur])}
  addEventListener("scroll",f,{passive:true});addEventListener("resize",size);
  if(window.ResizeObserver)new ResizeObserver(size).observe(tb);
  /* lichtpunt volgt je vinger of muis over de balk */
@@ -996,6 +1046,15 @@ body::before{content:"";position:fixed;inset:-10%;z-index:-1;pointer-events:none
 (function(){
  var SEL=".bar,.ftb div,#adm-fab,#chat-fab,.ap-h,.cm-h";
  document.addEventListener("pointermove",function(e){var t=e.target.closest&&e.target.closest(SEL);if(!t)return;var r=t.getBoundingClientRect();t.style.setProperty("--mx",(e.clientX-r.left)+"px");t.style.setProperty("--my",(e.clientY-r.top)+"px")},{passive:true});
+})();
+</script>
+<script>
+/* geopende kaart kantelt mee met muis of vinger */
+(function(){
+ var d=document.getElementById("dlg");if(!d||matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+ function reset(){d.style.removeProperty("--cx");d.style.removeProperty("--cy")}
+ d.addEventListener("pointermove",function(e){var x=e.clientX/innerWidth-.5,y=e.clientY/innerHeight-.5;d.style.setProperty("--cy",(x*18).toFixed(1)+"deg");d.style.setProperty("--cx",(-y*14).toFixed(1)+"deg")});
+ d.addEventListener("pointerleave",reset);d.addEventListener("pointerup",function(e){if(e.pointerType!=="mouse")reset()});d.addEventListener("close",reset);
 })();
 </script>
 <script type="module">
@@ -1044,7 +1103,7 @@ function clubColor(c){var l=c.toLowerCase(),f=null;Object.keys(CL).forEach(funct
 function rebuild(){
  Object.keys(CL).forEach(function(k){if(CL[k][2])delete CL[k]});
  var us=getUsers(),extra=[];
- Object.keys(us).forEach(function(em){var u=us[em],n=u.first+" "+u.last;
+ Object.keys(us).forEach(function(em){var u=us[em],n=u.first+" "+u.last;if(u.admin===true&&u.onBoard!==true)return;
   if(CL[n])n+=" ("+(u.num?"#"+u.num:u.id.slice(0,4))+")";
   CL[n]=[clubN(u.club),clubColor(u.club),true];
   extra.push({n:n,id:u.id,c:"Speler",g:u.goals||0,m:1,i:0,y:[u.num?"#"+u.num:"",u.age?u.age+" jaar":""].filter(Boolean).join(" · ")||"Speler",a:true,t:clubN(u.club),h:[u.num?"Rugnummer #"+u.num:"",u.age?u.age+" jaar":""].filter(Boolean).join(", ")||"-",aw:Math.max(0,+u.awards||0),sk:streakW(u.gw),gw:u.gw||[],ph:u.photo})});
@@ -1153,18 +1212,23 @@ function renderAdmins(){
  var box=document.getElementById("tm");if(!box)return;
  var seen={},as=[];
  (PL||[]).concat(ALL||[]).forEach(function(u){if(u&&u.admin===true&&u.rejected!==true&&!seen[u.id]){seen[u.id]=1;as.push(u)}});
- as.sort(function(a,b){return String(a.first||"").localeCompare(String(b.first||""),"nl")});
- var key=JSON.stringify(as.map(function(u){return [u.id,u.first,u.last,u.club,(u.photo||"").length]}));
+ as.sort(function(a,b){return (b.owner===true)-(a.owner===true)||String(a.first||"").localeCompare(String(b.first||""),"nl")});
+ var key=JSON.stringify(as.map(function(u){return [u.id,u.first,u.last,u.club,u.owner===true,(u.photo||"").length]}));
  if(key===ADK)return;ADK=key;
  box.textContent="";
  if(!as.length){var e=document.createElement("p");e.className="tm-empty";e.textContent="De beheerders worden geladen.";box.appendChild(e);return}
  function el(t,c,x){var n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n}
+ var note=el("div","role-note");
+ var hasO=as.some(function(u){return u.owner===true});
+ note.appendChild(el("b",null,hasO?"1 hoofdbeheerder en "+(as.length-1)+(as.length-1===1?" beheerder":" beheerders"):as.length+(as.length===1?" beheerder":" beheerders")));
+ note.appendChild(el("span",null,"De hoofdbeheerder \uD83D\uDC51 mag alles. Beheerders helpen mee (aanvragen, meldingen, berichten en goals van spelers), maar kunnen hun eigen goals en awards niet aanpassen en staan alleen in de ranglijst als ze dat zelf aanzetten."));
+ box.appendChild(note);
  as.forEach(function(u){
   var nm=((u.first||"")+" "+(u.last||"")).trim()||"Beheerder";
-  var r=el("div","fg tmr");r.style.setProperty("--tint",clubColor(u.club||""));
+  var r=el("div","fg tmr"+(u.owner===true?" owner":""));r.style.setProperty("--tint",clubColor(u.club||""));
   var av=el("div","avb");phSet(av,u.photo,ini(nm));
   var t=el("div");t.appendChild(el("b",null,nm));
-  var sm=el("small");sm.appendChild(el("span",null,"Beheerder"));if(u.club)sm.appendChild(ctag(u.club));t.appendChild(sm);
+  var sm=el("small");sm.appendChild(el("span",u.owner===true?"rl-o":"rl-a",u.owner===true?"\uD83D\uDC51 Hoofdbeheerder":"Beheerder"));if(u.club)sm.appendChild(ctag(u.club));t.appendChild(sm);
   r.append(av,t);box.appendChild(r);
  });
 }
@@ -1202,6 +1266,10 @@ function showProf(){
  [["Naam",u.first],["Achternaam",u.last],["Rugnummer",nT(u.num)],["Club",clubN(u.club)||"-"],["Voetbal.nl",u.voetbalnl||"-"],["Leeftijd",aT(u.age)],["E-mail",u.email],["Doelpunten",u.goals||0]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
  if(!u.approved){add("p","pk",u.rejected?"Je aanvraag is afgewezen.":"Je account wacht op goedkeuring van een beheerder. Daarna sta je in de lijst met topscorers.").style.marginTop="10px"}
  if(u.admin===true){
+  var onb=u.onBoard===true;
+  add("p","pk","Ranglijst: "+(onb?"jij staat in de ranglijst.":"jij staat niet in de ranglijst. Beheerders staan er alleen in als ze dat zelf aanzetten.")).style.marginTop="14px";
+  var ob=add("button","sec",onb?"Mij uit de ranglijst halen":"Mij in de ranglijst zetten");
+  ob.onclick=function(){ob.disabled=true;updateDoc(doc(db,"players",CU.uid),{onBoard:!onb}).then(function(){logEv("bewerkt","Ranglijst: "+(onb?"uit":"aan"))}).catch(function(){ob.disabled=false;toast("Opslaan mislukt. Controleer de Firestore-regels.")})};
   var wait=ALL.filter(function(x){return !x.approved&&!x.rejected});
   add("p","pk","Aanvragen om goed te keuren ("+wait.length+")").style.marginTop="14px";
   wait.forEach(function(x){
@@ -1215,7 +1283,7 @@ function showProf(){
  }
  var eb=add("button","sec","Profiel bewerken");eb.style.marginTop="16px";eb.onclick=editProf;
  add("button","go","Uitloggen").onclick=function(){signOut(auth).then(function(){$("prof").close()})};
- add("p","pk",u.admin===true?"Je bent beheerder: goals en awards pas je aan in het admin paneel.":"Goals worden alleen door een beheerder aangepast.").style.marginTop="14px";
+ add("p","pk",u.admin===true?(u.owner===true?"Je bent hoofdbeheerder: je past goals en awards aan in het admin paneel.":"Je bent beheerder: je past de goals en awards van spelers aan in het admin paneel. Je eigen goals en awards kan alleen de hoofdbeheerder aanpassen."):"Goals worden alleen door een beheerder aangepast.").style.marginTop="14px";
  $("prof").style.setProperty("--tint",tierColor(u.goals||0));$("prof").dataset.rank=["bronze","silver","gold","red"][tierOf(u.goals||0)];$("prof").dataset.tier="r";if(!$("prof").open)$("prof").showModal();
 }
 function readPhoto(file){
