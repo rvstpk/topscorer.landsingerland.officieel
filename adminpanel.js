@@ -159,7 +159,7 @@ const CLUBS_A=["TOGB","CVV","BVCB","SOCCERBOYS"],ADMCLUB="\uD83D\uDEE0\uFE0F";  
 const EVL={login:"Ingelogd",card:"Kaart bekeken",zoek:"Zocht",profiel:"Profiel geopend",bewerkt:"Profiel bewerkt",beheer:"Beheer"};
 const isAdmin=()=>!!(ME&&ME.admin===true);
 const isOwner=()=>!!(ME&&ME.admin===true&&ME.owner===true);   /* hoofdbeheerder: instellen via Firebase, niet via de website */
-let UNL=null,AT=0,adminSubs=false,kickAdmin=()=>{},bad=0,lockUntil=0;   /* UNL: null = nog niet gecontroleerd, true = beveiligingscode ingevoerd */
+let UNL=true,AT=0,adminSubs=false,kickAdmin=()=>{},bad=0,lockUntil=0;   /* UNL: null = nog niet gecontroleerd, true = beveiligingscode ingevoerd */
 const pending=()=>ALL.filter(x=>!x.approved&&!x.rejected);
 const clubD=c=>String(c==null?"":c).replace(/\s+/g," ").trim().toUpperCase()||"-";
 const nameOf=x=>((x.first||"")+" "+(x.last||"")).trim()||"Onbekend";
@@ -390,7 +390,7 @@ if(pf){const clean=()=>[...pf.children].forEach(el=>{if(el.classList.contains("p
 function start(){
  const app=getApp();db=getFirestore(app);auth=getAuth(app);
  onAuthStateChanged(auth,async u=>{
-  subs.forEach(f=>f());subs=[];uid=u?u.uid:null;ME=null;UNL=null;AT=0;adminSubs=false;kickAdmin=()=>{};if(gd.open)gd.close();ALL=[];EM={};HIST=[];EV=[];A=[];B=[];seen=new Set();shown=[];SEL.clear();
+  subs.forEach(f=>f());subs=[];uid=u?u.uid:null;ME=null;UNL=true;AT=0;adminSubs=false;kickAdmin=()=>{};if(gd.open)gd.close();ALL=[];EM={};HIST=[];EV=[];A=[];B=[];seen=new Set();shown=[];SEL.clear();
   if(ap.open)ap.close();if(nt.open)nt.close();renderBadge();
   if(!u)return;
   let ls=Date.parse((u.metadata&&u.metadata.creationTime)||0)||0;
