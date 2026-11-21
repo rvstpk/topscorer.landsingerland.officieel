@@ -46,7 +46,7 @@ function show(d,uid,rejected){
  const rows=$("po-rows");rows.innerHTML="";
  const add=(k,v)=>{const r=document.createElement("div");r.className="po-row";const a=document.createElement("span"),b=document.createElement("span");a.textContent=k;b.textContent=v;r.append(a,b);rows.appendChild(r)};
  add("Ticket","#"+uid.slice(0,6).toUpperCase());
- if(d){add("Naam",(d.first||"")+" "+(d.last||""));add("Club",d.club||"-");add("Rugnummer","#"+(d.num||"-"))}
+ if(d){add("Naam",(d.first||"")+" "+(d.last||""));add("Club",String(d.club||"-").replace(/\s+/g," ").trim().toUpperCase());add("Rugnummer","#"+(d.num||"-"))}
  $("po-s").textContent=rejected?"Afgewezen":"Ticket · in behandeling";
  dlg.classList.toggle("rej",!!rejected);
  root.classList.remove("pre-check");root.classList.add("pre-blocked");
