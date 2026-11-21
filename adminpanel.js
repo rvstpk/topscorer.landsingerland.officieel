@@ -6,20 +6,19 @@
        4) Activiteit van gebruikers (o.a. wanneer iemand zijn profiel bewerkt)
    - Alle gebruikers ontvangen meldingen live; wie niet actief was, krijgt ze zodra die weer op de website is. */
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import {getAuth,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import {getFirestore,collection,doc,getDoc,setDoc,addDoc,updateDoc,deleteDoc,onSnapshot,query,where,orderBy,limit} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const css=`
-#adm-fab{position:fixed;left:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:60;display:none;align-items:center;gap:8px;font:700 .95rem Archivo,system-ui,sans-serif;color:#fff;cursor:pointer;padding:11px 20px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:var(--glass-spec),var(--glass-bg);backdrop-filter:blur(22px) saturate(2) brightness(1.1);-webkit-backdrop-filter:blur(22px) saturate(2) brightness(1.1);box-shadow:var(--glass-sh),0 0 18px rgba(255,214,10,.28);transition:transform .25s cubic-bezier(.2,.9,.3,1.3)}
-#adm-fab:hover{transform:translateY(-2px) scale(1.04)}#adm-fab:active{transform:scale(.97)}
+#adm-fab{position:fixed;left:18px;bottom:18px;z-index:60;display:none;align-items:center;gap:8px;font:700 .95rem Archivo,system-ui,sans-serif;color:#2a1c00;cursor:pointer;padding:11px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.8);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:0 10px 28px rgba(0,0,0,.3),inset 0 1px 1px #fff}
 #adm-fab.on{display:flex}
 #adm-fab b{min-width:22px;height:22px;display:none;place-items:center;border-radius:999px;background:#d6213a;color:#fff;font-size:.78rem;padding:0 6px}
 #adm-fab b.has{display:grid}
 html.pre-blocked #adm-fab{display:none!important}
-#admcode,#adminp,#notif{width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);padding:0 0 4px;border:1px solid rgba(255,255,255,.4);border-radius:30px;color:#fff;font-family:Archivo,system-ui,sans-serif;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.05) 42%,rgba(255,255,255,.12)),rgba(6,28,16,.62);backdrop-filter:blur(26px) saturate(2);-webkit-backdrop-filter:blur(26px) saturate(2);box-shadow:inset 0 1.5px 1px rgba(255,255,255,.7),0 30px 80px rgba(0,0,0,.6);overflow-y:auto;margin:auto}
-#admcode::backdrop,#adminp::backdrop,#notif::backdrop{background:rgba(3,12,7,.75);backdrop-filter:blur(6px)}
-.ap-h{position:relative;display:flex;align-items:center;justify-content:space-between;margin:10px 10px 0;padding:10px 12px 10px 20px;border-radius:24px;border:1px solid rgba(255,255,255,.34);font:700 .85rem "Archivo Narrow",sans-serif;letter-spacing:.2em;color:#ffe27a;background:var(--glass-spec),var(--glass-bg);backdrop-filter:blur(22px) saturate(2) brightness(1.1);-webkit-backdrop-filter:blur(22px) saturate(2) brightness(1.1);box-shadow:var(--glass-sh)}
-.ap-x{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.5);background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.08));box-shadow:inset 0 1px 1px rgba(255,255,255,.8);color:#fff;font-size:1.3rem;cursor:pointer;line-height:1}
+#adminp,#notif{width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);padding:0;border:1px solid rgba(255,255,255,.5);border-radius:26px;color:#fff;font-family:Archivo,system-ui,sans-serif;background:radial-gradient(ellipse at 50% -20%,#2a8a4f,transparent 60%),linear-gradient(180deg,#0f3d22,#07130c 88%);box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 1px 2px rgba(255,255,255,.5);overflow-y:auto;margin:auto}
+#adminp::backdrop,#notif::backdrop{background:rgba(3,12,7,.75);backdrop-filter:blur(6px)}
+.ap-h{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;font:700 .85rem "Archivo Narrow",sans-serif;letter-spacing:.2em;color:#2a1c00;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
+.ap-x{width:34px;height:34px;border-radius:50%;border:1px solid rgba(60,40,0,.4);background:rgba(255,255,255,.45);color:#2a1c00;font-size:1.3rem;cursor:pointer;line-height:1}
 .ap-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 16px 4px}
 .ap-tab{font:600 .95rem Archivo,sans-serif;color:#fff;cursor:pointer;padding:12px 10px;border-radius:16px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;gap:8px}
 .ap-tab[aria-pressed="true"]{background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.08));border-color:rgba(255,255,255,.8);box-shadow:inset 0 1px 1px rgba(255,255,255,.7)}
@@ -56,7 +55,7 @@ html.pre-blocked #adm-fab{display:none!important}
 .ap-hist{padding:10px 12px;margin-top:8px;border-radius:14px;background:rgba(255,255,255,.07);font-size:.88rem}
 .ap-hist small{display:block;opacity:.7;margin-bottom:3px}
 .ap-del{margin-top:8px;font:600 .8rem Archivo,sans-serif;color:#ffd0d0;cursor:pointer;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,120,120,.6);background:rgba(214,33,58,.18)}
-
+#notif .ap-h{background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
 .nt-i{margin-bottom:12px;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.4);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.04))}
 .nt-i small{display:block;opacity:.7;margin-bottom:6px;font-size:.78rem}
 .nt-i p{margin:0;font-size:1rem;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
@@ -78,15 +77,6 @@ html.pre-blocked #adm-fab{display:none!important}
 .ap-ctl{display:flex;gap:6px;align-items:center;justify-content:center}
 .ap-ctl input{width:84px;text-align:center;font:inherit;font-size:1rem;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.45);border-radius:10px;padding:8px}
 .ap-ctl button{font:600 .88rem Archivo,sans-serif;color:#2a1c00;cursor:pointer;padding:8px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.7);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
-.ap-ctl select{flex:1;min-width:0;font:inherit;font-size:1rem;color:#fff;color-scheme:dark;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.45);border-radius:10px;padding:8px}
-#admcode{width:min(400px,calc(100% - 24px))}
-#admcode::backdrop{background:rgba(3,12,7,.9);backdrop-filter:blur(10px)}
-.ac-i{width:100%;margin-top:14px;font:700 1.6rem "Archivo Narrow",sans-serif;letter-spacing:.5em;text-align:center;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.4);border-radius:16px;padding:12px;box-shadow:inset 0 2px 4px rgba(0,0,0,.25)}
-.ac-o{display:block;width:100%;margin-top:10px}
-.ap-role{margin:0 0 14px;padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.34);background:var(--glass-bg);box-shadow:var(--glass-sh)}
-.ap-role h4{margin:0 0 6px}
-.ap-role p{margin:6px 0 0;font-size:.88rem;line-height:1.45;opacity:.9}
-.ap-lock{margin:12px 0 0;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.07);border:1px dashed rgba(255,255,255,.35);font-size:.86rem;line-height:1.4;color:#ffeeb0;text-align:center}
 .ap-ms{display:block;min-height:1.1em;margin-top:5px;text-align:center;font-size:.8rem;opacity:.85}
 `;
 const st=document.createElement("style");st.textContent=css;document.head.appendChild(st);
@@ -110,64 +100,20 @@ const fab=h("button");fab.id="adm-fab";fab.type="button";fab.append("Admin ",Obj
 const ap=document.createElement("dialog");ap.id="adminp";document.body.appendChild(ap);
 const nt=document.createElement("dialog");nt.id="notif";document.body.appendChild(nt);
 
-/* ---------- BEVEILIGINGSCODE VOOR BEHEERDERS ----------
-   De code staat NIET in deze website. Hij staat alleen in Firebase (config/adminCode, voor niemand leesbaar)
-   en de Firestore-regels controleren hem. Zonder juiste code weigert de database alle beheerdersacties. */
-const gd=document.createElement("dialog");gd.id="admcode";gd.setAttribute("aria-labelledby","ac-t");document.body.appendChild(gd);
-gd.addEventListener("cancel",e=>e.preventDefault());
-function buildGate(){
- gd.innerHTML="";
- const head=h("div","ap-h");head.appendChild(h("span",null,"BEVEILIGING"));gd.appendChild(head);
- const b=h("div","ap-b");
- const t=h("h3",null,"Beveiligingscode");t.id="ac-t";b.appendChild(t);
- b.appendChild(h("p","ap-sum","Je bent beheerder. Voer je beveiligingscode in om verder te gaan. Je moet de code zelf onthouden: hij staat nergens in de website."));
- const i=h("input","ac-i");i.type="password";i.inputMode="numeric";i.autocomplete="off";i.maxLength=16;i.setAttribute("aria-label","Beveiligingscode");b.appendChild(i);
- const st=h("div","ap-st");b.appendChild(st);
- const go=h("button","ap-go","Ontgrendelen");go.type="button";b.appendChild(go);
- const out=h("button","ap-no ac-o","Uitloggen");out.type="button";out.onclick=()=>signOut(auth);b.appendChild(out);
- const send=async()=>{
-  const v=i.value.trim();if(!v){st.textContent="Vul je code in.";return}
-  if(Date.now()<lockUntil){st.textContent="Te vaak fout. Wacht "+Math.ceil((lockUntil-Date.now())/1000)+" seconden.";return}
-  go.disabled=true;st.textContent="Controleren…";
-  try{
-   await setDoc(doc(db,"adminUnlock",uid),{code:v,authTime:AT});
-   st.textContent="Ontgrendeld.";location.reload();return;
-  }catch(e){
-   console.error(e);i.value="";bad++;
-   if(bad>=5){bad=0;lockUntil=Date.now()+30000;st.textContent="Te vaak fout. Wacht 30 seconden."}
-   else st.textContent="Onjuiste code. Probeer het opnieuw.";
-  }
-  go.disabled=false;i.focus();
- };
- go.onclick=send;i.onkeydown=e=>{if(e.key==="Enter")send()};
- gd.appendChild(b);
-}
-function gateAdmin(){
- const need=isAdmin()&&UNL===false&&!document.documentElement.classList.contains("pre-blocked");
- if(need&&!gd.open){buildGate();gd.showModal();const i=gd.querySelector("input");if(i)i.focus()}
- else if(!need&&gd.open)gd.close();
-}
-async function checkUnlock(){
- UNL=true;
- gateAdmin();kickAdmin();renderBadge();showNotes();
-}
-
-/* ---------- state ---------- 
+/* ---------- state ---------- */
 let DRAFT="",LASTST="",db,auth,uid=null,ME=null,ALL=[],EM={},HIST=[],tab="req",mode="all",SEL=new Set(),filter="",subs=[],lastSeen=0,A=[],B=[],seen=new Set();
 let EV=[],evF="",usrF="";const USROPEN=new Set();
-const CLUBS_A=["TOGB","CVV","BVCB","SOCCERBOYS"],ADMCLUB="\uD83D\uDEE0\uFE0F";   /* ADMCLUB = alleen-admin club (gereedschap-emoji) */
 const EVL={login:"Ingelogd",card:"Kaart bekeken",zoek:"Zocht",profiel:"Profiel geopend",bewerkt:"Profiel bewerkt",beheer:"Beheer"};
 const isAdmin=()=>!!(ME&&ME.admin===true);
 const isOwner=()=>!!(ME&&ME.admin===true&&ME.owner===true);   /* hoofdbeheerder: instellen via Firebase, niet via de website */
-let UNL=true,AT=0,adminSubs=false,kickAdmin=()=>{},bad=0,lockUntil=0;   /* UNL: null = nog niet gecontroleerd, true = beveiligingscode ingevoerd */
-const pending=()=>ALL.filter(x=>!x.approved&&!x.rejected);
+const pending=()=>ALL.filter(x=>x.admin!==true&&!x.approved&&!x.rejected);
 const clubD=c=>String(c==null?"":c).replace(/\s+/g," ").trim().toUpperCase()||"-";
 const nameOf=x=>((x.first||"")+" "+(x.last||"")).trim()||"Onbekend";
 
 /* ---------- ADMIN PANEEL ---------- */
 function renderBadge(){
  const n=pending().length;
- fab.classList.toggle("on",isAdmin()&&UNL===true);
+ fab.classList.toggle("on",isAdmin());
  const b=document.getElementById("adm-badge");b.textContent=n;b.classList.toggle("has",n>0);
 refreshPanel();
 }
@@ -277,40 +223,15 @@ function userCard(p){
   r.append(mk("−1",()=>save(+i.value-1)),i,mk("+1",()=>save(+i.value+1)),mk("Opslaan",()=>save(i.value)));
   wrap.append(r,m);return wrap};
  row(card,"Rol",p.owner===true?"\uD83D\uDC51 Hoofdbeheerder":p.admin===true?"Beheerder":"Speler");
- if(p.admin===true)row(card,"In de ranglijst",p.onBoard===true?"Ja (eigen keuze)":"Nee");
- if(p.admin===true&&!isOwner()){
-  card.appendChild(h("p","ap-lock","\uD83D\uDD12 Alleen de hoofdbeheerder kan de goals en awards van beheerders aanpassen"+(p.id===uid?" (dus ook die van jou).":".")));
- }else{
+ /* de Firestore-regels: gewone beheerders passen alleen gewone spelers aan, de hoofdbeheerder iedereen */
+ if(isOwner()||(p.admin!==true&&p.id!==uid)){
   card.appendChild(ctl("Goals aanpassen",g,"goals","goals"));
   card.appendChild(ctl("Awards aanpassen (Gouden Schoen)",aw,"awards","awards"));
- }
- /* club aanpassen: de gereedschap-emoji is alleen te kiezen voor beheerders */
- {const wrap=h("div","ap-cg");wrap.appendChild(h("h4",null,"Club aanpassen"));
-  const r=h("div","ap-ctl"),sel=h("select"),m=h("small","ap-ms","");sel.setAttribute("aria-label","Club");
-  const cur=clubD(p.club),opts=CLUBS_A.slice();
-  if(p.admin===true)opts.push(ADMCLUB);
-  if(cur!=="-"&&opts.indexOf(cur)<0)opts.unshift(cur);
-  opts.forEach(c=>{const o=h("option",null,c===ADMCLUB?ADMCLUB+" Gereedschap (alleen admins)":c);o.value=c;sel.appendChild(o)});
-  sel.value=opts.indexOf(cur)>-1?cur:opts[0];
-  const b=h("button",null,"Opslaan");b.type="button";
-  b.onclick=async()=>{
-   const v=sel.value;if(v===cur){m.textContent="Dit is al de club.";return}
-   if(v===ADMCLUB&&p.admin!==true){m.textContent="Alleen beheerders kunnen deze club hebben.";return}
-   m.textContent="Opslaan…";b.disabled=true;
-   try{await updateDoc(doc(db,"players",p.id),{club:v});m.textContent="Opgeslagen";logAdm("club van "+nameOf(p)+" naar "+v)}
-   catch(e){m.textContent=e&&e.code==="permission-denied"?"Geen toestemming. Controleer de Firestore-regels.":"Opslaan mislukt. Probeer het opnieuw."}
-   b.disabled=false};
-  r.append(sel,b);wrap.append(r,m);card.appendChild(wrap)}
+ }else card.appendChild(h("p","ap-sum","Alleen de hoofdbeheerder kan de goals en awards van beheerders aanpassen."));
  d.appendChild(card);return d;
 }
 function renderUsr(body){
  body.appendChild(h("h3",null,"Gebruikers"));
-{const adm=ALL.filter(x=>x.admin===true&&x.rejected!==true),own=adm.filter(x=>x.owner===true),oth=adm.filter(x=>x.owner!==true);
-  const r=h("div","ap-role");r.appendChild(h("h4",null,"Rollen"));
-  r.appendChild(h("div","ap-row")).append(h("span",null,"\uD83D\uDC51 Hoofdbeheerder"),h("span",null,own.length===1?nameOf(own[0]):own.length?"Let op: "+own.length+" ingesteld":"Nog niet ingesteld"));
-  r.appendChild(h("div","ap-row")).append(h("span",null,"Beheerders"),h("span",null,oth.length?oth.map(nameOf).join(", "):"-"));
-  r.appendChild(h("p",null,"Er is maar 1 hoofdbeheerder en die mag alles. Beheerders keuren aanvragen goed, sturen meldingen, beantwoorden berichten en passen goals van spelers aan. Zij kunnen hun eigen goals en awards niet aanpassen en staan alleen in de ranglijst als ze dat zelf aanzetten."));
-  body.appendChild(r)}
  body.appendChild(h("p","ap-sum","Alle gebruikers met hun spelerskaart. Tik op een gebruiker om de kaart te openen en de goals of het aantal awards (Gouden Schoen) aan te passen."));
  const s=h("input");s.type="search";s.placeholder="Zoek gebruiker of club…";s.value=usrF;s.setAttribute("aria-label","Zoek gebruiker");body.appendChild(s);
  const box=h("div");body.appendChild(box);
@@ -350,7 +271,7 @@ function buildPick(box){
 }
 
 /* ---------- MELDINGEN ONTVANGEN (alle gebruikers) ---------- */
-function ready(){return uid&&ME!==null&&(!isAdmin()||UNL===true)&&!document.documentElement.classList.contains("pre-blocked")&&!document.querySelector("#boot-overlay.active")}
+function ready(){return uid&&ME!==null&&!document.documentElement.classList.contains("pre-blocked")&&!document.querySelector("#boot-overlay.active")}
 function unread(){const m=new Map();[...A,...B].forEach(n=>m.set(n.id,n));return [...m.values()].filter(n=>n.createdMs>lastSeen&&!seen.has(n.id)&&n.by!==uid).sort((a,b)=>a.createdMs-b.createdMs)}
 let shown=[];
 function persist(){
@@ -390,7 +311,7 @@ if(pf){const clean=()=>[...pf.children].forEach(el=>{if(el.classList.contains("p
 function start(){
  const app=getApp();db=getFirestore(app);auth=getAuth(app);
  onAuthStateChanged(auth,async u=>{
-  subs.forEach(f=>f());subs=[];uid=u?u.uid:null;ME=null;UNL=true;AT=0;adminSubs=false;kickAdmin=()=>{};if(gd.open)gd.close();ALL=[];EM={};HIST=[];EV=[];A=[];B=[];seen=new Set();shown=[];SEL.clear();
+  subs.forEach(f=>f());subs=[];uid=u?u.uid:null;ME=null;ALL=[];EM={};HIST=[];EV=[];A=[];B=[];seen=new Set();shown=[];SEL.clear();
   if(ap.open)ap.close();if(nt.open)nt.close();renderBadge();
   if(!u)return;
   let ls=Date.parse((u.metadata&&u.metadata.creationTime)||0)||0;
@@ -400,18 +321,15 @@ function start(){
   const map=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));
   subs.push(onSnapshot(query(collection(db,"notifications"),where("all","==",true)),s=>{A=map(s);showNotes()},()=>{}));
   subs.push(onSnapshot(query(collection(db,"notifications"),where("to","array-contains",u.uid)),s=>{B=map(s);showNotes()},()=>{}));
-  const kick=()=>{
-   if(!(isAdmin()&&UNL===true)||adminSubs)return;adminSubs=true;
-   subs.push(onSnapshot(collection(db,"players"),s=>{ALL=map(s);renderBadge()},()=>{}));
-   subs.push(onSnapshot(collection(db,"private"),s=>{EM={};s.docs.forEach(x=>EM[x.id]=x.data().email);renderBadge()},()=>{}));
-   subs.push(onSnapshot(collection(db,"notifications"),s=>{HIST=map(s);refreshPanel()},()=>{}));
-   subs.push(onSnapshot(query(collection(db,"activity"),orderBy("ms","desc"),limit(300)),s=>{EV=map(s);refreshPanel()},()=>{}));
-  };
-  kickAdmin=kick;
+  let adminSubs=false;
   subs.push(onSnapshot(doc(db,"players",u.uid),d=>{
    ME=d.exists()?d.data():{};
-   if(isAdmin()&&UNL===null)checkUnlock();
-   kick();gateAdmin();
+   if(isAdmin()&&!adminSubs){adminSubs=true;
+    subs.push(onSnapshot(collection(db,"players"),s=>{ALL=map(s);renderBadge()},()=>{}));
+    subs.push(onSnapshot(collection(db,"private"),s=>{EM={};s.docs.forEach(x=>EM[x.id]=x.data().email);renderBadge()},()=>{}));
+    subs.push(onSnapshot(collection(db,"notifications"),s=>{HIST=map(s);refreshPanel()},()=>{}));
+    subs.push(onSnapshot(query(collection(db,"activity"),orderBy("ms","desc"),limit(300)),s=>{EV=map(s);refreshPanel()},()=>{}));
+   }
    renderBadge();showNotes();
   },()=>{}));
  });
