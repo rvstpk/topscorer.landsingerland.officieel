@@ -8,16 +8,17 @@ import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.
 import {getFirestore,collection,doc,setDoc,addDoc,updateDoc,deleteDoc,onSnapshot,query,where,orderBy,runTransaction} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const css=`
-#chat-fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:60;display:none;align-items:center;gap:8px;font:700 .95rem Archivo,system-ui,sans-serif;color:#2a1c00;cursor:pointer;padding:11px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.8);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:inset 0 1px 1px #fff,0 0 18px rgba(255,214,10,.5),0 8px 22px rgba(0,0,0,.4)}
+#chat-fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:60;display:none;align-items:center;gap:8px;font:700 .95rem Archivo,system-ui,sans-serif;color:#fff;cursor:pointer;padding:11px 20px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:var(--glass-spec),var(--glass-bg);backdrop-filter:blur(22px) saturate(2) brightness(1.1);-webkit-backdrop-filter:blur(22px) saturate(2) brightness(1.1);box-shadow:var(--glass-sh),0 0 18px rgba(255,214,10,.28);transition:transform .25s cubic-bezier(.2,.9,.3,1.3)}
+#chat-fab:hover{transform:translateY(-2px) scale(1.04)}#chat-fab:active{transform:scale(.97)}
 #chat-fab.on{display:flex}
 #chat-fab b{min-width:22px;height:22px;display:none;place-items:center;border-radius:999px;background:#d6213a;color:#fff;font-size:.78rem;padding:0 6px}
 #chat-fab b.has{display:grid}
 html.pre-blocked #chat-fab{display:none!important}
-#chatd{width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);padding:0;border:1px solid rgba(255,255,255,.5);border-radius:26px;color:#fff;font-family:Archivo,system-ui,sans-serif;overflow:hidden;background:radial-gradient(ellipse at 50% -20%,#2a8a4f,transparent 60%),linear-gradient(180deg,#0f3d22,#07130c 88%);box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 1px 2px rgba(255,255,255,.5)}
+#chatd{width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);padding:0;border:1px solid rgba(255,255,255,.4);border-radius:30px;color:#fff;font-family:Archivo,system-ui,sans-serif;overflow:hidden;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.05) 42%,rgba(255,255,255,.12)),rgba(6,28,16,.62);backdrop-filter:blur(26px) saturate(2);-webkit-backdrop-filter:blur(26px) saturate(2);box-shadow:inset 0 1.5px 1px rgba(255,255,255,.7),0 30px 80px rgba(0,0,0,.55)}
 #chatd[open]{display:flex;flex-direction:column}
 #chatd::backdrop{background:rgba(3,12,7,.75);backdrop-filter:blur(6px)}
-.cm-h{flex:none;display:flex;align-items:center;justify-content:space-between;padding:14px 20px;font:700 .85rem "Archivo Narrow",sans-serif;letter-spacing:.2em;color:#2a1c00;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
-.cm-x{width:34px;height:34px;border-radius:50%;border:1px solid rgba(60,40,0,.4);background:rgba(255,255,255,.45);color:#2a1c00;font-size:1.3rem;cursor:pointer;line-height:1}
+.cm-h{position:relative;flex:none;display:flex;align-items:center;justify-content:space-between;margin:10px 10px 0;padding:10px 12px 10px 20px;border-radius:24px;border:1px solid rgba(255,255,255,.34);font:700 .85rem "Archivo Narrow",sans-serif;letter-spacing:.2em;color:#ffe27a;background:var(--glass-spec),var(--glass-bg);backdrop-filter:blur(22px) saturate(2) brightness(1.1);-webkit-backdrop-filter:blur(22px) saturate(2) brightness(1.1);box-shadow:var(--glass-sh)}
+.cm-x{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.5);background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.08));box-shadow:inset 0 1px 1px rgba(255,255,255,.8);color:#fff;font-size:1.3rem;cursor:pointer;line-height:1}
 .cm-b{flex:1;min-height:0;overflow-y:auto;padding:14px 18px 20px}
 .cm-intro{margin:4px 0 14px;opacity:.85;line-height:1.45}
 .cm-note{margin:10px 0 0;padding:10px 12px;border-radius:14px;background:rgba(255,226,70,.12);border:1px solid rgba(255,226,70,.4);font-size:.88rem;color:#ffeeb0}
