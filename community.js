@@ -80,7 +80,7 @@ const MAX=600;
 let db,auth,uid=null,ME=null,subs=[],roleSubs=[],roleOf=null;
 let PART=[],MY=null,MSGS=[],CH=[],ALLP=[],sel=null,tsub=null;
 let type="suggestie",draft="",claim="",status="",busy=false,filter="open";
-const isAdm=()=>!!(ME&&ME.admin===true);
+const isAdm=()=>!!(ME&&ME.admin===true);   /* server-regels eisen daarnaast de beveiligingscode (zie adminpanel.js) */
 const okMe=()=>!!(uid&&ME&&(ME.admin===true||(ME.rejected!==true&&ME.approved!==false)));
 
 /* ---------- DOM ---------- */
