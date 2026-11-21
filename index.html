@@ -385,6 +385,11 @@ body.locked #auth .x{display:none}
 .pf .meter{margin:12px 0 6px;background:rgba(255,255,255,.15)}
 #toast{position:fixed;top:auto;right:auto;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(420px,calc(100% - 28px));padding:14px 18px;border-radius:18px;border:1px solid rgba(255,255,255,.7);color:#2a1c00;font:600 .98rem Archivo,system-ui,sans-serif;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:0 10px 30px rgba(0,0,0,.4)}
 #toast.np{display:none}#toast.np.on{display:block;z-index:99}
+#dlg{width:min(400px,calc(100% - 4px))}
+#dlg .sc{max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:18px 20px;scrollbar-width:none}
+#dlg .sc::-webkit-scrollbar{display:none}
+#dlg .cardw{position:relative}
+#dlg .x{top:40px;right:46px}
 </style>
 </head>
 <body>
@@ -427,6 +432,7 @@ body.locked #auth .x{display:none}
 
 <dialog id="dlg" class="fc" aria-labelledby="dn">
 <button class="x" id="close" aria-label="Sluiten">×</button>
+<div class="sc"><div class="cardw">
 <svg class="gems gems-gold" viewBox="-22 -18 444 596" preserveAspectRatio="none" aria-hidden="true">
 <defs>
 <linearGradient id="g-light" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -611,6 +617,7 @@ body.locked #auth .x{display:none}
 <div id="dd"></div>
 <div class="adm" id="adm" hidden></div>
 </div></div>
+</div></div>
 </dialog>
 
 <dialog id="auth" class="ad" aria-labelledby="at">
@@ -786,13 +793,13 @@ function open(p){
   var r2=document.createElement("div");r2.className="ar";var i2=document.createElement("input");i2.type="number";i2.min="0";i2.value=p.aw||0;i2.setAttribute("aria-label","Aantal awards");var m2=document.createElement("small");
   var sv2=function(v){v=Math.max(0,Math.round(+v)||0);i2.value=v;m2.textContent="Opslaan…";updateDoc(doc(db,"players",p.id),{awards:v}).then(function(){m2.textContent="Opgeslagen";p.aw=v;$("bdg").replaceChildren(chips(p,1))}).catch(function(x){m2.textContent=msg(x)})};
   r2.append(mk("−1",function(){sv2(+i2.value-1)}),i2,mk("+1",function(){sv2(+i2.value+1)}),mk("Opslaan",function(){sv2(i2.value)}));ad.append(r2,m2)}
- d.showModal();
+ d.showModal();d.querySelector(".sc").scrollTop=0;
  requestAnimationFrame(function(){requestAnimationFrame(function(){$("sm").style.width=Math.min(p.g/30,1)*100+"%"})});
  spin($("s1"),p.g);
 }
 document.getElementById("q").oninput=function(e){q=e.target.value.toLowerCase().trim();view();clearTimeout(QT);QT=setTimeout(function(){if(q)logEv("zoek",q)},1200)};
 document.getElementById("close").onclick=function(){document.getElementById("dlg").close()};
-document.getElementById("dlg").onclick=function(e){if(e.target===this)this.close()};
+document.getElementById("dlg").onclick=function(e){if(e.target===this||e.target.classList.contains("sc"))this.close()};
 var $=function(i){return document.getElementById(i)};
 var EV=[],evF="",SK={},uAct=null,LG=false,QT=0,LAST={},TQ=[],TB=false;
 var PL=[],ALL=[],EM={},MYDOC=null,CU=null,wantProf=false,wipShown=false,docLoaded=false;
