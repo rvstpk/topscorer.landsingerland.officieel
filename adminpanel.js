@@ -77,6 +77,7 @@ html.pre-blocked #adm-fab{display:none!important}
 .ap-ctl{display:flex;gap:6px;align-items:center;justify-content:center}
 .ap-ctl input{width:84px;text-align:center;font:inherit;font-size:1rem;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.45);border-radius:10px;padding:8px}
 .ap-ctl button{font:600 .88rem Archivo,sans-serif;color:#2a1c00;cursor:pointer;padding:8px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.7);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
+.ap-ctl select{flex:1;min-width:0;font:inherit;font-size:1rem;color:#fff;color-scheme:dark;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.45);border-radius:10px;padding:8px}
 .ap-ms{display:block;min-height:1.1em;margin-top:5px;text-align:center;font-size:.8rem;opacity:.85}
 `;
 const st=document.createElement("style");st.textContent=css;document.head.appendChild(st);
@@ -103,6 +104,7 @@ const nt=document.createElement("dialog");nt.id="notif";document.body.appendChil
 /* ---------- state ---------- */
 let DRAFT="",LASTST="",db,auth,uid=null,ME=null,ALL=[],EM={},HIST=[],tab="req",mode="all",SEL=new Set(),filter="",subs=[],lastSeen=0,A=[],B=[],seen=new Set();
 let EV=[],evF="",usrF="";const USROPEN=new Set();
+const CLUBS_A=["TOGB","CVV","BVCB","SOCCERBOYS"],ADMCLUB="\uD83D\uDEE0\uFE0F";   /* ADMCLUB = alleen-admin club (gereedschap-emoji) */
 const EVL={login:"Ingelogd",card:"Kaart bekeken",zoek:"Zocht",profiel:"Profiel geopend",bewerkt:"Profiel bewerkt",beheer:"Beheer"};
 const isAdmin=()=>!!(ME&&ME.admin===true);
 const pending=()=>ALL.filter(x=>!x.approved&&!x.rejected);
@@ -223,6 +225,23 @@ function userCard(p){
   wrap.append(r,m);return wrap};
  card.appendChild(ctl("Goals aanpassen",g,"goals","goals"));
  card.appendChild(ctl("Awards aanpassen (Gouden Schoen)",aw,"awards","awards"));
+ /* club aanpassen: de gereedschap-emoji is alleen te kiezen voor beheerders */
+ {const wrap=h("div","ap-cg");wrap.appendChild(h("h4",null,"Club aanpassen"));
+  const r=h("div","ap-ctl"),sel=h("select"),m=h("small","ap-ms","");sel.setAttribute("aria-label","Club");
+  const cur=clubD(p.club),opts=CLUBS_A.slice();
+  if(p.admin===true)opts.push(ADMCLUB);
+  if(cur!=="-"&&opts.indexOf(cur)<0)opts.unshift(cur);
+  opts.forEach(c=>{const o=h("option",null,c===ADMCLUB?ADMCLUB+" Gereedschap (alleen admins)":c);o.value=c;sel.appendChild(o)});
+  sel.value=opts.indexOf(cur)>-1?cur:opts[0];
+  const b=h("button",null,"Opslaan");b.type="button";
+  b.onclick=async()=>{
+   const v=sel.value;if(v===cur){m.textContent="Dit is al de club.";return}
+   if(v===ADMCLUB&&p.admin!==true){m.textContent="Alleen beheerders kunnen deze club hebben.";return}
+   m.textContent="Opslaan…";b.disabled=true;
+   try{await updateDoc(doc(db,"players",p.id),{club:v});m.textContent="Opgeslagen";logAdm("club van "+nameOf(p)+" naar "+v)}
+   catch(e){m.textContent=e&&e.code==="permission-denied"?"Geen toestemming. Controleer de Firestore-regels.":"Opslaan mislukt. Probeer het opnieuw."}
+   b.disabled=false};
+  r.append(sel,b);wrap.append(r,m);card.appendChild(wrap)}
  d.appendChild(card);return d;
 }
 function renderUsr(body){
