@@ -106,6 +106,7 @@ let EV=[],evF="",usrF="";const USROPEN=new Set();
 const EVL={login:"Ingelogd",card:"Kaart bekeken",zoek:"Zocht",profiel:"Profiel geopend",bewerkt:"Profiel bewerkt",beheer:"Beheer"};
 const isAdmin=()=>!!(ME&&ME.admin===true);
 const pending=()=>ALL.filter(x=>!x.approved&&!x.rejected);
+const clubD=c=>String(c==null?"":c).replace(/\s+/g," ").trim().toUpperCase()||"-";
 const nameOf=x=>((x.first||"")+" "+(x.last||"")).trim()||"Onbekend";
 
 /* ---------- ADMIN PANEEL ---------- */
@@ -143,7 +144,7 @@ function renderReq(body){
  list.forEach(p=>{
   const c=h("div","ap-req"),top=h("div","ap-top");
   const av=h("div","ap-av");phSet(av,p.photo,ini(nameOf(p)));top.append(av,h("strong",null,nameOf(p)));c.appendChild(top);
-  row(c,"Naam",p.first||"-");row(c,"Achternaam",p.last||"-");row(c,"Rugnummer","#"+(p.num??"-"));row(c,"Club",p.club||"-");row(c,"Voetbal.nl",p.voetbalnl||"-");row(c,"Leeftijd",(p.age??"-")+" jaar");row(c,"E-mail",EM[p.id]||"onbekend (zie Firebase > Authentication)");
+  row(c,"Naam",p.first||"-");row(c,"Achternaam",p.last||"-");row(c,"Rugnummer","#"+(p.num??"-"));row(c,"Club",clubD(p.club));row(c,"Voetbal.nl",p.voetbalnl||"-");row(c,"Leeftijd",(p.age??"-")+" jaar");row(c,"E-mail",EM[p.id]||"onbekend (zie Firebase > Authentication)");
   const bt=h("div","ap-btns"),yes=h("button","ap-yes","Goedkeuren"),no=h("button","ap-no","Weigeren");yes.type=no.type="button";
   const set=d=>{yes.disabled=no.disabled=true;updateDoc(doc(db,"players",p.id),d).catch(()=>{yes.disabled=no.disabled=false;alert("Opslaan mislukt. Controleer de Firestore-regels.")})};
   yes.onclick=()=>set({approved:true});no.onclick=()=>set({rejected:true});
@@ -195,14 +196,14 @@ function userCard(p){
  const d=document.createElement("details");d.className="ap-u";d.style.setProperty("--c",c);d.open=USROPEN.has(p.id);
  d.addEventListener("toggle",()=>{d.open?USROPEN.add(p.id):USROPEN.delete(p.id)});
  const sm=document.createElement("summary"),sa=h("div","ap-av");phSet(sa,p.photo,ini(nameOf(p)));
- const t=h("div","ap-ut");t.append(h("strong",null,nameOf(p)),h("small",null,(p.club||"-")+(p.approved===true&&p.admin!==true?"":" · "+statusOf(p))));
+ const t=h("div","ap-ut");t.append(h("strong",null,nameOf(p)),h("small",null,clubD(p.club)+(p.approved===true&&p.admin!==true?"":" · "+statusOf(p))));
  sm.append(sa,t,h("span","ap-ug",g+" goals"));d.appendChild(sm);
  /* de kaart, zoals de gebruiker die zelf ziet bij "Mijn profiel" */
  const card=h("div","ap-card");card.appendChild(h("div","ap-ch","SPELERSPAS"));
  const top=h("div","ap-ctop"),av=h("div","ap-av");phSet(av,p.photo,ini(nameOf(p)));
  const nm=h("div");nm.append(h("div","ap-big","#"+(p.num??"-")),h("div","ap-cname",nameOf(p)));
  top.append(av,nm);card.appendChild(top);
- row(card,"Naam",p.first||"-");row(card,"Achternaam",p.last||"-");row(card,"Rugnummer","#"+(p.num??"-"));row(card,"Club",p.club||"-");
+ row(card,"Naam",p.first||"-");row(card,"Achternaam",p.last||"-");row(card,"Rugnummer","#"+(p.num??"-"));row(card,"Club",clubD(p.club));
  row(card,"Voetbal.nl",p.voetbalnl||"-");row(card,"Leeftijd",(p.age??"-")+" jaar");row(card,"E-mail",EM[p.id]||"onbekend (zie Firebase > Authentication)");
  row(card,"Doelpunten",g);row(card,"Awards (Gouden Schoen)",aw);row(card,"Status",statusOf(p));
  const ctl=(title,val,field,lab)=>{
@@ -259,7 +260,7 @@ function buildPick(box){
  const list=h("div","ap-list");box.appendChild(list);
  const draw=()=>{list.innerHTML="";const q=filter.toLowerCase();const arr=ALL.filter(p=>p.id!==uid&&(nameOf(p)+" "+(p.club||"")).toLowerCase().includes(q));
   if(!arr.length){list.appendChild(h("div","ap-empty","Geen gebruikers gevonden."));return}
-  arr.forEach(p=>{const l=h("label"),c=h("input");c.type="checkbox";c.checked=SEL.has(p.id);c.onchange=()=>{c.checked?SEL.add(p.id):SEL.delete(p.id);cnt.textContent=SEL.size+" geselecteerd"};l.append(c,h("span",null,nameOf(p)),h("small",null,(p.club||"")+(p.approved?"":" · wacht")));list.appendChild(l)})};
+  arr.forEach(p=>{const l=h("label"),c=h("input");c.type="checkbox";c.checked=SEL.has(p.id);c.onchange=()=>{c.checked?SEL.add(p.id):SEL.delete(p.id);cnt.textContent=SEL.size+" geselecteerd"};l.append(c,h("span",null,nameOf(p)),h("small",null,(p.club?clubD(p.club):"")+(p.approved?"":" · wacht")));list.appendChild(l)})};
  const cnt=h("small","ap-cnt",SEL.size+" geselecteerd");box.appendChild(cnt);
  s.oninput=()=>{filter=s.value;draw()};draw();
 }
