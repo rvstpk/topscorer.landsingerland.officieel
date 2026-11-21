@@ -494,6 +494,11 @@ html:has(dialog[open]),html:has(dialog[open]) body{overflow:hidden}
 .lp span{font-size:max(10px,2.8cqw)}
 .vbar{height:max(7px,1.6cqw)}
 }
+/* club-tag: klein, doorzichtig, in de kleur van de club (kaartkleur blijft de rang) */
+.ctag{display:inline-flex;align-items:center;padding:2px 10px;border-radius:999px;font-weight:700;font-size:inherit;line-height:1.25;letter-spacing:.04em;color:#fff;background:color-mix(in srgb,var(--cc,#cfd8d2) 38%,transparent);border:1px solid color-mix(in srgb,var(--cc,#cfd8d2) 90%,#fff);box-shadow:inset 0 1px 1px rgba(255,255,255,.35);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+#dlg .dc.ctag{color:var(--fg);background:color-mix(in srgb,var(--cc,#cfd8d2) 40%,transparent);border-color:color-mix(in srgb,var(--cc,#cfd8d2) 90%,#fff);box-shadow:inset 0 1px 1px rgba(255,255,255,.5)}
+.pcl .ctag{font-size:.85rem}
+.ad select{width:100%;font:inherit;font-size:1rem;color:#fff;color-scheme:dark;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.4);border-radius:12px;padding:10px 12px;box-shadow:inset 0 2px 4px rgba(0,0,0,.25)}
 </style>
 </head>
 <body>
@@ -711,7 +716,7 @@ html:has(dialog[open]),html:has(dialog[open]) body{overflow:hidden}
 <div class="fx" aria-hidden="true"><i></i><i></i><i></i><u></u><u></u><b></b><b></b></div>
 <div class="drk" id="rk" aria-hidden="true"></div>
 <div class="ftop">
-<div class="fl"><b id="s1"></b><span class="sl">Doelpunten</span><span class="ln"></span><span class="rkl" id="rkl"></span><span class="dc" id="dc"></span></div>
+<div class="fl"><b id="s1"></b><span class="sl">Doelpunten</span><span class="ln"></span><span class="rkl" id="rkl"></span><span class="dc ctag" id="dc"></span></div>
 <div class="por" id="ini" aria-hidden="true"></div>
 </div>
 <div class="dh"><div><h2 id="dn"></h2><p id="dm"></p></div></div>
@@ -739,7 +744,7 @@ html:has(dialog[open]),html:has(dialog[open]) body{overflow:hidden}
 <label>Achternaam<input id="ra" autocomplete="family-name" required></label>
 <label>Rugnummer<input id="rr" type="number" min="1" max="99" inputmode="numeric" required></label>
 <label>Leeftijd<input id="rl" type="number" min="5" max="99" inputmode="numeric" required></label>
-<label class="w">Club<input id="rc" autocomplete="organization" required></label>
+<label class="w">Club<select id="rc" required><option value="">Kies je club</option><option value="TOGB">TOGB</option><option value="CVV">CVV</option><option value="BVCB">BVCB</option><option value="SOCCERBOYS">SOCCERBOYS</option></select></label>
 <label class="w">Voetbal.nl accountnaam<input id="rv" autocomplete="off" required></label>
 <label class="w">E-mail<input id="re" type="email" autocomplete="email" required></label>
 <label class="w">Wachtwoord (minstens 8 tekens)<input id="rp" type="password" autocomplete="new-password" minlength="8" required></label>
@@ -789,6 +794,14 @@ let ok=firebaseConfig.apiKey!=="PLAK_HIER";
 let fbMsg=ok?"Even geduld, Firebase wordt geladen.":"Firebase is nog niet ingesteld.";
 let reauthenticateWithCredential,EmailAuthProvider,verifyBeforeUpdateEmail;
 let initializeApp,getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,getFirestore,collection,doc,setDoc,onSnapshot,query,where,updateDoc,getDoc,deleteDoc,orderBy,limit;
+var CLUBS=["TOGB","CVV","BVCB","SOCCERBOYS"],CLC={TOGB:"#ffd60a",CVV:"#2f6fe0",BVCB:"#2f6fe0",SOCCERBOYS:"#ff8a1f"};
+/* clubnaam: hoofdletters/kleine letters en spaties maken niet uit, weergave altijd in HOOFDLETTERS */
+function clubN(c){var t=String(c==null?"":c).replace(/\s+/g," ").trim().toUpperCase(),k=t.replace(/\s/g,"");return CLC[k]?k:t}
+function clubCC(c){return CLC[clubN(c)]||"#cfd8d2"}
+function ctag(t){var e=document.createElement("span");e.className="ctag";e.style.setProperty("--cc",clubCC(t));e.textContent=clubN(t);return e}
+function fillT(el,t,tag){el.textContent="";if(tag)el.appendChild(ctag(t));else el.textContent=t}
+function nT(n){return n?"#"+n:"-"}
+function aT(a){return a?a+" jaar":"-"}
 var BASE=[
 {n:"Cristiano Ronaldo",c:"Portugal",g:950,m:1280,i:143,y:"2002-heden",a:true,t:"Sporting, Man. United, Real Madrid, Juventus, Al-Nassr",h:"5x Ballon d’Or, 5x Champions League"},
 {n:"Lionel Messi",c:"Argentinië",g:890,m:1130,i:115,y:"2004-heden",a:true,t:"Barcelona, PSG, Inter Miami",h:"8x Ballon d’Or, WK-winnaar 2022"},
@@ -801,6 +814,7 @@ var BASE=[
 {n:"Karim Benzema",c:"Frankrijk",g:450,m:900,i:37,y:"2004-heden",a:true,t:"Lyon, Real Madrid, Al-Ittihad",h:"Ballon d’Or 2022, 5x Champions League"}
 ];
 var CL={"Cristiano Ronaldo":["Al-Nassr","#2a4db0"],"Lionel Messi":["Inter Miami","#f08fb5"],"Josef Bican":["Rapid Wien","#1f9d55"],"Pelé":["Santos","#8d949b"],"Ferenc Puskás":["Real Madrid","#7b6fd6"],"Gerd Müller":["Bayern München","#dc052d"],"Robert Lewandowski":["Barcelona","#a50044"],"Zlatan Ibrahimović":["AC Milan","#2b2b2b"],"Karim Benzema":["Al-Ittihad","#e0a800"]};
+Object.keys(CL).forEach(function(k){CL[k][0]=clubN(CL[k][0])});
 var TIERS=[{n:"Brons",c:"#b87333",r:"0 tot 10"},{n:"Zilver",c:"#b5bdc9",r:"10 tot 20"},{n:"Goud",c:"#e0a800",r:"20 tot 30"},{n:"Rood",c:"#d6213a",r:"30+"}];
 function tierOf(g){return g>=30?3:g>=20?2:g>=10?1:0}
 function tierColor(g){return TIERS[tierOf(g)].c}
@@ -810,9 +824,9 @@ function rebuild(){
  Object.keys(CL).forEach(function(k){if(CL[k][2])delete CL[k]});
  var us=getUsers(),extra=[];
  Object.keys(us).forEach(function(em){var u=us[em],n=u.first+" "+u.last;
-  if(CL[n])n+=" (#"+u.num+")";
-  CL[n]=[u.club,clubColor(u.club),true];
-  extra.push({n:n,id:u.id,c:"Speler",g:u.goals||0,m:1,i:0,y:"#"+u.num+" · "+u.age+" jaar",a:true,t:u.club,h:"Rugnummer #"+u.num+", "+u.age+" jaar",aw:Math.max(0,+u.awards||0),sk:streakW(u.gw),gw:u.gw||[],ph:u.photo})});
+  if(CL[n])n+=" ("+(u.num?"#"+u.num:u.id.slice(0,4))+")";
+  CL[n]=[clubN(u.club),clubColor(u.club),true];
+  extra.push({n:n,id:u.id,c:"Speler",g:u.goals||0,m:1,i:0,y:[u.num?"#"+u.num:"",u.age?u.age+" jaar":""].filter(Boolean).join(" · ")||"Speler",a:true,t:clubN(u.club),h:[u.num?"Rugnummer #"+u.num:"",u.age?u.age+" jaar":""].filter(Boolean).join(", ")||"-",aw:Math.max(0,+u.awards||0),sk:streakW(u.gw),gw:u.gw||[],ph:u.photo})});
  P=BASE.concat(extra);
  P.sort(function(a,b){return b.g-a.g});
  P.forEach(function(p){CL[p.n][1]=tierColor(p.g)});
@@ -839,11 +853,11 @@ function rowsFor(){
   /* per club: de speler die het meeste scoort voor die club */
   var m={};
   P.forEach(function(p){var c=String(CL[p.n][0]||"").replace(/\s+/g," ").trim();if(!c)return;var k=c.toLowerCase();if(!m[k]||p.g>m[k].p.g)m[k]={p:p,club:c}});
-  rs=Object.keys(m).map(function(k){var e=m[k];return {p:e.p,top:"Topscorer · "+e.p.n,main:e.club}});
+  rs=Object.keys(m).map(function(k){var e=m[k];return {p:e.p,top:"Topscorer · "+e.p.n,main:e.club,tt:false}});
   rs=rs.filter(function(x){return (x.main+" "+x.p.n).toLowerCase().indexOf(q)>-1});
   rs.sort(function(a,b){return b.p.g-a.p.g||a.main.localeCompare(b.main,"nl")});
  }else{
-  rs=P.filter(function(p){return (p.n+" "+p.t+" "+CL[p.n][0]).toLowerCase().indexOf(q)>-1}).map(function(p){return {p:p,top:CL[p.n][0],main:p.n}});
+  rs=P.filter(function(p){return (p.n+" "+p.t+" "+CL[p.n][0]).toLowerCase().indexOf(q)>-1}).map(function(p){return {p:p,top:CL[p.n][0],main:p.n,tt:true}});
   rs.sort(function(a,b){return s==="name"?a.p.n.localeCompare(b.p.n,"nl"):val(b.p)-val(a.p)});
  }
  return rs;
@@ -856,7 +870,7 @@ function view(){
   var col=document.createElement("div");col.className="pcol pcol"+(k+1);
   var b=document.createElement("button");b.className="pc pc"+(k+1);b.style.setProperty("--tint",CL[p.n][1]);
   b.innerHTML='<span class="nb"></span><span class="av"></span><span class="pcl"></span><span class="pn"></span><span class="pg"></span><span class="meter"><i></i></span>';
-  var c=b.children;c[0].textContent="#"+(k+1);phSet(c[1],p.ph,ini(p.n));c[2].textContent=x.top;c[3].textContent=x.main;c[4].textContent=num(p.g);c[4].dataset.n=p.g;
+  var c=b.children;c[0].textContent="#"+(k+1);phSet(c[1],p.ph,ini(p.n));fillT(c[2],x.top,x.tt);fillT(c[3],x.main,!x.tt);c[4].textContent=num(p.g);c[4].dataset.n=p.g;
   b.appendChild(chips(p));b.querySelector("i").dataset.w=Math.min(p.g/30,1)*100;
   b.onclick=function(){open(p)};
   var st=document.createElement("div");st.className="step";st.textContent=k+1;
@@ -869,8 +883,7 @@ function view(){
   tr.innerHTML='<span class="nb"></span><span class="av"></span><span class="mid"><span class="pn"></span><span class="cb"><span class="dot"></span><span class="ct"></span></span></span><span class="gl"><b class="pg"></b><em>goals</em></span>';
   tr.querySelector(".nb").textContent="#"+(k+1);
   phSet(tr.querySelector(".av"),p.ph,ini(p.n));
-  tr.querySelector(".ct").textContent=x.top;
-  tr.querySelector(".pn").textContent=x.main;
+  fillT(tr.querySelector(".ct"),x.top,x.tt);fillT(tr.querySelector(".pn"),x.main,!x.tt);var dt=tr.querySelector(".dot");if(dt)dt.remove();
   var b=tr.querySelector(".pg");b.textContent=num(p.g);b.dataset.n=p.g;
   tr.querySelector(".mid").appendChild(chips(p));tr.onclick=function(){open(p)};
   body.appendChild(tr);
@@ -886,7 +899,7 @@ function open(p){
  logEv("card",p.n);
  var d=document.getElementById("dlg"),cl=CL[p.n],$=function(i){return document.getElementById(i)},best=P[0].g,rank=P.indexOf(p);
  d.style.setProperty("--tint",cl[1]);
- $("dc").textContent=cl[0];$("dn").textContent=p.n;$("dm").textContent=p.c+" · "+p.y;
+ $("dc").textContent=cl[0];$("dc").style.setProperty("--cc",clubCC(cl[0]));$("dn").textContent=p.n;$("dm").textContent=p.c+" · "+p.y;
  $("rk").textContent=rank+1;
  $("rkl").textContent="#"+(rank+1);
  phSet($("ini"),p.ph,p.n.replace(/\s*\(.*\)$/,"").split(" ").map(function(w){return w[0]}).join("").slice(0,2).toUpperCase());
@@ -941,15 +954,15 @@ function showProf(){
  var add=function(t,c,x){var n=document.createElement(t);if(c)n.className=c;n.textContent=x;pf.appendChild(n);return n};
  add("div","idh","MIJN PROFIEL");
  phSet(add("div","avb",""),u.photo,ini(u.first+" "+u.last));
- add("div","bign","#"+u.num);add("h2","",u.first+" "+u.last).id="pt";
- [["Naam",u.first],["Achternaam",u.last],["Rugnummer","#"+u.num],["Club",u.club],["Voetbal.nl",u.voetbalnl||"-"],["Leeftijd",u.age+" jaar"],["E-mail",u.email],["Doelpunten",u.goals||0]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
+ add("div","bign",u.num?"#"+u.num:"");add("h2","",u.first+" "+u.last).id="pt";
+ [["Naam",u.first],["Achternaam",u.last],["Rugnummer",nT(u.num)],["Club",clubN(u.club)||"-"],["Voetbal.nl",u.voetbalnl||"-"],["Leeftijd",aT(u.age)],["E-mail",u.email],["Doelpunten",u.goals||0]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
  if(!u.approved){add("p","pk",u.rejected?"Je aanvraag is afgewezen.":"Je account wacht op goedkeuring van een beheerder. Daarna sta je in de lijst met topscorers.").style.marginTop="10px"}
  if(u.admin===true){
   var wait=ALL.filter(function(x){return !x.approved&&!x.rejected});
   add("p","pk","Aanvragen om goed te keuren ("+wait.length+")").style.marginTop="14px";
   wait.forEach(function(x){
    var r=document.createElement("div");r.className="pq";
-   var t=document.createElement("span");t.textContent=x.first+" "+x.last+" · "+x.club+" · #"+x.num;
+   var t=document.createElement("span");t.textContent=x.first+" "+x.last+" · "+clubN(x.club)+(x.num?" · #"+x.num:"");
    var bx=document.createElement("div");
    var yes=document.createElement("button");yes.type="button";yes.className="vw";yes.textContent="Bekijk profiel";yes.onclick=function(){showRev(x)};
    var no=null;
@@ -1000,9 +1013,13 @@ function editProf(){
  pr.appendChild(pick);pr.appendChild(del);fm.appendChild(pr);fm.appendChild(file);
  fld("first","Naam","text",u.first,false,"given-name");
  fld("last","Achternaam","text",u.last,false,"family-name");
- var rn=fld("num","Rugnummer","number",u.num,false);rn.min="1";rn.max="99";
- var ra=fld("age","Leeftijd","number",u.age,false);ra.min="5";ra.max="99";
- fld("club","Club","text",u.club,true,"organization");
+ var rn=fld("num","Rugnummer (niet verplicht)","number",u.num,false);rn.min="1";rn.max="99";
+ var ra=fld("age","Leeftijd (niet verplicht)","number",u.age,false);ra.min="5";ra.max="99";
+ var cl=document.createElement("label");cl.className="w";cl.appendChild(document.createTextNode("Club"));
+ var sel=document.createElement("select");
+ [["","Kies je club"]].concat(CLUBS.map(function(c){return [c,c]})).forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];sel.appendChild(op)});
+ var cur=clubN(u.club);sel.value=CLUBS.indexOf(cur)>-1?cur:"";
+ cl.appendChild(sel);fm.appendChild(cl);inputs.club=sel;
  fld("vnl","Voetbal.nl accountnaam","text",u.voetbalnl||"",true,"off");
  fld("mail","E-mail","email",u.email||"",true,"email");
  fld("pw","Huidig wachtwoord (alleen nodig als je je e-mail wijzigt)","password","",true,"current-password");
@@ -1014,13 +1031,13 @@ function editProf(){
  bt.appendChild(sv);bt.appendChild(cn);fm.appendChild(bt);
  fm.onsubmit=function(e){e.preventDefault();
   var g=function(k){return inputs[k].value.trim()};
-  var nv={first:g("first"),last:g("last"),num:+g("num"),club:g("club"),voetbalnl:g("vnl"),age:+g("age")},mail=g("mail");
-  if(!nv.first||!nv.last||!nv.club||!nv.voetbalnl||!mail||!g("num")||!g("age")){err.textContent="Vul alle velden in.";return}
+  var nv={first:g("first"),last:g("last"),num:g("num")?+g("num"):null,club:g("club"),voetbalnl:g("vnl"),age:g("age")?+g("age"):null},mail=g("mail");
+  if(!nv.first||!nv.last||!nv.club||!nv.voetbalnl||!mail){err.textContent="Vul je naam, achternaam, club, voetbal.nl naam en e-mail in.";return}
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){err.textContent="Dit e-mailadres lijkt niet te kloppen.";return}
-  if(!(nv.num>=1&&nv.num<=99&&nv.num%1===0)){err.textContent="Rugnummer moet tussen 1 en 99 liggen.";return}
-  if(!(nv.age>=5&&nv.age<=99&&nv.age%1===0)){err.textContent="Leeftijd moet tussen 5 en 99 liggen.";return}
+  if(nv.num!==null&&!(nv.num>=1&&nv.num<=99&&nv.num%1===0)){err.textContent="Rugnummer moet tussen 1 en 99 liggen.";return}
+  if(nv.age!==null&&!(nv.age>=5&&nv.age<=99&&nv.age%1===0)){err.textContent="Leeftijd moet tussen 5 en 99 liggen.";return}
   var LB={first:"Naam",last:"Achternaam",num:"Rugnummer",club:"Club",voetbalnl:"Voetbal.nl",age:"Leeftijd"},ch={},det=[];
-  Object.keys(nv).forEach(function(k){if(nv[k]!==u[k]){ch[k]=nv[k];det.push(LB[k]+" → "+nv[k])}});
+  Object.keys(nv).forEach(function(k){var o=u[k]==null?null:u[k];if(nv[k]!==o){ch[k]=nv[k];det.push(LB[k]+" → "+(nv[k]===null?"leeg":nv[k]))}});
   if(PHOTO!==undefined&&PHOTO!==(u.photo||"")){ch.photo=PHOTO;det.push(PHOTO?"Foto gewijzigd":"Foto verwijderd")}
   var newMail=mail.toLowerCase()!==String(u.email||"").toLowerCase();
   if(!det.length&&!newMail){err.textContent="Je hebt niets gewijzigd.";return}
@@ -1043,7 +1060,7 @@ function showRev(x){
  var nm=x.first+" "+x.last;
  phSet(add("div","avb",""),x.photo,ini(nm));
  add("h2","",nm).id="revt";
- [["Naam",x.first],["Achternaam",x.last],["Rugnummer","#"+x.num],["Club",x.club],["Voetbal.nl",x.voetbalnl||"-"],["Leeftijd",x.age+" jaar"],["E-mail",EM[x.id]||"onbekend (zie Firebase > Authentication)"]].forEach(function(r){var row=add("div","pr","");[r[0],r[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;row.appendChild(s)})});
+ [["Naam",x.first],["Achternaam",x.last],["Rugnummer",nT(x.num)],["Club",clubN(x.club)||"-"],["Voetbal.nl",x.voetbalnl||"-"],["Leeftijd",aT(x.age)],["E-mail",EM[x.id]||"onbekend (zie Firebase > Authentication)"]].forEach(function(r){var row=add("div","pr","");[r[0],r[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;row.appendChild(s)})});
  var bt=document.createElement("div");bt.className="btns";pf.appendChild(bt);
  var set=function(data){updateDoc(doc(db,"players",x.id),data).then(function(){d.close()}).catch(function(e){alert(msg(e))})};
  var ok2=document.createElement("button");ok2.type="button";ok2.className="go";ok2.textContent="Goedkeuren";ok2.onclick=function(){set({approved:true})};
