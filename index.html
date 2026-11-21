@@ -499,15 +499,89 @@ html:has(dialog[open]),html:has(dialog[open]) body{overflow:hidden}
 #dlg .dc.ctag{color:var(--fg);background:color-mix(in srgb,var(--cc,#cfd8d2) 40%,transparent);border-color:color-mix(in srgb,var(--cc,#cfd8d2) 90%,#fff);box-shadow:inset 0 1px 1px rgba(255,255,255,.5)}
 .pcl .ctag{font-size:.85rem}
 .ad select{width:100%;font:inherit;font-size:1rem;color:#fff;color-scheme:dark;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.4);border-radius:12px;padding:10px 12px;box-shadow:inset 0 2px 4px rgba(0,0,0,.25)}
+
+/* ===== TOPBALK ===== */
+html{scroll-behavior:smooth}
+#rt,#vh,#team,#contact,#partners{scroll-margin-top:84px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;gap:8px 18px;padding:10px 16px;background:linear-gradient(180deg,rgba(4,16,10,.94),rgba(9,38,22,.82));backdrop-filter:blur(14px) saturate(1.5);-webkit-backdrop-filter:blur(14px) saturate(1.5);border-bottom:1px solid rgba(255,255,255,.14);color:#fff}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,#ffd60a 25%,#ebb600 75%,transparent);opacity:.8}
+.top .brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font:700 1.25rem/1 "Archivo Narrow","Arial Narrow",sans-serif;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
+.top .brand svg{width:34px;height:34px;flex:none;filter:drop-shadow(0 0 8px rgba(255,214,10,.55))}
+.top .brand small{display:block;font:500 .68rem/1.1 Archivo,system-ui,sans-serif;letter-spacing:.14em;color:#ffe27a;margin-top:3px}
+.top nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.top nav::-webkit-scrollbar{display:none}
+.top nav a{font:700 1rem "Archivo Narrow",sans-serif;color:rgba(255,255,255,.82);text-decoration:none;padding:9px 14px;border-radius:999px;white-space:nowrap;border:1px solid transparent}
+.top nav a:hover{color:#fff;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25)}
+.top .acc{position:static;z-index:auto;flex:none;font:700 1rem "Archivo Narrow",sans-serif;color:#2a1c00;padding:9px 22px;border:1px solid rgba(255,255,255,.85);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:inset 0 1px 1px #fff,0 0 16px rgba(255,214,10,.45)}
+.hero>div{padding-top:56px}
+@media (max-width:760px){
+.top{flex-wrap:wrap;padding:8px 12px 6px}
+.top .brand{font-size:1.1rem}
+.top .acc{margin-left:auto;padding:8px 18px}
+.top nav{order:3;width:100%;margin-left:-4px}
+.top nav a{padding:6px 12px}
+.hero>div{padding-top:40px}
+}
+body.locked>.top,body.locked>footer{display:none}
+
+/* ===== FOOTER ===== */
+.ft{position:relative;color:#fff;background:radial-gradient(ellipse at 50% 0,rgba(31,122,66,.55),transparent 60%),linear-gradient(180deg,#0b2e1a 0,#04100a 100%);border-top:3px solid #ebb600;box-shadow:0 -1px 30px rgba(255,214,10,.3)}
+.ft>div{max-width:960px;margin:0 auto;padding:0 20px}
+.ft section{padding:56px 0 8px}
+.ft .sh{color:#fff}
+.ft p{color:rgba(255,255,255,.8);max-width:62ch}
+.ft .lead{margin-top:18px}
+.ft a:not(.wa){color:#ffe27a}
+.tm{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,260px));justify-content:center;gap:32px 28px;margin-top:30px}
+.tm-empty{grid-column:1/-1;text-align:center;justify-self:center}
+.fc{position:relative;display:block;width:100%;max-width:260px;aspect-ratio:5/7;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:center;cursor:pointer;perspective:1200px;-webkit-tap-highlight-color:transparent;justify-self:center}
+.fi{position:absolute;inset:0;display:block;transform-style:preserve-3d;transition:transform .85s cubic-bezier(.3,.85,.3,1)}
+.fc[aria-pressed="true"] .fi{transform:rotateY(180deg)}
+.fa,.fb{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;border-radius:22px;overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden;border:1px solid rgba(255,255,255,.7)}
+.fa{padding:18px 18px 16px;color:#2a1d00;background:linear-gradient(135deg,#fff3b0 0,#f1c94a 28%,#c99a22 52%,#f6dc7a 76%,#b8860b 100%);box-shadow:0 18px 40px rgba(0,0,0,.5),0 0 34px rgba(255,214,10,.4),inset 0 1px 2px rgba(255,255,255,.9),inset 0 -6px 14px rgba(120,80,0,.3)}
+.fa::before{content:"";position:absolute;inset:8px;border-radius:15px;border:1px solid rgba(90,60,0,.35);pointer-events:none}
+.fa::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.55) 50%,transparent 62%) -140% 0/260% 100% no-repeat;pointer-events:none;transition:background-position .9s ease}
+.fc:hover .fa::after{background-position:140% 0}
+.fa .rl{position:relative;font:700 .82rem "Archivo Narrow",sans-serif;letter-spacing:.2em;color:#fff1c4;padding:4px 16px;border-radius:999px;background:linear-gradient(180deg,#5b3f06,#2a1d00);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.fa .pt{position:relative;display:grid;place-items:center;width:58%;aspect-ratio:1;margin:14px 0 12px;border-radius:50%;font:700 3.2rem "Archivo Narrow",sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.45);background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.6),transparent 50%),#2f7d46;box-shadow:inset 0 -10px 18px rgba(0,0,0,.3),0 0 0 4px rgba(255,255,255,.7),0 0 0 6px rgba(120,80,0,.45),0 10px 20px rgba(60,40,0,.35)}
+.fa .nm{position:relative;font:700 1.7rem/1 "Archivo Narrow",sans-serif;text-transform:uppercase;overflow-wrap:anywhere;text-shadow:0 1px 0 rgba(255,255,255,.5)}
+.fa .ht{position:relative;margin-top:auto;display:flex;align-items:center;gap:7px;font:600 .82rem/1.25 Archivo,system-ui,sans-serif;color:rgba(42,29,0,.82);padding-top:10px;border-top:1px dashed rgba(90,60,0,.45);width:100%;justify-content:center}
+.fa .ht svg{width:18px;height:18px;flex:none}
+.fb{padding:20px 20px 16px;transform:rotateY(180deg);align-items:stretch;text-align:left;color:#fff;background:radial-gradient(ellipse at 50% -20%,#2a8a4f,transparent 60%),linear-gradient(180deg,#0f3d22,#07130c 88%);box-shadow:0 18px 40px rgba(0,0,0,.5),0 0 34px rgba(60,200,110,.28),inset 0 1px 2px rgba(255,255,255,.55)}
+.fb .rl{align-self:flex-start;font:700 .78rem "Archivo Narrow",sans-serif;letter-spacing:.2em;color:#2a1c00;padding:4px 14px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:0 0 14px rgba(255,214,10,.5)}
+.fb .nm{margin:12px 0 8px;font:700 1.6rem/1 "Archivo Narrow",sans-serif;text-transform:uppercase;overflow-wrap:anywhere}
+.fb .rw{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.18);font-size:.95rem}
+.fb .rw span:first-child{opacity:.72}
+.fb .rw span:last-child{font-weight:600;text-align:right}
+.fb .rw .ctag{font-size:.85rem}
+.fb .ht{margin-top:auto;text-align:center;font:600 .82rem Archivo,system-ui,sans-serif;color:#ffe27a}
+.fc:focus-visible{outline-offset:6px;border-radius:24px}
+.cw{margin-top:56px;padding:26px 24px;border-radius:24px;border:1px solid rgba(255,255,255,.4);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.03)),rgba(20,82,48,.4);box-shadow:inset 0 1px 2px rgba(255,255,255,.4),0 20px 50px rgba(0,0,0,.35);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 28px}
+.cw>div{flex:1 1 320px}
+.cw p{margin-top:12px}
+.wa{display:inline-flex;align-items:center;gap:12px;min-height:52px;padding:12px 26px;border-radius:999px;font:700 1.15rem "Archivo Narrow",sans-serif;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.75);background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,0) 55%),linear-gradient(90deg,#25d366,#128c4a);box-shadow:inset 0 1px 1px rgba(255,255,255,.8),0 0 22px rgba(37,211,102,.5),0 8px 20px rgba(0,0,0,.35)}
+.wa svg{width:26px;height:26px;fill:currentColor}
+.wa:hover{filter:brightness(1.1)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
+.slots{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;margin-top:20px}
+.slots li{display:grid;place-items:center;min-height:76px;padding:8px;text-align:center;border-radius:16px;border:2px dashed rgba(255,255,255,.35);color:rgba(255,255,255,.6);font:600 .9rem/1.2 Archivo,system-ui,sans-serif;background:rgba(255,255,255,.04)}
+.links{list-style:none;padding:0;margin-top:20px;display:grid;gap:12px}
+.links a{display:flex;flex-direction:column;gap:2px;padding:14px 18px;border-radius:16px;text-decoration:none;color:#fff!important;border:1px solid rgba(255,255,255,.4);background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.04));box-shadow:inset 0 1px 1px rgba(255,255,255,.5)}
+.links a:hover{border-color:#ffd60a;box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 0 16px rgba(255,214,10,.4)}
+.links b{font:700 1.25rem "Archivo Narrow",sans-serif}
+.links span{color:rgba(255,255,255,.72);font-size:.9rem}
+.ft .end{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;margin-top:56px;padding:18px 0 calc(22px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.7);font-size:.9rem}
+@media (max-width:760px){.two{grid-template-columns:1fr}.ft section{padding-top:44px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fi{transition-duration:.01s}.fa::after{transition:none}}
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gsh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".5" stop-color="#f1c94a"/><stop offset="1" stop-color="#b8860b"/></linearGradient><linearGradient id="gfl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe46b"/><stop offset="1" stop-color="#ff6a00"/></linearGradient></defs>
 <symbol id="ic-shoe" viewBox="0 0 32 24"><path d="M3 3H12C12.5 7 15 9 19 10L27 12C30 13 31 15 31 17.5V18.5H3Z" fill="url(#gsh)" stroke="#7a5200" stroke-width="1"/><path d="M2.5 18.5H31.5V20.5H2.5Z" fill="#8a5a00"/><path d="M5 20.5H8L7.5 23.5H5.5ZM11 20.5H14L13.5 23.5H11.5ZM21 20.5H24L23.5 23.5H21.5ZM27 20.5H30L29.5 23.5H27.5Z" fill="#8a5a00"/><path d="M15.5 9.5L18.5 7.5M18.5 10.5L21.5 8.5M21.5 11.3L24.5 9.5" stroke="#7a5200" stroke-width="1.2" stroke-linecap="round"/></symbol>
 <symbol id="ic-flame" viewBox="0 0 24 24"><path d="M12 2C13 6 18 8 18 14A6 6 0 0 1 6 14C6 11.5 7.5 10 8.5 9C8.5 11 9.5 12 10.5 12C10.5 8 9.5 5 12 2Z" fill="url(#gfl)"/></symbol></svg>
+<div class="top" id="top"><a class="brand" href="#top" aria-label="Naar boven"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#fff" stroke="#ffd60a" stroke-width="2"/><path d="M20 12l7 5-2.7 8.2h-8.6L13 17z" fill="#0f1a13"/><path d="M20 12V4M27 17l8-2.5M25.3 25.2l5 6.8M14.7 25.2l-5 6.8M13 17L5 14.5" stroke="#0f1a13" stroke-width="2" fill="none" stroke-linecap="round"/></svg><span>Topscorers<small>LANDSINGERLAND</small></span></a><nav aria-label="Naar sectie"><a href="#rt">Ranglijst</a><a href="#vh">Rangen</a><a href="#team">Team</a><a href="#contact">Contact</a><a href="#partners">Partners</a></nav><button class="acc" id="acc">Inloggen</button></div>
 <header class="hero">
 <svg viewBox="0 0 960 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="20" y="20" width="920" height="260"/><line x1="480" y1="20" x2="480" y2="280"/><circle cx="480" cy="150" r="60"/><rect x="20" y="85" width="110" height="130"/><rect x="830" y="85" width="110" height="130"/></svg>
-<button class="acc" id="acc">Inloggen</button>
 <div><h1>Topscorers<br>Landsingerland</h1><p>de topscorers uit landsingerland. klik op de naam voor details van de spelers.</p><nav class="cats" aria-label="Categorie"><button type="button" id="ctp" aria-pressed="true">Spelers</button><button type="button" id="ctc" aria-pressed="false">Clubs</button></nav><p class="cathint" id="cathint" hidden>Per club zie je de speler die het meeste scoort voor die club.</p></div>
 </header>
 <main>
@@ -778,6 +852,26 @@ html:has(dialog[open]),html:has(dialog[open]) body{overflow:hidden}
 <div class="hz"></div>
 </dialog>
 
+<footer class="ft" id="info"><div>
+<section aria-labelledby="ovh"><h2 class="sh" id="ovh">Over deze website</h2>
+<p class="lead">Topscorers Landsingerland houdt bij wie er het meest scoort in Landsingerland. Spelers maken een account aan, beheerders passen doelpunten en awards aan, en met elk doelpunt stijg je van brons naar zilver, goud en rood.</p></section>
+<section aria-labelledby="team"><h2 class="sh" id="team">Het team achter de website</h2>
+<p class="lead">Deze beheerders houden Topscorers Landsingerland bij.</p>
+<div class="tm" id="tm" aria-live="polite"><p class="tm-empty">De beheerders worden geladen.</p></div></section>
+<div class="cw" id="contact"><div><h2 class="sh">Neem contact met ons op</h2><p>Wij zijn alleen bereikbaar via WhatsApp. Stuur ons een bericht met je vraag, een nieuwe club of een fout in de ranglijst.</p></div>
+<!-- VERVANG 31600000000 DOOR JULLIE WHATSAPP-NUMMER (landnummer + nummer, zonder + of 0) -->
+<a class="wa" id="wa" href="https://wa.me/31600000000" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.500-.7-1.700-.8s-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.700 6.700 0 0 1-3.300-2.900c-.2-.4.2-.4.7-1.300.1-.2 0-.3 0-.5l-.8-1.800c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.200 5.200 5.200 0 0 0 1.100 2.700 11.900 11.900 0 0 0 4.600 4c1.700.7 2.400.8 3.200.7a2.700 2.700 0 0 0 1.800-1.300 2.200 2.200 0 0 0 .2-1.300c-.1-.1-.3-.2-.5-.3Z"/></svg>Stuur een WhatsApp-bericht</a></div>
+<section aria-labelledby="partners"><div class="two">
+<div><h2 class="sh" id="partners">Partners</h2><p class="lead">Samen maken we het voetbal in Landsingerland zichtbaar.</p>
+<ul class="slots"><li>Jouw logo hier</li><li>Jouw logo hier</li><li>Jouw logo hier</li></ul><p class="lead">Partner worden? Stuur ons een WhatsApp-bericht.</p></div>
+<div><h2 class="sh" id="sponsors">Sponsors</h2><p class="lead">Dankzij onze sponsors blijft de website gratis voor alle spelers.</p>
+<ul class="slots"><li>Jouw logo hier</li><li>Jouw logo hier</li><li>Jouw logo hier</li></ul><p class="lead">Sponsor worden? Stuur ons een WhatsApp-bericht.</p></div>
+</div></section>
+<section aria-labelledby="lk"><h2 class="sh" id="lk">Handige links</h2>
+<ul class="links"><li><a href="https://www.voetbal.nl" target="_blank" rel="noopener"><b>voetbal.nl</b><span>Uitslagen, standen en programma’s van het amateurvoetbal</span></a></li>
+<li><a href="https://www.knvb.nl" target="_blank" rel="noopener"><b>knvb.nl</b><span>De officiële website van de voetbalbond</span></a></li></ul></section>
+<div class="end"><span>© 2026 Topscorers Landsingerland</span><a href="#top">Naar boven</a></div>
+</div></footer>
 <script type="module">
 
 /* ====== PLAK HIER JE FIREBASE-CONFIG (Firebase console > Projectinstellingen > Je apps) ====== */
@@ -925,6 +1019,38 @@ document.getElementById("dlg").onclick=function(e){if(e.target===this||e.target.
 var $=function(i){return document.getElementById(i)};
 var EV=[],evF="",SK={},uAct=null,LG=false,QT=0,LAST={},TQ=[],TB=false;
 var PL=[],ALL=[],EM={},MYDOC=null,CU=null,wantProf=false,wipShown=false,docLoaded=false,EDITING=false,PHOTO;
+
+/* ===== ADMINKAARTEN (footer) ===== */
+var ADK="";
+var FLIPSVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg>';
+function renderAdmins(){
+ var box=document.getElementById("tm");if(!box)return;
+ var seen={},as=[];
+ (PL||[]).concat(ALL||[]).forEach(function(u){if(u&&u.admin===true&&u.rejected!==true&&!seen[u.id]){seen[u.id]=1;as.push(u)}});
+ as.sort(function(a,b){return String(a.first||"").localeCompare(String(b.first||""),"nl")});
+ var key=JSON.stringify(as.map(function(u){return [u.id,u.first,u.last,u.club,u.num,u.age,u.goals,(u.photo||"").length]}));
+ if(key===ADK)return;ADK=key;
+ box.textContent="";
+ if(!as.length){var e=document.createElement("p");e.className="tm-empty";e.textContent="De beheerders worden geladen.";box.appendChild(e);return}
+ as.forEach(function(u){
+  var nm=((u.first||"")+" "+(u.last||"")).trim()||"Beheerder";
+  function el(t,c,x){var n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n}
+  var b=el("button","fc");b.type="button";b.setAttribute("aria-pressed","false");b.setAttribute("aria-label","Kaart van "+nm+", klik om om te draaien");
+  var fi=el("span","fi"),fa=el("span","fa"),fb=el("span","fb");
+  fa.appendChild(el("span","rl","BEHEERDER"));
+  var pt=el("span","pt");pt.style.backgroundColor=clubColor(u.club||"");phSet(pt,u.photo,ini(nm));fa.appendChild(pt);
+  fa.appendChild(el("span","nm",nm));
+  var ht=el("span","ht");ht.innerHTML=FLIPSVG;ht.appendChild(el("span",null,"Klik op kaart om om te draaien"));fa.appendChild(ht);
+  fb.appendChild(el("span","rl","BEHEERDER"));fb.appendChild(el("span","nm",nm));
+  function row(k,v){var r=el("span","rw");r.appendChild(el("span",null,k));if(v&&v.nodeType)r.appendChild(v);else r.appendChild(el("span",null,v));fb.appendChild(r)}
+  row("Club",u.club?ctag(u.club):"-");row("Rugnummer",nT(u.num));row("Leeftijd",aT(u.age));row("Doelpunten",String(u.goals||0));
+  fb.appendChild(el("span","ht","Klik om terug te draaien"));
+  fi.append(fa,fb);b.appendChild(fi);
+  b.onclick=function(){var on=b.getAttribute("aria-pressed")==="true";b.setAttribute("aria-pressed",on?"false":"true");b.setAttribute("aria-label","Kaart van "+nm+(on?", klik om om te draaien":", klik om terug te draaien"))};
+  box.appendChild(b);
+ });
+}
+renderAdmins();
 var app=null,auth=null,db=null;
 function getUsers(){var o={};PL.forEach(function(u){o[u.id]=u});return o}
 function me(){if(!CU||!MYDOC)return null;return Object.assign({},MYDOC,{email:CU.email})}
@@ -1200,7 +1326,7 @@ view();
  }catch(e){ok=false;fbMsg="Firebase kon niet geladen worden. Controleer je verbinding en de config.";$("el").textContent=fbMsg;$("er").textContent=fbMsg;return}
 
  var uMine=null,uAll=null,uEm=null;
- function refresh(){rebuild();view();paint();if(wantProf&&me()){wantProf=false;if(allowed())showProf()}else if($("prof").open&&allowed()&&!EDITING)showProf();maybeWip();checkRank()}
+ function refresh(){rebuild();view();paint();renderAdmins();if(wantProf&&me()){wantProf=false;if(allowed())showProf()}else if($("prof").open&&allowed()&&!EDITING)showProf();maybeWip();checkRank()}
  onSnapshot(query(collection(db,"players"),where("approved","==",true)),function(s){
   PL=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});refresh()
  },function(){});
