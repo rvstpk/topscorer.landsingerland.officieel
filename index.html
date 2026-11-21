@@ -597,6 +597,56 @@ body.locked>.tb,body.locked>footer{display:none}
 .ftb a{color:#ffe27a}
 @media (max-width:760px){.tm{grid-template-columns:1fr}.two,.links,.cw{grid-template-columns:1fr}.cw .cta{justify-self:stretch}.ft section{padding-top:30px}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* ===== LIQUID GLASS: HELE WEBSITE ===== */
+:root{--glass-bg:linear-gradient(135deg,rgba(255,255,255,.26),rgba(255,255,255,.06) 42%,rgba(255,255,255,.14)),rgba(6,28,16,.46);
+ --glass-sh:inset 0 1.5px 1px rgba(255,255,255,.8),inset 0 -1.5px 1px rgba(255,255,255,.22),inset 0 0 22px rgba(255,255,255,.1),0 14px 38px rgba(0,0,0,.34),0 2px 6px rgba(0,0,0,.22);
+ --glass-spec:radial-gradient(200px circle at var(--mx,-999px) var(--my,-999px),rgba(255,255,255,.4),rgba(255,255,255,0) 62%)}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* de topbalk is nu het begin van de pagina: de beschrijving staat eronder */
+.hero>div{padding-top:30px}
+.hero p:first-of-type{margin-top:0}
+/* zwevende gekleurde lichtbollen achter het glas */
+body::before{content:"";position:fixed;inset:-10%;z-index:-1;pointer-events:none;
+ background:radial-gradient(circle at 20% 30%,rgba(60,200,110,.34),transparent 40%),radial-gradient(circle at 80% 20%,rgba(255,214,10,.26),transparent 38%),radial-gradient(circle at 60% 85%,rgba(47,111,224,.2),transparent 40%);
+ animation:orbs 26s ease-in-out infinite alternate}
+@keyframes orbs{to{transform:translate3d(-4%,3%,0) scale(1.1)}}
+/* balken: zelfde glas als de topbalk */
+.bar{position:relative;padding:10px 12px 10px 22px;border-radius:30px;border:1px solid rgba(255,255,255,.34);background:var(--glass-spec),var(--glass-bg);backdrop-filter:blur(22px) saturate(2) brightness(1.1);-webkit-backdrop-filter:blur(22px) saturate(2) brightness(1.1);box-shadow:var(--glass-sh)}
+.bar .sh{color:#fff;text-shadow:0 0 24px rgba(255,255,200,.35)}
+.cats{display:inline-flex;flex-wrap:nowrap;gap:2px;padding:4px;border-radius:999px;border:1px solid rgba(255,255,255,.26);background:linear-gradient(180deg,rgba(0,0,0,.22),rgba(255,255,255,.05));box-shadow:inset 0 2px 5px rgba(0,0,0,.28),inset 0 -1px 1px rgba(255,255,255,.28)}
+.cats button{min-height:40px;padding:8px 22px;border-color:transparent;background:none;box-shadow:none;transition:background .25s,color .25s}
+.cats button:hover{background:rgba(255,255,255,.14)}
+.cats button[aria-pressed="true"]{border-color:rgba(255,255,255,.85);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600);box-shadow:inset 0 1px 1px #fff,0 0 14px rgba(255,214,10,.5)}
+.ftb div{width:min(960px,calc(100% - 24px));max-width:none;margin:0 auto 14px;padding:16px 22px calc(16px + env(safe-area-inset-bottom,0px));border-radius:26px;border:1px solid rgba(255,255,255,.34);background:var(--glass-spec),var(--glass-bg);backdrop-filter:blur(22px) saturate(2);-webkit-backdrop-filter:blur(22px) saturate(2);box-shadow:var(--glass-sh)}
+.ftb{padding-top:14px}
+.slot-i{background:linear-gradient(135deg,rgba(255,255,255,.8),rgba(255,255,255,.45));backdrop-filter:blur(14px) saturate(1.8);-webkit-backdrop-filter:blur(14px) saturate(1.8);border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 1.5px 2px #fff,inset 0 -3px 6px rgba(15,60,30,.1),0 8px 20px rgba(15,60,30,.16)}
+.fg{box-shadow:inset 0 1.5px 2px rgba(255,255,255,.95),inset 0 -3px 6px rgba(15,60,30,.12),0 8px 22px rgba(15,60,30,.14)}
+#toast{backdrop-filter:blur(20px) saturate(2);-webkit-backdrop-filter:blur(20px) saturate(2)}
+
+/* ===== 3D PODIUM (zelfde ontwerp, maar met diepte) ===== */
+.podium{perspective:1300px;perspective-origin:50% 35%}
+.pcol{position:relative;transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .55s cubic-bezier(.2,.9,.3,1);will-change:transform;animation:pIn .8s cubic-bezier(.2,.9,.3,1.05) both}
+.pcol1{animation-delay:.1s}.pcol2{animation-delay:.22s}.pcol3{animation-delay:.34s}
+.pcol.tl{transition:transform .09s linear}
+@keyframes pIn{from{opacity:0;transform:perspective(1300px) rotateX(38deg) translateY(50px) translateZ(-120px)}}
+.pcol .pc{--ex:color-mix(in srgb,var(--tint) 32%,#000);
+ box-shadow:inset 0 1px 2px rgba(255,255,255,.7),inset 0 -8px 16px rgba(0,0,0,.25),1px 1px 0 var(--ex),2px 2px 0 var(--ex),3px 3px 0 var(--ex),4px 4px 0 var(--ex),5px 5px 0 var(--ex),6px 6px 0 var(--ex),0 26px 40px rgba(0,0,0,.38),0 0 28px color-mix(in srgb,var(--tint) 45%,transparent)}
+.pcol .pc:hover,.pcol .pc:active{box-shadow:inset 0 1px 2px rgba(255,255,255,.9),inset 0 -8px 16px rgba(0,0,0,.2),1px 1px 0 var(--ex),2px 2px 0 var(--ex),3px 3px 0 var(--ex),4px 4px 0 var(--ex),5px 5px 0 var(--ex),6px 6px 0 var(--ex),0 30px 46px rgba(0,0,0,.4),0 0 40px color-mix(in srgb,var(--tint) 70%,transparent)}
+.pcol .pc::before{content:"";position:absolute;inset:0;z-index:2;border-radius:inherit;pointer-events:none;opacity:var(--go,0);transition:opacity .3s;background:radial-gradient(280px circle at var(--gx,50%) var(--gy,0%),rgba(255,255,255,.34),rgba(255,255,255,0) 60%)}
+.pcol .av,.pcol .pg,.pcol .pn{transition:transform .3s cubic-bezier(.2,.9,.3,1)}
+.pcol .av{transform:translate3d(calc(var(--px,0) * 7px),calc(var(--py,0) * 7px),0)}
+.pcol .pg{transform:translate3d(calc(var(--px,0) * 11px),calc(var(--py,0) * 11px),0)}
+.pcol .pn{transform:translate3d(calc(var(--px,0) * 4px),calc(var(--py,0) * 4px),0)}
+/* trap met echte dikte: bovenvlak en zijkant */
+.step{position:relative;border-radius:6px 6px 0 0}
+.step::before,.step::after{content:"";position:absolute;pointer-events:none}
+.step::before{left:0;top:-12px;width:calc(100% + 12px);height:12px;clip-path:polygon(0 100%,12px 0,100% 0,calc(100% - 12px) 100%)}
+.step::after{left:100%;top:-12px;width:12px;height:calc(100% + 12px);clip-path:polygon(0 12px,100% 0,100% calc(100% - 12px),0 100%)}
+.pcol1 .step::before{background:linear-gradient(90deg,#fff1a8,#f5cf48)}.pcol1 .step::after{background:linear-gradient(180deg,#a8780a,#5e4305)}
+.pcol2 .step::before{background:linear-gradient(90deg,#fff,#dfe5ec)}.pcol2 .step::after{background:linear-gradient(180deg,#7d8793,#444c56)}
+.pcol3 .step::before{background:linear-gradient(90deg,#ffd2a6,#eba46a)}.pcol3 .step::after{background:linear-gradient(180deg,#7d4318,#43230a)}
+@media (prefers-reduced-motion:reduce){.pcol{animation:none;transform:none!important}.pcol .av,.pcol .pg,.pcol .pn{transform:none!important}body::before{animation:none}}
 </style>
 </head>
 <body>
@@ -606,7 +656,7 @@ body.locked>.tb,body.locked>footer{display:none}
 <div class="tb" id="top"><a class="brand" href="#top" aria-label="Topscorers Landsingerland, naar boven"><i><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#fff" stroke="#ffd60a" stroke-width="2"/><path d="M20 12l7 5-2.7 8.2h-8.6L13 17z" fill="#0f1a13"/><path d="M20 12V4M27 17l8-2.5M25.3 25.2l5 6.8M14.7 25.2l-5 6.8M13 17L5 14.5" stroke="#0f1a13" stroke-width="2" fill="none" stroke-linecap="round"/></svg></i><span><b>Topscorers</b><small>Landsingerland</small></span></a><nav aria-label="Naar sectie"><span class="ind" aria-hidden="true"></span><a href="#rt">Ranglijst</a><a href="#vh">Rangen</a><a href="#team">Team</a><a href="#contact">Contact</a><a href="#partners">Partners</a></nav><button class="acc" id="acc">Inloggen</button></div>
 <header class="hero">
 <svg viewBox="0 0 960 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="20" y="20" width="920" height="260"/><line x1="480" y1="20" x2="480" y2="280"/><circle cx="480" cy="150" r="60"/><rect x="20" y="85" width="110" height="130"/><rect x="830" y="85" width="110" height="130"/></svg>
-<div><h1>Topscorers<br>Landsingerland</h1><p>de topscorers uit landsingerland. klik op de naam voor details van de spelers.</p><nav class="cats" aria-label="Categorie"><button type="button" id="ctp" aria-pressed="true">Spelers</button><button type="button" id="ctc" aria-pressed="false">Clubs</button></nav><p class="cathint" id="cathint" hidden>Per club zie je de speler die het meeste scoort voor die club.</p></div>
+<div><h1 class="vh">Topscorers Landsingerland</h1><p>de topscorers uit landsingerland. klik op de naam voor details van de spelers.</p><nav class="cats" aria-label="Categorie"><button type="button" id="ctp" aria-pressed="true">Spelers</button><button type="button" id="ctc" aria-pressed="false">Clubs</button></nav><p class="cathint" id="cathint" hidden>Per club zie je de speler die het meeste scoort voor die club.</p></div>
 </header>
 <main>
 <div class="podium" id="podium"></div>
@@ -924,6 +974,30 @@ body.locked>.tb,body.locked>footer{display:none}
  size();f();
 })();
 </script></footer>
+
+<script>
+/* 3D podium: kantelt mee met je muis of vinger + lichtglans en diepte */
+(function(){
+ var pod=document.getElementById("podium");if(!pod||matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+ function reset(c){c.classList.remove("tl");["--rx","--ry","--px","--py","--go"].forEach(function(k){c.style.removeProperty(k)})}
+ pod.addEventListener("pointermove",function(e){
+  var c=e.target.closest&&e.target.closest(".pcol");if(!c)return;
+  var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+  c.classList.add("tl");
+  c.style.setProperty("--ry",((x-.5)*18).toFixed(1)+"deg");c.style.setProperty("--rx",((.5-y)*14).toFixed(1)+"deg");
+  c.style.setProperty("--px",((x-.5)*2).toFixed(2));c.style.setProperty("--py",((y-.5)*2).toFixed(2));
+  c.style.setProperty("--gx",(x*100).toFixed(0)+"%");c.style.setProperty("--gy",(y*100).toFixed(0)+"%");c.style.setProperty("--go","1");
+ });
+ pod.addEventListener("pointerout",function(e){var c=e.target.closest&&e.target.closest(".pcol");if(c&&!c.contains(e.relatedTarget))reset(c)});
+ pod.addEventListener("pointerup",function(e){if(e.pointerType!=="mouse"){var c=e.target.closest&&e.target.closest(".pcol");if(c)reset(c)}});
+ pod.addEventListener("pointercancel",function(){pod.querySelectorAll(".pcol").forEach(reset)});
+})();
+/* liquid glass: lichtpunt volgt de aanwijzer over alle glazen balken */
+(function(){
+ var SEL=".bar,.ftb div,#adm-fab,#chat-fab,.ap-h,.cm-h";
+ document.addEventListener("pointermove",function(e){var t=e.target.closest&&e.target.closest(SEL);if(!t)return;var r=t.getBoundingClientRect();t.style.setProperty("--mx",(e.clientX-r.left)+"px");t.style.setProperty("--my",(e.clientY-r.top)+"px")},{passive:true});
+})();
+</script>
 <script type="module">
 
 /* ====== PLAK HIER JE FIREBASE-CONFIG (Firebase console > Projectinstellingen > Je apps) ====== */
