@@ -1,7 +1,9 @@
 /* ADMIN-PANEEL + MELDINGEN
    - Admins krijgen linksonder een knop "Admin" met een paneel vol tools:
        1) Aanvragen goedkeuren / weigeren (volledig profiel zichtbaar)
-       2) Gebruikers melding sturen (naar 1, meerdere of alle gebruikers)
+       2) Gebruikers: alle gebruikers met hun kaart, goals en awards aanpassen
+       3) Gebruikers melding sturen (naar 1, meerdere of alle gebruikers)
+       4) Activiteit van gebruikers (o.a. wanneer iemand zijn profiel bewerkt)
    - Alle gebruikers ontvangen meldingen live; wie niet actief was, krijgt ze zodra die weer op de website is. */
 import {getApps,getApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
@@ -17,7 +19,7 @@ html.pre-blocked #adm-fab{display:none!important}
 #adminp::backdrop,#notif::backdrop{background:rgba(3,12,7,.75);backdrop-filter:blur(6px)}
 .ap-h{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;font:700 .85rem "Archivo Narrow",sans-serif;letter-spacing:.2em;color:#2a1c00;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
 .ap-x{width:34px;height:34px;border-radius:50%;border:1px solid rgba(60,40,0,.4);background:rgba(255,255,255,.45);color:#2a1c00;font-size:1.3rem;cursor:pointer;line-height:1}
-.ap-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:14px 16px 4px}
+.ap-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 16px 4px}
 .ap-tab{font:600 .95rem Archivo,sans-serif;color:#fff;cursor:pointer;padding:12px 10px;border-radius:16px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;gap:8px}
 .ap-tab[aria-pressed="true"]{background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.08));border-color:rgba(255,255,255,.8);box-shadow:inset 0 1px 1px rgba(255,255,255,.7)}
 .ap-tab i{font-style:normal;min-width:20px;height:20px;border-radius:999px;background:#d6213a;display:none;place-items:center;font-size:.72rem;padding:0 6px}
@@ -57,12 +59,41 @@ html.pre-blocked #adm-fab{display:none!important}
 .nt-i{margin-bottom:12px;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.4);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.04))}
 .nt-i small{display:block;opacity:.7;margin-bottom:6px;font-size:.78rem}
 .nt-i p{margin:0;font-size:1rem;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.ap-u{margin-top:10px;border-radius:18px;border:1px solid rgba(255,255,255,.3);border-left:6px solid var(--c,#b87333);background:rgba(255,255,255,.07);overflow:hidden}
+.ap-u summary{list-style:none;display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}
+.ap-u summary::-webkit-details-marker{display:none}
+.ap-u summary .ap-av{width:44px;height:44px;font-size:1.1rem}
+.ap-ut{min-width:0;flex:1;display:grid}
+.ap-ut strong{font:700 1.15rem "Archivo Narrow",sans-serif;text-transform:uppercase;overflow-wrap:anywhere}
+.ap-ut small{opacity:.75;overflow-wrap:anywhere}
+.ap-ug{flex:none;font:700 1.05rem "Archivo Narrow",sans-serif;padding:4px 12px;border-radius:999px;background:var(--c,#b87333);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+.ap-card{padding:0 14px 16px}
+.ap-ch{margin:0 -14px 14px;padding:9px 14px;font:700 .75rem "Archivo Narrow",sans-serif;letter-spacing:.2em;color:#2a1c00;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
+.ap-ctop{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.ap-ctop .ap-av{width:84px;height:84px;font-size:2.4rem}
+.ap-big{font:700 3rem/.9 "Archivo Narrow",sans-serif}
+.ap-cname{font:700 1.4rem "Archivo Narrow",sans-serif;text-transform:uppercase;overflow-wrap:anywhere}
+.ap-cg h4{text-align:center;margin:16px 0 6px}
+.ap-ctl{display:flex;gap:6px;align-items:center;justify-content:center}
+.ap-ctl input{width:84px;text-align:center;font:inherit;font-size:1rem;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.45);border-radius:10px;padding:8px}
+.ap-ctl button{font:600 .88rem Archivo,sans-serif;color:#2a1c00;cursor:pointer;padding:8px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.7);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
+.ap-ms{display:block;min-height:1.1em;margin-top:5px;text-align:center;font-size:.8rem;opacity:.85}
 `;
 const st=document.createElement("style");st.textContent=css;document.head.appendChild(st);
 
 const h=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
 const ini=n=>String(n||"?").trim().split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
 const fmtDate=ms=>new Date(ms).toLocaleString("nl-NL",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+const PHRE=/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/;
+const phOk=x=>typeof x==="string"&&x.length<300000&&PHRE.test(x);
+function phSet(e,src,txt){if(phOk(src)){e.style.backgroundImage='url("'+src+'")';e.style.backgroundSize="cover";e.style.backgroundPosition="center";e.textContent=""}else e.textContent=txt}
+const tierC=g=>g>=30?"#d6213a":g>=20?"#e0a800":g>=10?"#b5bdc9":"#b87333";
+const statusOf=p=>p.admin===true?"Beheerder":p.rejected?"Afgewezen":p.approved?"Goedgekeurd":"Wacht op goedkeuring";
+/* goal streak (zelfde berekening als op de website): weeknummer toevoegen als goals omhoog gaan */
+const ymd=d=>d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
+const wk=d=>{const a=d.split("-"),t=new Date(+a[0],a[1]-1,+a[2]);t.setDate(t.getDate()-(t.getDay()+6)%7);return Math.floor(Date.UTC(t.getFullYear(),t.getMonth(),t.getDate())/6048e5)};
+const wkN=()=>wk(ymd(new Date()));
+const addW=a=>{const c=wkN();a=a||[];return a.indexOf(c)>-1?a:a.concat(c).slice(-60)};
 
 /* ---------- DOM ---------- */
 const fab=h("button");fab.id="adm-fab";fab.type="button";fab.append("Admin ",Object.assign(h("b"),{id:"adm-badge"}));document.body.appendChild(fab);
@@ -71,8 +102,8 @@ const nt=document.createElement("dialog");nt.id="notif";document.body.appendChil
 
 /* ---------- state ---------- */
 let DRAFT="",LASTST="",db,auth,uid=null,ME=null,ALL=[],EM={},HIST=[],tab="req",mode="all",SEL=new Set(),filter="",subs=[],lastSeen=0,A=[],B=[],seen=new Set();
-let EV=[],evF="";
-const EVL={login:"Ingelogd",card:"Kaart bekeken",zoek:"Zocht",profiel:"Profiel geopend",beheer:"Beheer"};
+let EV=[],evF="",usrF="";const USROPEN=new Set();
+const EVL={login:"Ingelogd",card:"Kaart bekeken",zoek:"Zocht",profiel:"Profiel geopend",bewerkt:"Profiel bewerkt",beheer:"Beheer"};
 const isAdmin=()=>!!(ME&&ME.admin===true);
 const pending=()=>ALL.filter(x=>!x.approved&&!x.rejected);
 const nameOf=x=>((x.first||"")+" "+(x.last||"")).trim()||"Onbekend";
@@ -87,7 +118,7 @@ refreshPanel();
 function refreshPanel(){
  if(!ap.open)return;
  const a=document.activeElement;
- if((tab==="msg"||tab==="act")&&a&&ap.contains(a)&&/^(TEXTAREA|INPUT)$/.test(a.tagName))return;
+ if((tab==="msg"||tab==="act"||tab==="usr")&&a&&ap.contains(a)&&/^(TEXTAREA|INPUT)$/.test(a.tagName))return;
  renderPanel(true)
 }
 fab.onclick=()=>{renderPanel();ap.showModal()};
@@ -96,12 +127,11 @@ function renderPanel(keepScroll){
  const head=h("div","ap-h");head.append(h("span",null,"ADMIN PANEEL"));
  const x=h("button","ap-x","×");x.type="button";x.setAttribute("aria-label","Sluiten");x.onclick=()=>ap.close();head.appendChild(x);ap.appendChild(head);
  const tabs=h("div","ap-tabs");
- const t1=h("button","ap-tab");t1.type="button";t1.setAttribute("aria-pressed",tab==="req");t1.append("Aanvragen ",Object.assign(h("i",pending().length?"has":"",pending().length),{}));
- const t2=h("button","ap-tab","Melding sturen");t2.type="button";t2.setAttribute("aria-pressed",tab==="msg");
- t1.onclick=()=>{tab="req";renderPanel()};t2.onclick=()=>{tab="msg";LASTST="";renderPanel()};
- const t3=h("button","ap-tab","Activiteit");t3.type="button";t3.setAttribute("aria-pressed",tab==="act");t3.onclick=()=>{tab="act";renderPanel()};tabs.append(t1,t2,t3);ap.appendChild(tabs);
+ const mkT=(id,label,badge)=>{const b=h("button","ap-tab");b.type="button";b.setAttribute("aria-pressed",tab===id);b.append(label);if(badge!==undefined)b.append(" ",h("i",badge?"has":"",badge));b.onclick=()=>{tab=id;if(id==="msg")LASTST="";renderPanel()};tabs.appendChild(b)};
+ mkT("req","Aanvragen",pending().length);mkT("usr","Gebruikers");mkT("msg","Melding sturen");mkT("act","Activiteit");
+ ap.appendChild(tabs);
  const body=h("div","ap-b");ap.appendChild(body);
- tab==="req"?renderReq(body):tab==="act"?renderAct(body):renderMsg(body);
+ tab==="req"?renderReq(body):tab==="usr"?renderUsr(body):tab==="act"?renderAct(body):renderMsg(body);
  if(keepScroll)ap.scrollTop=sc;
 }
 function row(parent,k,v){const r=h("div","ap-row");r.append(h("span",null,k),h("span",null,v));parent.appendChild(r)}
@@ -112,7 +142,7 @@ function renderReq(body){
  if(!list.length){body.appendChild(h("div","ap-empty","Geen openstaande aanvragen."));return}
  list.forEach(p=>{
   const c=h("div","ap-req"),top=h("div","ap-top");
-  top.append(h("div","ap-av",ini(nameOf(p))),h("strong",null,nameOf(p)));c.appendChild(top);
+  const av=h("div","ap-av");phSet(av,p.photo,ini(nameOf(p)));top.append(av,h("strong",null,nameOf(p)));c.appendChild(top);
   row(c,"Naam",p.first||"-");row(c,"Achternaam",p.last||"-");row(c,"Rugnummer","#"+(p.num??"-"));row(c,"Club",p.club||"-");row(c,"Voetbal.nl",p.voetbalnl||"-");row(c,"Leeftijd",(p.age??"-")+" jaar");row(c,"E-mail",EM[p.id]||"onbekend (zie Firebase > Authentication)");
   const bt=h("div","ap-btns"),yes=h("button","ap-yes","Goedkeuren"),no=h("button","ap-no","Weigeren");yes.type=no.type="button";
   const set=d=>{yes.disabled=no.disabled=true;updateDoc(doc(db,"players",p.id),d).catch(()=>{yes.disabled=no.disabled=false;alert("Opslaan mislukt. Controleer de Firestore-regels.")})};
@@ -157,9 +187,59 @@ function renderMsg(body){
   };
   d.appendChild(del);body.appendChild(d)});
 }
+function logAdm(detail){
+ try{setDoc(doc(collection(db,"activity")),{uid,name:nameOf(ME),type:"beheer",detail:String(detail).slice(0,200),ms:Date.now()}).catch(()=>{})}catch(e){}
+}
+function userCard(p){
+ const g=Math.max(0,+p.goals||0),aw=Math.max(0,+p.awards||0),c=tierC(g);
+ const d=document.createElement("details");d.className="ap-u";d.style.setProperty("--c",c);d.open=USROPEN.has(p.id);
+ d.addEventListener("toggle",()=>{d.open?USROPEN.add(p.id):USROPEN.delete(p.id)});
+ const sm=document.createElement("summary"),sa=h("div","ap-av");phSet(sa,p.photo,ini(nameOf(p)));
+ const t=h("div","ap-ut");t.append(h("strong",null,nameOf(p)),h("small",null,(p.club||"-")+(p.approved===true&&p.admin!==true?"":" · "+statusOf(p))));
+ sm.append(sa,t,h("span","ap-ug",g+" goals"));d.appendChild(sm);
+ /* de kaart, zoals de gebruiker die zelf ziet bij "Mijn profiel" */
+ const card=h("div","ap-card");card.appendChild(h("div","ap-ch","SPELERSPAS"));
+ const top=h("div","ap-ctop"),av=h("div","ap-av");phSet(av,p.photo,ini(nameOf(p)));
+ const nm=h("div");nm.append(h("div","ap-big","#"+(p.num??"-")),h("div","ap-cname",nameOf(p)));
+ top.append(av,nm);card.appendChild(top);
+ row(card,"Naam",p.first||"-");row(card,"Achternaam",p.last||"-");row(card,"Rugnummer","#"+(p.num??"-"));row(card,"Club",p.club||"-");
+ row(card,"Voetbal.nl",p.voetbalnl||"-");row(card,"Leeftijd",(p.age??"-")+" jaar");row(card,"E-mail",EM[p.id]||"onbekend (zie Firebase > Authentication)");
+ row(card,"Doelpunten",g);row(card,"Awards (Gouden Schoen)",aw);row(card,"Status",statusOf(p));
+ const ctl=(title,val,field,lab)=>{
+  const wrap=h("div","ap-cg");wrap.appendChild(h("h4",null,title));
+  const r=h("div","ap-ctl"),i=h("input"),m=h("small","ap-ms","");
+  i.type="number";i.min="0";i.value=val;i.inputMode="numeric";i.setAttribute("aria-label",title);
+  const mk=(x,fn)=>{const b=h("button",null,x);b.type="button";b.onclick=fn;return b};
+  const save=async v=>{
+   v=Math.max(0,Math.round(+v)||0);i.value=v;m.textContent="Opslaan…";
+   try{
+    const up={[field]:v};if(field==="goals"&&v>g)up.gw=addW(p.gw);
+    await updateDoc(doc(db,"players",p.id),up);
+    m.textContent="Opgeslagen";logAdm(lab+" "+nameOf(p)+" naar "+v);
+   }catch(e){m.textContent=e&&e.code==="permission-denied"?"Geen toestemming. Controleer de Firestore-regels.":"Opslaan mislukt. Probeer het opnieuw."}
+  };
+  r.append(mk("−1",()=>save(+i.value-1)),i,mk("+1",()=>save(+i.value+1)),mk("Opslaan",()=>save(i.value)));
+  wrap.append(r,m);return wrap};
+ card.appendChild(ctl("Goals aanpassen",g,"goals","goals"));
+ card.appendChild(ctl("Awards aanpassen (Gouden Schoen)",aw,"awards","awards"));
+ d.appendChild(card);return d;
+}
+function renderUsr(body){
+ body.appendChild(h("h3",null,"Gebruikers"));
+ body.appendChild(h("p","ap-sum","Alle gebruikers met hun spelerskaart. Tik op een gebruiker om de kaart te openen en de goals of het aantal awards (Gouden Schoen) aan te passen."));
+ const s=h("input");s.type="search";s.placeholder="Zoek gebruiker of club…";s.value=usrF;s.setAttribute("aria-label","Zoek gebruiker");body.appendChild(s);
+ const box=h("div");body.appendChild(box);
+ const draw=()=>{box.innerHTML="";const q=usrF.toLowerCase().trim();
+  const arr=ALL.filter(p=>!q||(nameOf(p)+" "+(p.club||"")).toLowerCase().includes(q)).sort((a,b)=>nameOf(a).localeCompare(nameOf(b),"nl"));
+  box.appendChild(h("h4",null,arr.length+(arr.length===1?" gebruiker":" gebruikers")));
+  if(!arr.length){box.appendChild(h("div","ap-empty","Geen gebruikers gevonden."));return}
+  arr.forEach(p=>box.appendChild(userCard(p)));
+ };
+ s.oninput=()=>{usrF=s.value;draw()};draw();
+}
 function renderAct(body){
  body.appendChild(h("h3",null,"Gebruikersactiviteit"));
- body.appendChild(h("p","ap-sum","Hier zie je wat gebruikers op de website doen: inloggen, kaarten bekijken, zoeken en het profiel openen. Je ziet de laatste 300 acties."));
+ body.appendChild(h("p","ap-sum","Hier zie je wat gebruikers op de website doen: inloggen, kaarten bekijken, zoeken, het profiel openen en het profiel bewerken. Je ziet de laatste 300 acties."));
  const s=h("input");s.type="search";s.placeholder="Filter op naam of actie…";s.value=evF;s.setAttribute("aria-label","Filter");body.appendChild(s);
  const box=h("div");body.appendChild(box);
  const draw=()=>{box.innerHTML="";const q=evF.toLowerCase().trim(),seenU={},sum=[];
