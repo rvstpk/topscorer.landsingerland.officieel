@@ -82,6 +82,8 @@ html.pre-blocked #adm-fab{display:none!important}
 .ap-role{margin:0 0 14px;padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.34);background:var(--glass-bg);box-shadow:var(--glass-sh)}
 .ap-role h4{margin:0 0 6px}
 .ap-role p{margin:6px 0 0;font-size:.88rem;line-height:1.45;opacity:.9}
+.ap-chk{display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:.95rem;cursor:pointer}
+.ap-chk input{width:20px;height:20px;accent-color:#ffd60a}
 .ap-lock{margin:12px 0 0;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.07);border:1px dashed rgba(255,255,255,.35);font-size:.86rem;line-height:1.4;color:#ffeeb0;text-align:center}
 .ap-ms{display:block;min-height:1.1em;margin-top:5px;text-align:center;font-size:.8rem;opacity:.85}
 `;
@@ -103,6 +105,9 @@ const addW=a=>{const c=wkN();a=a||[];return a.indexOf(c)>-1?a:a.concat(c).slice(
 
 /* ---------- DOM ---------- */
 console.info("[adminpanel] versie zonder beveiligingscode geladen");
+/* Adres van je push-worker (zie push-worker.js). Leeg laten = geen pushmeldingen vanuit de website. */
+const PUSH_URL="";
+let PUSHON=true;
 const fab=h("button");fab.id="adm-fab";fab.type="button";fab.append("Admin ",Object.assign(h("b"),{id:"adm-badge"}));document.body.appendChild(fab);
 const ap=document.createElement("dialog");ap.id="adminp";document.body.appendChild(ap);
 const nt=document.createElement("dialog");nt.id="notif";document.body.appendChild(nt);
@@ -172,6 +177,10 @@ function renderMsg(body){
  const pick=h("div");body.appendChild(pick);
  const sync=()=>{b1.setAttribute("aria-pressed",mode==="all");b2.setAttribute("aria-pressed",mode==="pick");pick.innerHTML="";if(mode==="pick")buildPick(pick)};
  b1.onclick=()=>{mode="all";sync()};b2.onclick=()=>{mode="pick";sync()};sync();
+ if(PUSH_URL){
+  const pc=h("label","ap-chk"),pi=h("input");pi.type="checkbox";pi.checked=PUSHON;pi.onchange=()=>{PUSHON=pi.checked};
+  pc.append(pi,h("span",null,"Ook als pushmelding op telefoons (voor wie meldingen aan heeft staan)"));body.appendChild(pc);
+ }else body.appendChild(h("p","ap-sum","Pushmeldingen naar telefoons staan nog uit. Zet het adres van je push-worker in adminpanel.js bij PUSH_URL."));
  const go=h("button","ap-go","Verstuur melding");go.type="button";body.appendChild(go);
  const sts=h("div","ap-st",LASTST);body.appendChild(sts);
  go.onclick=async()=>{
@@ -182,7 +191,18 @@ function renderMsg(body){
   go.disabled=true;sts.textContent=LASTST="Versturen…";
   try{
    await addDoc(collection(db,"notifications"),{text,all,to,createdMs:Date.now(),by:uid,byName:nameOf(ME)});
-   DRAFT="";ta.value="";cnt.textContent="0 / 1000";const n=all?"de hele website":to.length+(to.length===1?" gebruiker":" gebruikers");SEL.clear();sts.textContent=LASTST="Verstuurd naar "+n+". Het komt live binnen.";sync();
+   let pushTxt="";
+   if(PUSH_URL&&PUSHON){
+    try{
+     const tok=await auth.currentUser.getIdToken();
+     const r=await fetch(PUSH_URL,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+tok},body:JSON.stringify({text,all,to})});
+     const j=await r.json().catch(()=>({}));
+     pushTxt=r.ok&&j.ok
+      ?(j.recipients===0?" Pushmelding: nog niemand heeft meldingen aan staan.":" Pushmelding verstuurd"+(typeof j.recipients==="number"?" naar "+j.recipients+(j.recipients===1?" telefoon":" telefoons"):"")+".")
+      :" Pushmelding mislukt ("+(j.error||r.status)+"). De melding staat wel in de website.";
+    }catch(e){console.error(e);pushTxt=" Pushmelding mislukt (geen verbinding met de push-worker). De melding staat wel in de website."}
+   }
+   DRAFT="";ta.value="";cnt.textContent="0 / 1000";const n=all?"de hele website":to.length+(to.length===1?" gebruiker":" gebruikers");SEL.clear();sts.textContent=LASTST="Verstuurd naar "+n+". Het komt live binnen."+pushTxt;sync();
   }catch(e){sts.textContent=LASTST=e&&e.code==="permission-denied"?"Geen toestemming. Controleer de Firestore-regels.":"Versturen mislukt. Probeer het opnieuw."}
   go.disabled=false;
  };
