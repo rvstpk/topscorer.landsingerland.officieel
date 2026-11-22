@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Topscorers aller tijden: voetbal</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1b5a32">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Topscorers">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&family=Archivo+Narrow:wght@600;700&display=swap" rel="stylesheet">
 <style>
@@ -1058,6 +1064,38 @@ body::before{content:"";position:fixed;inset:-10%;z-index:-1;pointer-events:none
 })();
 </script>
 <script type="module">
+/* ===== PUSHMELDINGEN (OneSignal, gratis) =====
+   Vul hieronder je OneSignal App ID in (staat in OneSignal > Settings > Keys & IDs).
+   Het App ID is niet geheim. De REST API-sleutel zet je NOOIT in de website. */
+var OS_APP_ID="VUL-HIER-JE-ONESIGNAL-APP-ID-IN";
+window.OneSignalDeferred=window.OneSignalDeferred||[];
+function osReady(){return OS_APP_ID.indexOf("VUL-HIER")!==0}
+function osDo(fn){if(osReady())window.OneSignalDeferred.push(fn)}
+if(osReady()){
+ var osBase=location.pathname.replace(/[^\/]*$/,"");
+ window.OneSignalDeferred.push(function(OS){return OS.init({appId:OS_APP_ID,serviceWorkerPath:osBase.slice(1)+"OneSignalSDKWorker.js",serviceWorkerParam:{scope:osBase},notifyButton:{enable:false},allowLocalhostAsSecureOrigin:true})});
+ var osS=document.createElement("script");osS.src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";osS.defer=true;document.head.appendChild(osS);
+}
+var osTagKey="";
+function pushUi(add,u){
+ if(!osReady())return;
+ add("p","pk","Meldingen op je telefoon").style.marginTop="14px";
+ var ios=/iphone|ipad|ipod/i.test(navigator.userAgent),app=matchMedia("(display-mode: standalone)").matches||navigator.standalone;
+ if(ios&&!app){add("p","pk","Op een iPhone werkt dit pas als je de website op je beginscherm zet: tik op Delen en kies Zet op beginscherm. Open de website daarna via dat icoon en zet de meldingen hier aan.");return}
+ var b=add("button","sec","Meldingen controleren…");b.disabled=true;
+ function paintBtn(){osDo(function(OS){
+  var on=!!(OS.Notifications.permission&&OS.User.PushSubscription.optedIn);
+  b.textContent=on?"Meldingen staan aan · tik om uit te zetten":"Meldingen aanzetten";b.disabled=false;
+  b.onclick=function(){
+   b.disabled=true;
+   var job=on?Promise.resolve(OS.User.PushSubscription.optOut()):Promise.resolve(OS.Notifications.requestPermission()).then(function(){
+    if(typeof Notification!=="undefined"&&Notification.permission==="denied"){toast("Meldingen zijn geblokkeerd. Zet ze aan in de instellingen van je browser.");return}
+    return OS.User.PushSubscription.optIn()});
+   job.then(paintBtn).catch(function(){b.disabled=false;toast("Meldingen aanzetten is niet gelukt.")});
+  }})}
+ paintBtn();
+ if(u&&u.admin===true){var a=add("a","pk","Pushmelding versturen via OneSignal \u2192");a.href="https://dashboard.onesignal.com/";a.target="_blank";a.rel="noopener";a.style.display="block"}
+}
 
 /* ====== PLAK HIER JE FIREBASE-CONFIG (Firebase console > Projectinstellingen > Je apps) ====== */
 const firebaseConfig={
@@ -1264,6 +1302,7 @@ function showProf(){
  phSet(add("div","avb",""),u.photo,ini(u.first+" "+u.last));
  add("div","bign",u.num?"#"+u.num:"");add("h2","",u.first+" "+u.last).id="pt";
  [["Naam",u.first],["Achternaam",u.last],["Rugnummer",nT(u.num)],["Club",clubN(u.club)||"-"],["Voetbal.nl",u.voetbalnl||"-"],["Leeftijd",aT(u.age)],["E-mail",u.email],["Doelpunten",u.goals||0]].forEach(function(x){var r=add("div","pr","");[x[0],x[1]].forEach(function(t){var s=document.createElement("span");s.textContent=t;r.appendChild(s)})});
+ pushUi(add,u);
  if(!u.approved){add("p","pk",u.rejected?"Je aanvraag is afgewezen.":"Je account wacht op goedkeuring van een beheerder. Daarna sta je in de lijst met topscorers.").style.marginTop="10px"}
  if(u.admin===true){
   var onb=u.onBoard===true;
@@ -1520,10 +1559,12 @@ view();
   CU=u;MYDOC=null;ALL=[];EM={};EV=[];LG=false;docLoaded=false;
   if(uMine){uMine();uMine=null}if(uAll){uAll();uAll=null}if(uEm){uEm();uEm=null}if(uAct){uAct();uAct=null}
   paint();
-  if(!u){refresh();return}
+  if(!u){osDo(function(OS){return OS.logout()});refresh();return}
+  osDo(function(OS){return OS.login(u.uid)});
   getDoc(doc(db,"private",u.uid)).then(function(d){if(!d.exists())return setDoc(doc(db,"private",u.uid),{email:u.email});if(d.data().email!==u.email)return updateDoc(doc(db,"private",u.uid),{email:u.email})}).catch(function(){});
   uMine=onSnapshot(doc(db,"players",u.uid),function(d){
    MYDOC=d.exists()?Object.assign({id:d.id},d.data()):null;docLoaded=true;if(MYDOC&&!LG){LG=true;logEv("login","")}
+   if(MYDOC){var tg={naam:((MYDOC.first||"")+" "+(MYDOC.last||"")).trim(),club:clubN(MYDOC.club)||"",rol:MYDOC.owner===true?"hoofdbeheerder":MYDOC.admin===true?"beheerder":"speler"},tk=JSON.stringify(tg);if(tk!==osTagKey){osTagKey=tk;osDo(function(OS){OS.User.addTags(tg)})}}
    if(MYDOC&&MYDOC.admin===true&&!uAll){uAll=onSnapshot(collection(db,"players"),function(s){ALL=s.docs.map(function(x){return Object.assign({id:x.id},x.data())});refresh()},function(){});uEm=onSnapshot(collection(db,"private"),function(s){EM={};s.docs.forEach(function(x){EM[x.id]=x.data().email});if($("rev").open){}},function(){})}
    if(!(MYDOC&&MYDOC.admin===true)&&uAll){uAll();uAll=null;ALL=[];if(uEm){uEm();uEm=null}}
    refresh()

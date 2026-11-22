@@ -1,0 +1,242 @@
+rules_version = '2';
+
+// ============================================================================
+//  FIRESTORE-REGELS: Topscorers Landsingerland (volledige versie)
+//
+//  Eenmalig instellen in Firebase (NIET in de website):
+//   1) Firestore > Gegevens: maak collectie  config  met document  adminCode
+//      en veld  code  (string) = jouw beveiligingscode (liefst 6+ tekens).
+//   2) Zet bij JOUW eigen document in  players  het veld  owner = true  (boolean).
+//      Dat is de ene hoofdbeheerder. De velden  admin  en  owner  zet je alleen
+//      zo in de console. Via de website kan niemand ze aanpassen.
+//   3) Firestore > Regels: plak dit bestand er helemaal in en klik Publiceren.
+//
+//  Let op: zonder stap 1 en 2 komt geen enkele beheerder meer binnen.
+// ============================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- hulpfuncties ----------
+    function signedIn() { return request.auth != null; }
+
+    function myPlayer() {
+      return get(/databases/$(database)/documents/players/$(request.auth.uid)).data;
+    }
+
+    // true zodra deze beheerder bij DEZE login de juiste code heeft ingevoerd
+    function unlocked() {
+      let p = /databases/$(database)/documents/adminUnlock/$(request.auth.uid);
+      return exists(p) && get(p).data.authTime == request.auth.token.auth_time;
+    }
+
+    // beheerder = admin in de database EN code ingevoerd
+    function isAdmin() { return signedIn() && myPlayer().admin == true && unlocked(); }
+
+    // de ene hoofdbeheerder
+    function isOwner() { return isAdmin() && myPlayer().owner == true; }
+
+    // goedgekeurde speler (mag berichten sturen)
+    function isApproved() { return signedIn() && myPlayer().approved == true; }
+
+    function toolClub() { return '🛠️'; }   // club die alleen beheerders mogen hebben
+
+    function changed() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+
+    // profielvelden hebben het juiste type en formaat
+    function validProfile() {
+      let d = request.resource.data;
+      return d.first is string && d.first.size() > 0 && d.first.size() <= 60
+        && d.last is string && d.last.size() <= 60
+        && (d.num == null || d.num is int)
+        && (d.age == null || d.age is int)
+        && d.club is string && d.club.size() <= 40
+        && d.voetbalnl is string && d.voetbalnl.size() <= 300
+        && (!('photo' in d) || (d.photo is string && d.photo.size() <= 600000))
+        && (!('onBoard' in d) || d.onBoard is bool);
+    }
+
+    // goals en awards zijn hele getallen vanaf 0
+    function validCounts() {
+      let d = request.resource.data;
+      return d.goals is int && d.goals >= 0 && d.goals <= 9999
+        && d.awards is int && d.awards >= 0 && d.awards <= 9999;
+    }
+
+    // ---------- config: de beveiligingscode. Niemand via de website ----------
+    match /config/{docId} {
+      allow read, write: if false;
+    }
+
+    // ---------- ontgrendeling: lukt alleen met de juiste code, voor deze login ----------
+    match /adminUnlock/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create, update: if signedIn()
+        && request.auth.uid == uid
+        && myPlayer().admin == true
+        && request.resource.data.keys().hasOnly(['code', 'authTime'])
+        && request.resource.data.authTime == request.auth.token.auth_time
+        && request.resource.data.code == get(/databases/$(database)/documents/config/adminCode).data.code;
+      allow delete: if signedIn() && request.auth.uid == uid;
+    }
+
+    // ---------- spelers ----------
+    match /players/{id} {
+      // De ranglijst is voor iedereen leesbaar voor goedgekeurde spelers (zonder e-mail,
+      // die staat in 'private'). Eigen document en beheerders lezen alles.
+      // Wil je dat alleen ingelogde mensen de ranglijst zien? Vervang 'true' door signedIn().
+      allow get, list: if resource.data.approved == true
+        || (signedIn() && request.auth.uid == id)
+        || isAdmin();
+
+      // Registreren: alleen je eigen document, altijd niet goedgekeurd, 0 goals en 0 awards
+      allow create: if signedIn()
+        && request.auth.uid == id
+        && request.resource.data.keys().hasOnly(
+             ['first', 'last', 'num', 'club', 'voetbalnl', 'age', 'goals', 'awards', 'approved'])
+        && request.resource.data.goals == 0
+        && request.resource.data.awards == 0
+        && request.resource.data.approved == false
+        && request.resource.data.club != toolClub()
+        && validProfile();
+
+      allow update: if signedIn() && (
+
+        // 1) Je eigen profiel: nooit rechten, goals, awards of goedkeuring.
+        //    Alleen beheerders mogen bij zichzelf 'onBoard' (in de ranglijst staan) wijzigen.
+        //    De gereedschap-club is alleen voor beheerders.
+        ( request.auth.uid == id
+          && ( changed().hasOnly(['first', 'last', 'num', 'club', 'voetbalnl', 'age', 'photo'])
+               || ( resource.data.admin == true
+                    && changed().hasOnly(['first', 'last', 'num', 'club', 'voetbalnl', 'age', 'photo', 'onBoard']) ) )
+          && validProfile()
+          && ( request.resource.data.club != toolClub() || resource.data.admin == true ) )
+
+        // 2) De hoofdbeheerder mag alles aanpassen (ook goals van beheerders),
+        //    behalve 'admin' en 'owner'.
+        || ( isOwner()
+             && !changed().hasAny(['admin', 'owner'])
+             && validCounts()
+             && ( request.resource.data.club != toolClub() || resource.data.admin == true ) )
+
+        // 3) Gewone beheerders: alleen bij ANDERE spelers die geen beheerder zijn.
+        //    Dus nooit hun eigen goals/awards en nooit die van een andere beheerder.
+        || ( isAdmin()
+             && id != request.auth.uid
+             && resource.data.admin != true
+             && changed().hasOnly(['goals', 'awards', 'gw', 'approved', 'rejected', 'club'])
+             && validCounts()
+             && request.resource.data.club != toolClub() )
+      );
+
+      allow delete: if false;
+    }
+
+    // ---------- e-mailadressen: alleen jezelf en beheerders ----------
+    match /private/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create, update: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['email'])
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 200;
+      allow delete: if false;
+    }
+
+    // ---------- meldingen (admin paneel) ----------
+    match /notifications/{id} {
+      allow read: if signedIn() && (
+        resource.data.all == true
+        || request.auth.uid in resource.data.get('to', [])
+        || isAdmin() );
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['text', 'all', 'to', 'createdMs', 'by', 'byName'])
+        && request.resource.data.by == request.auth.uid
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 1000;
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
+
+    // wanneer iemand zijn meldingen het laatst bekeek
+    match /notifReads/{uid} {
+      allow read, write: if signedIn()
+        && request.auth.uid == uid
+        && (request.method == 'get' || request.method == 'list' || request.method == 'delete'
+            || request.resource.data.keys().hasOnly(['lastSeen']));
+    }
+
+    // ---------- activiteit (alleen beheerders mogen meelezen) ----------
+    match /activity/{id} {
+      allow read: if isAdmin();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'type', 'detail', 'ms'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.detail is string
+        && request.resource.data.detail.size() <= 200;
+      allow update, delete: if false;
+    }
+
+    // ---------- berichten tussen spelers en beheerders ----------
+    match /chats/{chatId} {
+      allow read: if signedIn() && (request.auth.uid == chatId || isAdmin());
+
+      // speler: alleen zijn eigen gesprek, en alleen de velden van een speler.
+      // beheerder: antwoorden, claimen, afhandelen.
+      allow create: if signedIn() && (
+        ( request.auth.uid == chatId
+          && isApproved()
+          && request.resource.data.keys().hasOnly(['uid', 'name', 'club', 'last', 'lastFrom', 'type', 'ms', 'done'])
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.lastFrom == 'user' )
+        || ( isAdmin()
+             && request.resource.data.keys().hasOnly(['uid', 'last', 'lastFrom', 'ms']) ) );
+
+      allow update: if signedIn() && (
+        ( request.auth.uid == chatId
+          && isApproved()
+          && changed().hasOnly(['uid', 'name', 'club', 'last', 'lastFrom', 'type', 'ms', 'done'])
+          && request.resource.data.lastFrom == 'user' )
+        || ( isAdmin()
+             && changed().hasOnly(['uid', 'last', 'lastFrom', 'ms', 'done', 'claimedBy', 'claimedByName', 'claimedMs']) ) );
+
+      allow delete: if false;
+    }
+
+    match /msgs/{id} {
+      allow read: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+      allow create: if signedIn() && (
+        ( isApproved()
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.from == 'user'
+          && request.resource.data.keys().hasOnly(['uid', 'from', 'name', 'text', 'type', 'ms', 'claim'])
+          && request.resource.data.text is string
+          && request.resource.data.text.size() <= 2000 )
+        || ( isAdmin()
+             && request.resource.data.from == 'admin'
+             && request.resource.data.keys().hasOnly(['uid', 'from', 'name', 'text', 'type', 'ms'])
+             && request.resource.data.text is string
+             && request.resource.data.text.size() <= 2000 ) );
+      allow update, delete: if false;
+    }
+
+    // ---------- sponsors en partners (footer) ----------
+    match /partners/{id} {
+      allow read: if true;
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['kind', 'img', 'ms', 'by'])
+        && request.resource.data.by == request.auth.uid
+        && request.resource.data.img is string
+        && request.resource.data.img.size() <= 200000;
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
+
+    // alles wat hierboven niet staat: dicht
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
