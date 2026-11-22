@@ -16,18 +16,16 @@ const css=`
 #adm-fab b{min-width:22px;height:22px;display:none;place-items:center;border-radius:999px;background:#d6213a;color:#fff;font-size:.78rem;padding:0 6px}
 #adm-fab b.has{display:grid}
 html.pre-blocked #adm-fab{display:none!important}
-#adminp,#notif{width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);padding:0;border:1px solid rgba(255,255,255,.4);border-radius:30px;color:#fff;font-family:Archivo,system-ui,sans-serif;overflow:hidden;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.05) 42%,rgba(255,255,255,.12)),rgba(6,28,16,.62);backdrop-filter:blur(26px) saturate(2);-webkit-backdrop-filter:blur(26px) saturate(2);box-shadow:inset 0 1.5px 1px rgba(255,255,255,.7),0 30px 80px rgba(0,0,0,.55)}
-#adminp[open],#notif[open]{display:flex;flex-direction:column}
+#adminp,#notif{width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);padding:0 0 4px;border:1px solid rgba(255,255,255,.4);border-radius:30px;color:#fff;font-family:Archivo,system-ui,sans-serif;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.05) 42%,rgba(255,255,255,.12)),rgba(6,28,16,.62);backdrop-filter:blur(26px) saturate(2);-webkit-backdrop-filter:blur(26px) saturate(2);box-shadow:inset 0 1.5px 1px rgba(255,255,255,.7),0 30px 80px rgba(0,0,0,.6);overflow-y:auto;margin:auto}
 #adminp::backdrop,#notif::backdrop{background:rgba(3,12,7,.75);backdrop-filter:blur(6px)}
-.ap-h{position:relative;flex:none;display:flex;align-items:center;justify-content:space-between;margin:10px 10px 0;padding:10px 12px 10px 20px;border-radius:24px;border:1px solid rgba(255,255,255,.34);font:700 .85rem "Archivo Narrow",sans-serif;letter-spacing:.2em;color:#ffe27a;background:var(--glass-spec),var(--glass-bg);backdrop-filter:blur(22px) saturate(2) brightness(1.1);-webkit-backdrop-filter:blur(22px) saturate(2) brightness(1.1);box-shadow:var(--glass-sh)}
+.ap-h{position:relative;display:flex;align-items:center;justify-content:space-between;margin:10px 10px 0;padding:10px 12px 10px 20px;border-radius:24px;border:1px solid rgba(255,255,255,.34);font:700 .85rem "Archivo Narrow",sans-serif;letter-spacing:.2em;color:#ffe27a;background:var(--glass-spec),var(--glass-bg);backdrop-filter:blur(22px) saturate(2) brightness(1.1);-webkit-backdrop-filter:blur(22px) saturate(2) brightness(1.1);box-shadow:var(--glass-sh)}
 .ap-x{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.5);background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.08));box-shadow:inset 0 1px 1px rgba(255,255,255,.8);color:#fff;font-size:1.3rem;cursor:pointer;line-height:1}
-.ap-tabs{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 16px 4px}
+.ap-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 16px 4px}
 .ap-tab{font:600 .95rem Archivo,sans-serif;color:#fff;cursor:pointer;padding:12px 10px;border-radius:16px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;gap:8px}
 .ap-tab[aria-pressed="true"]{background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.08));border-color:rgba(255,255,255,.8);box-shadow:inset 0 1px 1px rgba(255,255,255,.7)}
 .ap-tab i{font-style:normal;min-width:20px;height:20px;border-radius:999px;background:#d6213a;display:none;place-items:center;font-size:.72rem;padding:0 6px}
 .ap-tab i.has{display:grid}
-.ap-b{flex:1;min-height:0;overflow-y:auto;padding:12px 20px 22px}
-@media (prefers-reduced-motion:reduce){#adm-fab{transition:none}}
+.ap-b{padding:12px 20px 22px}
 .ap-b h3{margin:6px 0 4px;font:700 1.5rem/1.1 "Archivo Narrow",sans-serif;text-transform:uppercase}
 .ap-b h4{margin:20px 0 8px;font:700 1rem "Archivo Narrow",sans-serif;opacity:.85}
 .ap-sum{margin:0 0 14px;padding:10px 12px;border-radius:14px;background:rgba(255,226,70,.12);border:1px solid rgba(255,226,70,.4);font-size:.88rem;line-height:1.45;color:#ffeeb0}
@@ -58,6 +56,7 @@ html.pre-blocked #adm-fab{display:none!important}
 .ap-hist{padding:10px 12px;margin-top:8px;border-radius:14px;background:rgba(255,255,255,.07);font-size:.88rem}
 .ap-hist small{display:block;opacity:.7;margin-bottom:3px}
 .ap-del{margin-top:8px;font:600 .8rem Archivo,sans-serif;color:#ffd0d0;cursor:pointer;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,120,120,.6);background:rgba(214,33,58,.18)}
+
 .nt-i{margin-bottom:12px;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.4);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.04))}
 .nt-i small{display:block;opacity:.7;margin-bottom:6px;font-size:.78rem}
 .nt-i p{margin:0;font-size:1rem;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
@@ -79,27 +78,15 @@ html.pre-blocked #adm-fab{display:none!important}
 .ap-ctl{display:flex;gap:6px;align-items:center;justify-content:center}
 .ap-ctl input{width:84px;text-align:center;font:inherit;font-size:1rem;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.45);border-radius:10px;padding:8px}
 .ap-ctl button{font:600 .88rem Archivo,sans-serif;color:#2a1c00;cursor:pointer;padding:8px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.7);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
+.ap-ctl select{flex:1;min-width:0;font:inherit;font-size:1rem;color:#fff;color-scheme:dark;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.45);border-radius:10px;padding:8px}
+.ap-role{margin:0 0 14px;padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.34);background:var(--glass-bg);box-shadow:var(--glass-sh)}
+.ap-role h4{margin:0 0 6px}
+.ap-role p{margin:6px 0 0;font-size:.88rem;line-height:1.45;opacity:.9}
+.ap-lock{margin:12px 0 0;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.07);border:1px dashed rgba(255,255,255,.35);font-size:.86rem;line-height:1.4;color:#ffeeb0;text-align:center}
 .ap-ms{display:block;min-height:1.1em;margin-top:5px;text-align:center;font-size:.8rem;opacity:.85}
-@keyframes apPop{0%{opacity:0;transform:translateY(22px) scale(.9)}55%{opacity:1;transform:translateY(-4px) scale(1.018)}100%{opacity:1;transform:none}}
-@keyframes apDlg{0%{opacity:0;transform:translateY(30px) scale(.92)}60%{opacity:1;transform:translateY(-4px) scale(1.01)}100%{opacity:1;transform:none}}
-#adminp[open],#notif[open]{animation:apDlg .45s cubic-bezier(.2,.9,.3,1.1)}
-.ap-b.pop .ap-u,.ap-b.pop .ap-req,.ap-b.pop .ap-hist,.ap-b.pop .nt-i,.ap-b.pop .ap-ev{animation:apPop .5s cubic-bezier(.2,.9,.3,1.15) backwards;animation-delay:calc(var(--i,0)*55ms)}
-.ap-u[open] .ap-card{animation:apPop .38s cubic-bezier(.2,.9,.3,1.15) backwards}
-.ap-u,.ap-ev,.ap-req{transition:transform .2s,box-shadow .2s,background .2s}
-.ap-u:hover,.ap-ev:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.28);background:rgba(255,255,255,.1)}
-.ap-ev{display:flex;align-items:center;gap:12px;margin-top:8px;padding:10px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.3);border-left:6px solid var(--c,#b87333);background:rgba(255,255,255,.07)}
-.ap-ev .ap-av{width:40px;height:40px;font-size:1rem}
-.ap-ev .ap-ut strong{font-size:1.05rem}
-.ap-ug.sm{font-size:.8rem;padding:3px 10px;white-space:nowrap}
-.ap-mg{margin-top:16px;padding:12px 14px 14px;border-radius:16px;border:1px solid rgba(255,120,120,.45);background:rgba(214,33,58,.1)}
-.ap-mg h4{margin:0 0 4px;color:#ffd0d0}
-.ap-dng{display:block;width:100%;margin-top:8px;font:700 .95rem "Archivo Narrow",sans-serif;color:#fff;padding:11px 16px;border-radius:999px;cursor:pointer;border:1px solid rgba(255,120,120,.7);background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,0)),rgba(214,33,58,.55)}
-.ap-dng:disabled{opacity:.5}
-@media (prefers-reduced-motion:reduce){#adminp[open],#notif[open],.ap-b.pop .ap-u,.ap-b.pop .ap-req,.ap-b.pop .ap-hist,.ap-b.pop .nt-i,.ap-b.pop .ap-ev,.ap-u[open] .ap-card{animation:none}.ap-u,.ap-ev,.ap-req{transition:none}}
 `;
 const st=document.createElement("style");st.textContent=css;document.head.appendChild(st);
 
-const stag=r=>r.querySelectorAll(".ap-u,.ap-req,.ap-hist,.nt-i,.ap-ev").forEach((e,i)=>e.style.setProperty("--i",Math.min(i,10)));
 const h=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
 const ini=n=>String(n||"?").trim().split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
 const fmtDate=ms=>new Date(ms).toLocaleString("nl-NL",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
@@ -119,14 +106,15 @@ const fab=h("button");fab.id="adm-fab";fab.type="button";fab.append("Admin ",Obj
 const ap=document.createElement("dialog");ap.id="adminp";document.body.appendChild(ap);
 const nt=document.createElement("dialog");nt.id="notif";document.body.appendChild(nt);
 
-/* ---------- state ---------- */
+/* ---------- state ---------- 
 let DRAFT="",LASTST="",db,auth,uid=null,ME=null,ALL=[],EM={},HIST=[],tab="req",mode="all",SEL=new Set(),filter="",subs=[],lastSeen=0,A=[],B=[],seen=new Set();
 let EV=[],evF="",usrF="";const USROPEN=new Set();
-const EVC={login:"#1f9d55",card:"#4aa3ff",zoek:"#b5bdc9",profiel:"#e0a800",bewerkt:"#ff8a3d",beheer:"#9b7bff"};const ACTOPEN=new Set();
+const CLUBS_A=["TOGB","CVV","BVCB","SOCCERBOYS"],ADMCLUB="\uD83D\uDEE0\uFE0F";   /* ADMCLUB = alleen-admin club (gereedschap-emoji) */
 const EVL={login:"Ingelogd",card:"Kaart bekeken",zoek:"Zocht",profiel:"Profiel geopend",bewerkt:"Profiel bewerkt",beheer:"Beheer"};
 const isAdmin=()=>!!(ME&&ME.admin===true);
 const isOwner=()=>!!(ME&&ME.admin===true&&ME.owner===true);   /* hoofdbeheerder: instellen via Firebase, niet via de website */
-const pending=()=>ALL.filter(x=>x.admin!==true&&!x.approved&&!x.rejected);
+let adminSubs=false;
+const pending=()=>ALL.filter(x=>!x.approved&&!x.rejected);
 const clubD=c=>String(c==null?"":c).replace(/\s+/g," ").trim().toUpperCase()||"-";
 const nameOf=x=>((x.first||"")+" "+(x.last||"")).trim()||"Onbekend";
 
@@ -145,7 +133,7 @@ function refreshPanel(){
 }
 fab.onclick=()=>{renderPanel();ap.showModal()};
 function renderPanel(keepScroll){
- const ob=ap.querySelector(".ap-b"),sc=ob?ob.scrollTop:0;ap.innerHTML="";
+ const sc=ap.scrollTop;ap.innerHTML="";
  const head=h("div","ap-h");head.append(h("span",null,"ADMIN PANEEL"));
  const x=h("button","ap-x","×");x.type="button";x.setAttribute("aria-label","Sluiten");x.onclick=()=>ap.close();head.appendChild(x);ap.appendChild(head);
  const tabs=h("div","ap-tabs");
@@ -154,8 +142,7 @@ function renderPanel(keepScroll){
  ap.appendChild(tabs);
  const body=h("div","ap-b");ap.appendChild(body);
  tab==="req"?renderReq(body):tab==="usr"?renderUsr(body):tab==="act"?renderAct(body):renderMsg(body);
- if(keepScroll)body.scrollTop=sc;
- if(!keepScroll){stag(body);body.classList.add("pop");setTimeout(()=>body.classList.remove("pop"),1300)}
+ if(keepScroll)ap.scrollTop=sc;
 }
 function row(parent,k,v){const r=h("div","ap-row");r.append(h("span",null,k),h("span",null,v));parent.appendChild(r)}
 function renderReq(body){
@@ -168,7 +155,7 @@ function renderReq(body){
   const av=h("div","ap-av");phSet(av,p.photo,ini(nameOf(p)));top.append(av,h("strong",null,nameOf(p)));c.appendChild(top);
   row(c,"Naam",p.first||"-");row(c,"Achternaam",p.last||"-");row(c,"Rugnummer","#"+(p.num??"-"));row(c,"Club",clubD(p.club));row(c,"Voetbal.nl",p.voetbalnl||"-");row(c,"Leeftijd",(p.age??"-")+" jaar");row(c,"E-mail",EM[p.id]||"onbekend (zie Firebase > Authentication)");
   const bt=h("div","ap-btns"),yes=h("button","ap-yes","Goedkeuren"),no=h("button","ap-no","Weigeren");yes.type=no.type="button";
-  const set=d=>{yes.disabled=no.disabled=true;updateDoc(doc(db,"players",p.id),d).catch(()=>{yes.disabled=no.disabled=false;alert("Opslaan mislukt. Controleer de Firestore-regels.")})};
+  const set=d=>{yes.disabled=no.disabled=true;updateDoc(doc(db,"players",p.id),d).catch(e=>{yes.disabled=no.disabled=false;alert("Opslaan mislukt. Controleer de Firestore-regels.")})};
   yes.onclick=()=>set({approved:true});no.onclick=()=>set({rejected:true});
   bt.append(yes,no);c.appendChild(bt);body.appendChild(c);
  });
@@ -206,7 +193,7 @@ function renderMsg(body){
   del.onclick=()=>{
    if(!del.dataset.sure){del.dataset.sure="1";del.textContent="Zeker weten? Tik nogmaals";return}
    del.disabled=true;del.textContent="Verwijderen…";
-   deleteDoc(doc(db,"notifications",n.id)).catch(()=>{del.disabled=false;del.textContent="Verwijderen mislukt, probeer opnieuw";delete del.dataset.sure});
+   deleteDoc(doc(db,"notifications",n.id)).catch(e=>{del.disabled=false;del.textContent="Verwijderen mislukt, probeer opnieuw";delete del.dataset.sure});
   };
   d.appendChild(del);body.appendChild(d)});
 }
@@ -244,38 +231,40 @@ function userCard(p){
   r.append(mk("−1",()=>save(+i.value-1)),i,mk("+1",()=>save(+i.value+1)),mk("Opslaan",()=>save(i.value)));
   wrap.append(r,m);return wrap};
  row(card,"Rol",p.owner===true?"\uD83D\uDC51 Hoofdbeheerder":p.admin===true?"Beheerder":"Speler");
- /* de Firestore-regels: gewone beheerders passen alleen gewone spelers aan, de hoofdbeheerder iedereen */
- if(isOwner()||(p.admin!==true&&p.id!==uid)){
+ if(p.admin===true)row(card,"In de ranglijst",p.onBoard===true?"Ja (eigen keuze)":"Nee");
+ if(p.admin===true&&!isOwner()){
+  card.appendChild(h("p","ap-lock","\uD83D\uDD12 Alleen de hoofdbeheerder kan de goals en awards van beheerders aanpassen"+(p.id===uid?" (dus ook die van jou).":".")));
+ }else{
   card.appendChild(ctl("Goals aanpassen",g,"goals","goals"));
   card.appendChild(ctl("Awards aanpassen (Gouden Schoen)",aw,"awards","awards"));
- }else card.appendChild(h("p","ap-sum","Alleen de hoofdbeheerder kan de goals en awards van beheerders aanpassen."));
- /* hoofdbeheerder: beheerders en spelers verwijderen (de Firestore-regels moeten dit ook toestaan) */
- if(isOwner()&&p.owner!==true&&p.id!==uid){
-  const mg=h("div","ap-mg"),ms=h("small","ap-ms","");
-  mg.appendChild(h("h4",null,"\uD83D\uDC51 Beheer door hoofdbeheerder"));
-  const two=(label,fn)=>{
-   const b=h("button","ap-dng",label);b.type="button";
-   b.onclick=async()=>{
-    if(!b.dataset.sure){b.dataset.sure="1";b.textContent="Zeker weten? Tik nogmaals";setTimeout(()=>{if(b.isConnected&&!b.disabled){delete b.dataset.sure;b.textContent=label}},4000);return}
-    b.disabled=true;ms.textContent="Bezig…";
-    try{await fn();ms.textContent="Gedaan."}
-    catch(e){console.error(e);b.disabled=false;delete b.dataset.sure;b.textContent=label;ms.textContent=e&&e.code==="permission-denied"?"Geen toestemming. Controleer de Firestore-regels.":"Mislukt. Probeer het opnieuw."}
-   };
-   mg.appendChild(b);
-  };
-  if(p.admin===true)two("Beheerder-rechten intrekken",async()=>{await updateDoc(doc(db,"players",p.id),{admin:false,approved:true});logAdm("Beheerder-rechten ingetrokken van "+nameOf(p))});
-  two(p.admin===true?"Beheerder verwijderen":"Speler verwijderen",async()=>{
-   const nm=nameOf(p),was=p.admin===true?"Beheerder":"Speler";
-   await deleteDoc(doc(db,"players",p.id));
-   for(const c of ["private","chats"]){try{await deleteDoc(doc(db,c,p.id))}catch(e){}}
-   USROPEN.delete(p.id);logAdm(was+" verwijderd: "+nm);
-  });
-  mg.appendChild(ms);card.appendChild(mg);
  }
+ /* club aanpassen: de gereedschap-emoji is alleen te kiezen voor beheerders */
+ {const wrap=h("div","ap-cg");wrap.appendChild(h("h4",null,"Club aanpassen"));
+  const r=h("div","ap-ctl"),sel=h("select"),m=h("small","ap-ms","");sel.setAttribute("aria-label","Club");
+  const cur=clubD(p.club),opts=CLUBS_A.slice();
+  if(p.admin===true)opts.push(ADMCLUB);
+  if(cur!=="-"&&opts.indexOf(cur)<0)opts.unshift(cur);
+  opts.forEach(c=>{const o=h("option",null,c===ADMCLUB?ADMCLUB+" Gereedschap (alleen admins)":c);o.value=c;sel.appendChild(o)});
+  sel.value=opts.indexOf(cur)>-1?cur:opts[0];
+  const b=h("button",null,"Opslaan");b.type="button";
+  b.onclick=async()=>{
+   const v=sel.value;if(v===cur){m.textContent="Dit is al de club.";return}
+   if(v===ADMCLUB&&p.admin!==true){m.textContent="Alleen beheerders kunnen deze club hebben.";return}
+   m.textContent="Opslaan…";b.disabled=true;
+   try{await updateDoc(doc(db,"players",p.id),{club:v});m.textContent="Opgeslagen";logAdm("club van "+nameOf(p)+" naar "+v)}
+   catch(e){m.textContent=e&&e.code==="permission-denied"?"Geen toestemming. Controleer de Firestore-regels.":"Opslaan mislukt. Probeer het opnieuw."}
+   b.disabled=false};
+  r.append(sel,b);wrap.append(r,m);card.appendChild(wrap)}
  d.appendChild(card);return d;
 }
 function renderUsr(body){
  body.appendChild(h("h3",null,"Gebruikers"));
+{const adm=ALL.filter(x=>x.admin===true&&x.rejected!==true),own=adm.filter(x=>x.owner===true),oth=adm.filter(x=>x.owner!==true);
+  const r=h("div","ap-role");r.appendChild(h("h4",null,"Rollen"));
+  r.appendChild(h("div","ap-row")).append(h("span",null,"\uD83D\uDC51 Hoofdbeheerder"),h("span",null,own.length===1?nameOf(own[0]):own.length?"Let op: "+own.length+" ingesteld":"Nog niet ingesteld"));
+  r.appendChild(h("div","ap-row")).append(h("span",null,"Beheerders"),h("span",null,oth.length?oth.map(nameOf).join(", "):"-"));
+  r.appendChild(h("p",null,"Er is maar 1 hoofdbeheerder en die mag alles. Beheerders keuren aanvragen goed, sturen meldingen, beantwoorden berichten en passen goals van spelers aan. Zij kunnen hun eigen goals en awards niet aanpassen en staan alleen in de ranglijst als ze dat zelf aanzetten."));
+  body.appendChild(r)}
  body.appendChild(h("p","ap-sum","Alle gebruikers met hun spelerskaart. Tik op een gebruiker om de kaart te openen en de goals of het aantal awards (Gouden Schoen) aan te passen."));
  const s=h("input");s.type="search";s.placeholder="Zoek gebruiker of club…";s.value=usrF;s.setAttribute("aria-label","Zoek gebruiker");body.appendChild(s);
  const box=h("div");body.appendChild(box);
@@ -289,33 +278,18 @@ function renderUsr(body){
 }
 function renderAct(body){
  body.appendChild(h("h3",null,"Gebruikersactiviteit"));
- body.appendChild(h("p","ap-sum","Hier zie je wat gebruikers op de website doen: inloggen, kaarten bekijken, zoeken, het profiel openen en het profiel bewerken. Tik op een gebruiker om zijn of haar acties te zien. Je ziet de laatste 300 acties."));
+ body.appendChild(h("p","ap-sum","Hier zie je wat gebruikers op de website doen: inloggen, kaarten bekijken, zoeken, het profiel openen en het profiel bewerken. Je ziet de laatste 300 acties."));
  const s=h("input");s.type="search";s.placeholder="Filter op naam of actie…";s.value=evF;s.setAttribute("aria-label","Filter");body.appendChild(s);
  const box=h("div");body.appendChild(box);
- const draw=()=>{box.innerHTML="";const q=evF.toLowerCase().trim(),by={},sum=[];
-  EV.forEach(e=>{if(e.type==="beheer")return;let u=by[e.uid];if(!u){u=by[e.uid]={uid:e.uid,name:e.name||"Onbekend",n:0,ms:e.ms,ev:[]};sum.push(u)}u.n++;u.ev.push(e)});
+ const draw=()=>{box.innerHTML="";const q=evF.toLowerCase().trim(),seenU={},sum=[];
+  EV.forEach(e=>{if(e.type==="beheer")return;let u=seenU[e.uid];if(!u){u=seenU[e.uid]={name:e.name||"Onbekend",n:0,ms:e.ms};sum.push(u)}u.n++});
   box.appendChild(h("h4",null,"Per gebruiker (laatst actief eerst)"));
   if(!sum.length)box.appendChild(h("div","ap-empty","Nog geen activiteit."));
-  sum.forEach(u=>{
-   const p=ALL.find(x=>x.id===u.uid),g=p?Math.max(0,+p.goals||0):0;
-   const d=document.createElement("details");d.className="ap-u";d.style.setProperty("--c",p?tierC(g):"#b87333");d.open=ACTOPEN.has(u.uid);
-   d.addEventListener("toggle",()=>{d.open?ACTOPEN.add(u.uid):ACTOPEN.delete(u.uid)});
-   const sm=document.createElement("summary"),av=h("div","ap-av");phSet(av,p&&p.photo,ini(p?nameOf(p):u.name));
-   const t=h("div","ap-ut");t.append(h("strong",null,p?nameOf(p):u.name),h("small",null,(p?clubD(p.club)+" · ":"")+"laatst actief "+fmtDate(u.ms)));
-   sm.append(av,t,h("span","ap-ug",u.n+(u.n===1?" actie":" acties")));d.appendChild(sm);
-   const c=h("div","ap-card");
-   u.ev.slice(0,15).forEach(e=>{const r=h("div","ap-hist");r.style.borderLeft="4px solid "+(EVC[e.type]||"#b5bdc9");r.append(h("small",null,fmtDate(e.ms)),h("div",null,(EVL[e.type]||e.type)+(e.detail?": "+e.detail:"")));c.appendChild(r)});
-   d.appendChild(c);box.appendChild(d);
-  });
+  sum.forEach(u=>{const r=h("div","ap-row");r.append(h("span",null,u.name),h("span",null,u.n+" acties · "+fmtDate(u.ms)));box.appendChild(r)});
   box.appendChild(h("h4",null,"Alle acties"));
   const l=EV.filter(e=>!q||((e.name||"")+" "+(EVL[e.type]||e.type)+" "+(e.detail||"")).toLowerCase().includes(q));
   if(!l.length)box.appendChild(h("div","ap-empty","Geen acties gevonden."));
-  l.slice(0,100).forEach(e=>{
-   const p=ALL.find(x=>x.id===e.uid),d=h("div","ap-ev");d.style.setProperty("--c",EVC[e.type]||"#b5bdc9");
-   const av=h("div","ap-av");phSet(av,p&&p.photo,ini(e.name));
-   const t=h("div","ap-ut");t.append(h("strong",null,e.name||"Onbekend"),h("small",null,fmtDate(e.ms)+(e.detail?" · "+e.detail:"")));
-   d.append(av,t,h("span","ap-ug sm",EVL[e.type]||e.type));box.appendChild(d);
-  });
+  l.slice(0,100).forEach(e=>{const d=h("div","ap-hist");d.append(h("small",null,fmtDate(e.ms)+" · "+(e.name||"Onbekend")),h("div",null,(EVL[e.type]||e.type)+(e.detail?": "+e.detail:"")));box.appendChild(d)});
  };
  s.oninput=()=>{evF=s.value;draw()};draw();
 }
@@ -345,15 +319,14 @@ function markSeen(list){
 function showNotes(){
  const ids=new Set([...A,...B].map(n=>n.id));
  shown=shown.filter(n=>ids.has(n.id));               /* verwijderde meldingen verdwijnen meteen */
- const wasOpen=nt.open,fresh=ready()?unread():[];
+ const fresh=ready()?unread():[];
  if(fresh.length){shown=shown.concat(fresh);markSeen(fresh)}   /* zodra getoond = gelezen, dus nooit meer terug */
  if(!shown.length){if(nt.open)nt.close();return}
  if(!ready()&&!nt.open)return;
  nt.innerHTML="";
  const head=h("div","ap-h");head.append(h("span",null,shown.length>1?"MELDINGEN VAN DE BEHEERDER":"MELDING VAN DE BEHEERDER"));nt.appendChild(head);
- const b=h("div","ap-b"+(wasOpen?"":" pop"));
+ const b=h("div","ap-b");
  shown.forEach(n=>{const i=h("div","nt-i");i.append(h("small",null,(n.byName?"Van "+n.byName+" · ":"")+fmtDate(n.createdMs)),h("p",null,n.text));b.appendChild(i)});
- stag(b);if(!wasOpen)setTimeout(()=>b.classList.remove("pop"),1300);
  const ok=h("button","ap-go","Begrepen");ok.type="button";
  ok.onclick=()=>{shown=[];nt.close()};
  b.appendChild(ok);nt.appendChild(b);
@@ -371,7 +344,7 @@ if(pf){const clean=()=>[...pf.children].forEach(el=>{if(el.classList.contains("p
 function start(){
  const app=getApp();db=getFirestore(app);auth=getAuth(app);
  onAuthStateChanged(auth,async u=>{
-  subs.forEach(f=>f());subs=[];uid=u?u.uid:null;ME=null;ALL=[];EM={};HIST=[];EV=[];A=[];B=[];seen=new Set();shown=[];SEL.clear();
+  subs.forEach(f=>f());subs=[];uid=u?u.uid:null;ME=null;adminSubs=false;ALL=[];EM={};HIST=[];EV=[];A=[];B=[];seen=new Set();shown=[];SEL.clear();
   if(ap.open)ap.close();if(nt.open)nt.close();renderBadge();
   if(!u)return;
   let ls=Date.parse((u.metadata&&u.metadata.creationTime)||0)||0;
@@ -381,17 +354,18 @@ function start(){
   const map=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));
   subs.push(onSnapshot(query(collection(db,"notifications"),where("all","==",true)),s=>{A=map(s);showNotes()},()=>{}));
   subs.push(onSnapshot(query(collection(db,"notifications"),where("to","array-contains",u.uid)),s=>{B=map(s);showNotes()},()=>{}));
-  let adminSubs=false;
+  const kick=()=>{
+   if(!isAdmin()||adminSubs)return;adminSubs=true;
+   subs.push(onSnapshot(collection(db,"players"),s=>{ALL=map(s);renderBadge()},()=>{}));
+   subs.push(onSnapshot(collection(db,"private"),s=>{EM={};s.docs.forEach(x=>EM[x.id]=x.data().email);renderBadge()},()=>{}));
+   subs.push(onSnapshot(collection(db,"notifications"),s=>{HIST=map(s);refreshPanel()},()=>{}));
+   subs.push(onSnapshot(query(collection(db,"activity"),orderBy("ms","desc"),limit(300)),s=>{EV=map(s);refreshPanel()},()=>{}));
+  };
   subs.push(onSnapshot(doc(db,"players",u.uid),d=>{
    ME=d.exists()?d.data():{};
-   if(isAdmin()&&!adminSubs){adminSubs=true;
-    subs.push(onSnapshot(collection(db,"players"),s=>{ALL=map(s);renderBadge()},()=>{}));
-    subs.push(onSnapshot(collection(db,"private"),s=>{EM={};s.docs.forEach(x=>EM[x.id]=x.data().email);renderBadge()},()=>{}));
-    subs.push(onSnapshot(collection(db,"notifications"),s=>{HIST=map(s);refreshPanel()},()=>{}));
-    subs.push(onSnapshot(query(collection(db,"activity"),orderBy("ms","desc"),limit(300)),s=>{EV=map(s);refreshPanel()},()=>{}));
-   }
+   kick();
    renderBadge();showNotes();
-  },e=>console.error("Admin-paneel: eigen speler lezen mislukt (Firestore-regels of verbinding)",e)));
+  },()=>{}));
  });
 }
 let tries=0;(function wait(){if(getApps().length)start();else if(tries++<150)setTimeout(wait,100)})();
