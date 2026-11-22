@@ -191,7 +191,7 @@ function composer(body,adm){
     bt.appendChild(cl);box.appendChild(bt);
    }
    body.appendChild(box);body.appendChild(h("p","cm-st",status));
-   const dn=h("div","cm-btns"),dd=h("button","cm-no",c&&c.done?"Heropenen":"Afgehandeld");dd.type="button";dd.onclick=toggleDone;dn.appendChild(dd);body.appendChild(dn);
+   if(!claimedOther(c)||c.allowTakeover===true){const dn=h("div","cm-btns"),dd=h("button","cm-no",c&&c.done?"Heropenen":"Afgehandeld");dd.type="button";dd.onclick=toggleDone;dn.appendChild(dd);body.appendChild(dn)}
    return;
   }
   const mine=h("div","cm-mine");mine.appendChild(h("span",null,"🔒 Jij behandelt dit bericht"));
