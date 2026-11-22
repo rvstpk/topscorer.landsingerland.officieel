@@ -80,9 +80,26 @@ html.pre-blocked #adm-fab{display:none!important}
 .ap-ctl input{width:84px;text-align:center;font:inherit;font-size:1rem;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.45);border-radius:10px;padding:8px}
 .ap-ctl button{font:600 .88rem Archivo,sans-serif;color:#2a1c00;cursor:pointer;padding:8px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.7);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 55%),linear-gradient(90deg,#ffe246,#ebb600)}
 .ap-ms{display:block;min-height:1.1em;margin-top:5px;text-align:center;font-size:.8rem;opacity:.85}
+@keyframes apPop{0%{opacity:0;transform:translateY(22px) scale(.9)}55%{opacity:1;transform:translateY(-4px) scale(1.018)}100%{opacity:1;transform:none}}
+@keyframes apDlg{0%{opacity:0;transform:translateY(30px) scale(.92)}60%{opacity:1;transform:translateY(-4px) scale(1.01)}100%{opacity:1;transform:none}}
+#adminp[open],#notif[open]{animation:apDlg .45s cubic-bezier(.2,.9,.3,1.1)}
+.ap-b.pop .ap-u,.ap-b.pop .ap-req,.ap-b.pop .ap-hist,.ap-b.pop .nt-i,.ap-b.pop .ap-ev{animation:apPop .5s cubic-bezier(.2,.9,.3,1.15) backwards;animation-delay:calc(var(--i,0)*55ms)}
+.ap-u[open] .ap-card{animation:apPop .38s cubic-bezier(.2,.9,.3,1.15) backwards}
+.ap-u,.ap-ev,.ap-req{transition:transform .2s,box-shadow .2s,background .2s}
+.ap-u:hover,.ap-ev:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.28);background:rgba(255,255,255,.1)}
+.ap-ev{display:flex;align-items:center;gap:12px;margin-top:8px;padding:10px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.3);border-left:6px solid var(--c,#b87333);background:rgba(255,255,255,.07)}
+.ap-ev .ap-av{width:40px;height:40px;font-size:1rem}
+.ap-ev .ap-ut strong{font-size:1.05rem}
+.ap-ug.sm{font-size:.8rem;padding:3px 10px;white-space:nowrap}
+.ap-mg{margin-top:16px;padding:12px 14px 14px;border-radius:16px;border:1px solid rgba(255,120,120,.45);background:rgba(214,33,58,.1)}
+.ap-mg h4{margin:0 0 4px;color:#ffd0d0}
+.ap-dng{display:block;width:100%;margin-top:8px;font:700 .95rem "Archivo Narrow",sans-serif;color:#fff;padding:11px 16px;border-radius:999px;cursor:pointer;border:1px solid rgba(255,120,120,.7);background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,0)),rgba(214,33,58,.55)}
+.ap-dng:disabled{opacity:.5}
+@media (prefers-reduced-motion:reduce){#adminp[open],#notif[open],.ap-b.pop .ap-u,.ap-b.pop .ap-req,.ap-b.pop .ap-hist,.ap-b.pop .nt-i,.ap-b.pop .ap-ev,.ap-u[open] .ap-card{animation:none}.ap-u,.ap-ev,.ap-req{transition:none}}
 `;
 const st=document.createElement("style");st.textContent=css;document.head.appendChild(st);
 
+const stag=r=>r.querySelectorAll(".ap-u,.ap-req,.ap-hist,.nt-i,.ap-ev").forEach((e,i)=>e.style.setProperty("--i",Math.min(i,10)));
 const h=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
 const ini=n=>String(n||"?").trim().split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
 const fmtDate=ms=>new Date(ms).toLocaleString("nl-NL",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
@@ -105,6 +122,7 @@ const nt=document.createElement("dialog");nt.id="notif";document.body.appendChil
 /* ---------- state ---------- */
 let DRAFT="",LASTST="",db,auth,uid=null,ME=null,ALL=[],EM={},HIST=[],tab="req",mode="all",SEL=new Set(),filter="",subs=[],lastSeen=0,A=[],B=[],seen=new Set();
 let EV=[],evF="",usrF="";const USROPEN=new Set();
+const EVC={login:"#1f9d55",card:"#4aa3ff",zoek:"#b5bdc9",profiel:"#e0a800",bewerkt:"#ff8a3d",beheer:"#9b7bff"};const ACTOPEN=new Set();
 const EVL={login:"Ingelogd",card:"Kaart bekeken",zoek:"Zocht",profiel:"Profiel geopend",bewerkt:"Profiel bewerkt",beheer:"Beheer"};
 const isAdmin=()=>!!(ME&&ME.admin===true);
 const isOwner=()=>!!(ME&&ME.admin===true&&ME.owner===true);   /* hoofdbeheerder: instellen via Firebase, niet via de website */
@@ -137,6 +155,7 @@ function renderPanel(keepScroll){
  const body=h("div","ap-b");ap.appendChild(body);
  tab==="req"?renderReq(body):tab==="usr"?renderUsr(body):tab==="act"?renderAct(body):renderMsg(body);
  if(keepScroll)body.scrollTop=sc;
+ if(!keepScroll){stag(body);body.classList.add("pop");setTimeout(()=>body.classList.remove("pop"),1300)}
 }
 function row(parent,k,v){const r=h("div","ap-row");r.append(h("span",null,k),h("span",null,v));parent.appendChild(r)}
 function renderReq(body){
@@ -230,6 +249,29 @@ function userCard(p){
   card.appendChild(ctl("Goals aanpassen",g,"goals","goals"));
   card.appendChild(ctl("Awards aanpassen (Gouden Schoen)",aw,"awards","awards"));
  }else card.appendChild(h("p","ap-sum","Alleen de hoofdbeheerder kan de goals en awards van beheerders aanpassen."));
+ /* hoofdbeheerder: beheerders en spelers verwijderen (de Firestore-regels moeten dit ook toestaan) */
+ if(isOwner()&&p.owner!==true&&p.id!==uid){
+  const mg=h("div","ap-mg"),ms=h("small","ap-ms","");
+  mg.appendChild(h("h4",null,"\uD83D\uDC51 Beheer door hoofdbeheerder"));
+  const two=(label,fn)=>{
+   const b=h("button","ap-dng",label);b.type="button";
+   b.onclick=async()=>{
+    if(!b.dataset.sure){b.dataset.sure="1";b.textContent="Zeker weten? Tik nogmaals";setTimeout(()=>{if(b.isConnected&&!b.disabled){delete b.dataset.sure;b.textContent=label}},4000);return}
+    b.disabled=true;ms.textContent="Bezig…";
+    try{await fn();ms.textContent="Gedaan."}
+    catch(e){console.error(e);b.disabled=false;delete b.dataset.sure;b.textContent=label;ms.textContent=e&&e.code==="permission-denied"?"Geen toestemming. Controleer de Firestore-regels.":"Mislukt. Probeer het opnieuw."}
+   };
+   mg.appendChild(b);
+  };
+  if(p.admin===true)two("Beheerder-rechten intrekken",async()=>{await updateDoc(doc(db,"players",p.id),{admin:false,approved:true});logAdm("Beheerder-rechten ingetrokken van "+nameOf(p))});
+  two(p.admin===true?"Beheerder verwijderen":"Speler verwijderen",async()=>{
+   const nm=nameOf(p),was=p.admin===true?"Beheerder":"Speler";
+   await deleteDoc(doc(db,"players",p.id));
+   for(const c of ["private","chats"]){try{await deleteDoc(doc(db,c,p.id))}catch(e){}}
+   USROPEN.delete(p.id);logAdm(was+" verwijderd: "+nm);
+  });
+  mg.appendChild(ms);card.appendChild(mg);
+ }
  d.appendChild(card);return d;
 }
 function renderUsr(body){
@@ -247,18 +289,33 @@ function renderUsr(body){
 }
 function renderAct(body){
  body.appendChild(h("h3",null,"Gebruikersactiviteit"));
- body.appendChild(h("p","ap-sum","Hier zie je wat gebruikers op de website doen: inloggen, kaarten bekijken, zoeken, het profiel openen en het profiel bewerken. Je ziet de laatste 300 acties."));
+ body.appendChild(h("p","ap-sum","Hier zie je wat gebruikers op de website doen: inloggen, kaarten bekijken, zoeken, het profiel openen en het profiel bewerken. Tik op een gebruiker om zijn of haar acties te zien. Je ziet de laatste 300 acties."));
  const s=h("input");s.type="search";s.placeholder="Filter op naam of actie…";s.value=evF;s.setAttribute("aria-label","Filter");body.appendChild(s);
  const box=h("div");body.appendChild(box);
- const draw=()=>{box.innerHTML="";const q=evF.toLowerCase().trim(),seenU={},sum=[];
-  EV.forEach(e=>{if(e.type==="beheer")return;let u=seenU[e.uid];if(!u){u=seenU[e.uid]={name:e.name||"Onbekend",n:0,ms:e.ms};sum.push(u)}u.n++});
+ const draw=()=>{box.innerHTML="";const q=evF.toLowerCase().trim(),by={},sum=[];
+  EV.forEach(e=>{if(e.type==="beheer")return;let u=by[e.uid];if(!u){u=by[e.uid]={uid:e.uid,name:e.name||"Onbekend",n:0,ms:e.ms,ev:[]};sum.push(u)}u.n++;u.ev.push(e)});
   box.appendChild(h("h4",null,"Per gebruiker (laatst actief eerst)"));
   if(!sum.length)box.appendChild(h("div","ap-empty","Nog geen activiteit."));
-  sum.forEach(u=>{const r=h("div","ap-row");r.append(h("span",null,u.name),h("span",null,u.n+" acties · "+fmtDate(u.ms)));box.appendChild(r)});
+  sum.forEach(u=>{
+   const p=ALL.find(x=>x.id===u.uid),g=p?Math.max(0,+p.goals||0):0;
+   const d=document.createElement("details");d.className="ap-u";d.style.setProperty("--c",p?tierC(g):"#b87333");d.open=ACTOPEN.has(u.uid);
+   d.addEventListener("toggle",()=>{d.open?ACTOPEN.add(u.uid):ACTOPEN.delete(u.uid)});
+   const sm=document.createElement("summary"),av=h("div","ap-av");phSet(av,p&&p.photo,ini(p?nameOf(p):u.name));
+   const t=h("div","ap-ut");t.append(h("strong",null,p?nameOf(p):u.name),h("small",null,(p?clubD(p.club)+" · ":"")+"laatst actief "+fmtDate(u.ms)));
+   sm.append(av,t,h("span","ap-ug",u.n+(u.n===1?" actie":" acties")));d.appendChild(sm);
+   const c=h("div","ap-card");
+   u.ev.slice(0,15).forEach(e=>{const r=h("div","ap-hist");r.style.borderLeft="4px solid "+(EVC[e.type]||"#b5bdc9");r.append(h("small",null,fmtDate(e.ms)),h("div",null,(EVL[e.type]||e.type)+(e.detail?": "+e.detail:"")));c.appendChild(r)});
+   d.appendChild(c);box.appendChild(d);
+  });
   box.appendChild(h("h4",null,"Alle acties"));
   const l=EV.filter(e=>!q||((e.name||"")+" "+(EVL[e.type]||e.type)+" "+(e.detail||"")).toLowerCase().includes(q));
   if(!l.length)box.appendChild(h("div","ap-empty","Geen acties gevonden."));
-  l.slice(0,100).forEach(e=>{const d=h("div","ap-hist");d.append(h("small",null,fmtDate(e.ms)+" · "+(e.name||"Onbekend")),h("div",null,(EVL[e.type]||e.type)+(e.detail?": "+e.detail:"")));box.appendChild(d)});
+  l.slice(0,100).forEach(e=>{
+   const p=ALL.find(x=>x.id===e.uid),d=h("div","ap-ev");d.style.setProperty("--c",EVC[e.type]||"#b5bdc9");
+   const av=h("div","ap-av");phSet(av,p&&p.photo,ini(e.name));
+   const t=h("div","ap-ut");t.append(h("strong",null,e.name||"Onbekend"),h("small",null,fmtDate(e.ms)+(e.detail?" · "+e.detail:"")));
+   d.append(av,t,h("span","ap-ug sm",EVL[e.type]||e.type));box.appendChild(d);
+  });
  };
  s.oninput=()=>{evF=s.value;draw()};draw();
 }
@@ -288,14 +345,15 @@ function markSeen(list){
 function showNotes(){
  const ids=new Set([...A,...B].map(n=>n.id));
  shown=shown.filter(n=>ids.has(n.id));               /* verwijderde meldingen verdwijnen meteen */
- const fresh=ready()?unread():[];
+ const wasOpen=nt.open,fresh=ready()?unread():[];
  if(fresh.length){shown=shown.concat(fresh);markSeen(fresh)}   /* zodra getoond = gelezen, dus nooit meer terug */
  if(!shown.length){if(nt.open)nt.close();return}
  if(!ready()&&!nt.open)return;
  nt.innerHTML="";
  const head=h("div","ap-h");head.append(h("span",null,shown.length>1?"MELDINGEN VAN DE BEHEERDER":"MELDING VAN DE BEHEERDER"));nt.appendChild(head);
- const b=h("div","ap-b");
+ const b=h("div","ap-b"+(wasOpen?"":" pop"));
  shown.forEach(n=>{const i=h("div","nt-i");i.append(h("small",null,(n.byName?"Van "+n.byName+" · ":"")+fmtDate(n.createdMs)),h("p",null,n.text));b.appendChild(i)});
+ stag(b);if(!wasOpen)setTimeout(()=>b.classList.remove("pop"),1300);
  const ok=h("button","ap-go","Begrepen");ok.type="button";
  ok.onclick=()=>{shown=[];nt.close()};
  b.appendChild(ok);nt.appendChild(b);
