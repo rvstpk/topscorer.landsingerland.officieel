@@ -102,6 +102,7 @@ const wkN=()=>wk(ymd(new Date()));
 const addW=a=>{const c=wkN();a=a||[];return a.indexOf(c)>-1?a:a.concat(c).slice(-60)};
 
 /* ---------- DOM ---------- */
+console.info("[adminpanel] versie zonder beveiligingscode geladen");
 const fab=h("button");fab.id="adm-fab";fab.type="button";fab.append("Admin ",Object.assign(h("b"),{id:"adm-badge"}));document.body.appendChild(fab);
 const ap=document.createElement("dialog");ap.id="adminp";document.body.appendChild(ap);
 const nt=document.createElement("dialog");nt.id="notif";document.body.appendChild(nt);
