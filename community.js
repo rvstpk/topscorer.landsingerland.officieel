@@ -61,27 +61,7 @@ html.pre-blocked #chat-fab{display:none!important}
 .cm-claim .cm-btns{margin-top:0}
 .cm-mine{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:9px 12px;border-radius:14px;background:rgba(255,226,70,.12);border:1px solid rgba(255,226,70,.4);font-size:.88rem;color:#ffeeb0}
 .cm-mine button{font:600 .82rem Archivo,sans-serif;color:#fff;cursor:pointer;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.1)}
-@keyframes cmPop{0%{opacity:0;transform:translateY(22px) scale(.9)}55%{opacity:1;transform:translateY(-4px) scale(1.018)}100%{opacity:1;transform:none}}
-@keyframes cmDlg{0%{opacity:0;transform:translateY(30px) scale(.92)}60%{opacity:1;transform:translateY(-4px) scale(1.01)}100%{opacity:1;transform:none}}
-#chatd[open]{animation:cmDlg .45s cubic-bezier(.2,.9,.3,1.1)}
-.cm-b.pop .cm-u,.cm-b.pop .cm-claim,.cm-b.pop .cm-mine,.cm-b.pop .cm-take,.cm-b.pop .cm-note{animation:cmPop .5s cubic-bezier(.2,.9,.3,1.15) backwards;animation-delay:calc(var(--i,0)*55ms)}
-.cm-m.new{animation:cmPop .42s cubic-bezier(.2,.9,.3,1.15) backwards;animation-delay:calc(var(--i,0)*45ms)}
-.cm-u{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:12px 14px;text-align:left;font:inherit;color:#fff;cursor:pointer;border-radius:18px;border:1px solid rgba(255,255,255,.3);border-left:6px solid var(--c,#b87333);background:rgba(255,255,255,.07);transition:transform .2s,box-shadow .2s,background .2s}
-.cm-u:hover{transform:translateY(-2px);background:rgba(255,255,255,.12);box-shadow:0 8px 20px rgba(0,0,0,.3)}
-.cm-u.st{cursor:default;margin-top:0;margin-bottom:12px}
-.cm-u.st:hover{transform:none;background:rgba(255,255,255,.07);box-shadow:none}
-.cm-u.done{opacity:.78}
-.cm-ut{min-width:0;flex:1;display:grid;gap:1px}
-.cm-ut strong{font:700 1.15rem "Archivo Narrow",sans-serif;text-transform:uppercase;overflow-wrap:anywhere}
-.cm-ut small{opacity:.75;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cm-ut .cm-lock{justify-self:start;margin-top:3px}
-.cm-ug{flex:none;font:700 1.05rem "Archivo Narrow",sans-serif;padding:4px 12px;border-radius:999px;background:var(--c,#b87333);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45)}
-.cm-take{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.07);font-size:.88rem}
-.cm-sw{flex:none;position:relative;width:48px;height:28px;padding:0;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.12);cursor:pointer;transition:background .25s}
-.cm-sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.4);transition:transform .25s cubic-bezier(.2,.9,.3,1.3)}
-.cm-sw[aria-pressed="true"]{background:linear-gradient(90deg,#ffe246,#ebb600)}
-.cm-sw[aria-pressed="true"]::after{transform:translateX(20px)}
-@media (prefers-reduced-motion:reduce){#chat-fab{transition:none}#chatd[open],.cm-b.pop .cm-u,.cm-b.pop .cm-claim,.cm-b.pop .cm-mine,.cm-b.pop .cm-take,.cm-b.pop .cm-note,.cm-m.new{animation:none}.cm-u,.cm-sw,.cm-sw::after{transition:none}}
+@media (prefers-reduced-motion:reduce){#chat-fab{transition:none}}
 `;
 const st=document.createElement("style");st.textContent=css;document.head.appendChild(st);
 
@@ -95,14 +75,12 @@ const nameOf=x=>((x.first||"")+" "+(x.last||"")).trim()||"Onbekend";
 const TY={suggestie:"Suggestie",bug:"Bug of probleem",goals:"Goals kloppen niet"};
 const PH={suggestie:"Wat zou de website beter maken?",bug:"Wat ging er mis en waar zag je het? Beschrijf zo precies mogelijk wat je deed.",goals:"Leg uit waarom je aantal goals niet klopt, bijvoorbeeld wanneer je hebt gescoord."};
 const MAX=600;
-const tierC=g=>g>=30?"#d6213a":g>=20?"#e0a800":g>=10?"#b5bdc9":"#b87333";
-let POP=false;const SEENM=new Set();
 
 /* ---------- state ---------- */
 let db,auth,uid=null,ME=null,subs=[],roleSubs=[],roleOf=null;
 let PART=[],MY=null,MSGS=[],CH=[],ALLP=[],sel=null,tsub=null;
 let type="suggestie",draft="",claim="",status="",busy=false,filter="open";
-const isAdm=()=>!!(ME&&ME.admin===true);   /* server-regels eisen daarnaast de beveiligingscode (zie adminpanel.js) */
+const isAdm=()=>!!(ME&&ME.admin===true);   /* admin = veld 'admin' in het spelersdocument (alleen zelf in Firebase te zetten) */
 const okMe=()=>!!(uid&&ME&&(ME.admin===true||(ME.rejected!==true&&ME.approved!==false)));
 
 /* ---------- DOM ---------- */
@@ -127,7 +105,7 @@ function renderFab(){
  const n=badgeN(),b=document.getElementById("chat-badge");b.textContent=n;b.classList.toggle("has",n>0);
 }
 fab.onclick=()=>openChat();
-function openChat(){if(!okMe())return;if(isAdm())leaveThread();POP=true;SEENM.clear();render(true);if(!dlg.open)dlg.showModal();markSeen()}
+function openChat(){if(!okMe())return;if(isAdm())leaveThread();render(true);if(!dlg.open)dlg.showModal();markSeen()}
 function markSeen(){if(!isAdm()&&MY&&dlg.open){try{localStorage.setItem(seenKey(),String(MY.ms||Date.now()))}catch(e){}renderFab()}}
 document.addEventListener("click",e=>{
  const b=e.target.closest&&e.target.closest("[data-open-chat]");if(!b)return;
@@ -141,21 +119,18 @@ function render(force){
  dlg.textContent="";
  const head=h("div","cm-h");head.append(h("span",null,"BERICHTEN"));
  const x=h("button","cm-x","×");x.type="button";x.setAttribute("aria-label","Sluiten");x.onclick=()=>dlg.close();head.appendChild(x);dlg.appendChild(head);
- const pop=POP;POP=false;
- const body=h("div","cm-b"+(pop?" pop":""));dlg.appendChild(body);
+ const body=h("div","cm-b");dlg.appendChild(body);
  if(isAdm())sel?viewThread(body):viewList(body);else viewUser(body);
- if(pop){body.querySelectorAll(".cm-u,.cm-claim,.cm-mine,.cm-take,.cm-note").forEach((e,i)=>e.style.setProperty("--i",Math.min(i,10)));setTimeout(()=>body.classList.remove("pop"),1300)}
  const th=dlg.querySelector(".cm-th");if(th)th.scrollTop=th.scrollHeight;
  if(had){const n=dlg.querySelector("textarea");if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}}
 }
 dlg.addEventListener("close",()=>{if(!isAdm())return;leaveThread()});
 
 function thread(body,adminView){
- const th=h("div","cm-th");let k=0;
+ const th=h("div","cm-th");
  MSGS.forEach(m=>{
   const mine=adminView?m.from==="admin":m.from==="user";
   const b=h("div","cm-m"+(mine?" me":""));
-  if(m.id&&!SEENM.has(m.id)){SEENM.add(m.id);b.classList.add("new");b.style.setProperty("--i",Math.min(k++,8))}
   const s=h("small");
   if(m.from==="user"&&TY[m.type])s.appendChild(h("i",null,TY[m.type]));
   s.append((m.from==="admin"?(m.name||"Admin"):(adminView?(m.name||"Gebruiker"):"Jij"))+" · "+fmt(m.ms));
@@ -178,27 +153,21 @@ function composer(body,adm){
   if(!claimedMine(c)){
    const box=h("div","cm-claim");
    if(claimedOther(c)){
-    const ok=c.allowTakeover===true,who=c.claimedByName||"Een andere admin";
-    box.appendChild(h("p",null,"🔒 "+who+" behandelt dit bericht al. "+(ok?who+" heeft toegestaan dat je het overneemt.":"Alleen "+who+" kan bepalen of jij het mag overnemen, zodat jullie elkaar niet in de weg zitten.")));
-    if(ok){
-     const bt=h("div","cm-btns"),ov=h("button","cm-go","Overnemen");ov.type="button";ov.disabled=busy;
-     ov.onclick=()=>{if(confirm("Weet je zeker dat je dit bericht van "+who+" wilt overnemen?"))claimChat(true)};
-     bt.appendChild(ov);box.appendChild(bt);
-    }
+    box.appendChild(h("p",null,"🔒 "+(c.claimedByName||"Een andere admin")+" behandelt dit bericht al. Jij kunt niet antwoorden, zodat jullie elkaar niet in de weg zitten."));
+    const bt=h("div","cm-btns"),ov=h("button","cm-no","Toch overnemen");ov.type="button";ov.disabled=busy;
+    ov.onclick=()=>{if(confirm("Weet je zeker dat je dit bericht van "+(c.claimedByName||"de andere admin")+" wilt overnemen?"))claimChat(true)};
+    bt.appendChild(ov);box.appendChild(bt);
    }else{
     box.appendChild(h("p",null,"Claim dit bericht voordat je antwoordt. Dan weten de andere admins dat jij het behandelt."));
     const bt=h("div","cm-btns"),cl=h("button","cm-go","Claim dit bericht");cl.type="button";cl.disabled=busy;cl.onclick=()=>claimChat(false);
     bt.appendChild(cl);box.appendChild(bt);
    }
    body.appendChild(box);body.appendChild(h("p","cm-st",status));
-   if(!claimedOther(c)||c.allowTakeover===true){const dn=h("div","cm-btns"),dd=h("button","cm-no",c&&c.done?"Heropenen":"Afgehandeld");dd.type="button";dd.onclick=toggleDone;dn.appendChild(dd);body.appendChild(dn)}
+   const dn=h("div","cm-btns"),dd=h("button","cm-no",c&&c.done?"Heropenen":"Afgehandeld");dd.type="button";dd.onclick=toggleDone;dn.appendChild(dd);body.appendChild(dn);
    return;
   }
   const mine=h("div","cm-mine");mine.appendChild(h("span",null,"🔒 Jij behandelt dit bericht"));
   const rl=h("button",null,"Vrijgeven");rl.type="button";rl.onclick=releaseChat;mine.appendChild(rl);body.appendChild(mine);
-  const cc=CH.find(a=>a.id===sel),tk=h("div","cm-take");tk.appendChild(h("span",null,"Andere admins mogen dit bericht overnemen"));
-  const sw=h("button","cm-sw");sw.type="button";sw.setAttribute("role","switch");sw.setAttribute("aria-label","Overnemen door andere admins toestaan");sw.setAttribute("aria-pressed",cc&&cc.allowTakeover===true);sw.onclick=toggleTakeover;
-  tk.appendChild(sw);body.appendChild(tk);
  }
  if(!adm){
   const seg=h("div","cm-seg");
@@ -229,33 +198,29 @@ function viewUser(body){
 function viewList(body){
  const need=CH.filter(needsMe).length;
  const seg=h("div","cm-seg");
- [["open","Te beantwoorden ("+need+")"],["all","Alle gesprekken"]].forEach(a=>{const b=h("button",null,a[1]);b.type="button";b.setAttribute("aria-pressed",filter===a[0]);b.onclick=()=>{filter=a[0];POP=true;render()};seg.appendChild(b)});
+ [["open","Te beantwoorden ("+need+")"],["all","Alle gesprekken"]].forEach(a=>{const b=h("button",null,a[1]);b.type="button";b.setAttribute("aria-pressed",filter===a[0]);b.onclick=()=>{filter=a[0];render()};seg.appendChild(b)});
  body.appendChild(seg);
  const list=CH.filter(c=>filter==="all"||needs(c));
  if(!list.length){body.appendChild(h("p","cm-empty",filter==="all"?"Er zijn nog geen berichten.":"Alle gesprekken zijn beantwoord."));return}
  list.forEach(c=>{
-  const p=ALLP.find(a=>a.id===c.id),g=p?Math.max(0,+p.goals||0):0;
-  const it=h("button","cm-u"+(c.done?" done":""));it.type="button";it.style.setProperty("--c",tierC(g));
-  const av=h("span","cm-av");phSet(av,p&&p.photo,ini(c.name));
-  const club=String(c.club||p&&p.club||"").replace(/\s+/g," ").trim().toUpperCase();
-  const t=h("span","cm-ut");
-  t.append(h("strong",null,c.name||"Onbekend"),h("small",null,(club?club+" · ":"")+fmt(c.ms)),h("small",null,(TY[c.type]?TY[c.type]+": ":"")+(c.last||"")));
-  if(claimedBy(c)&&!c.done){const lk=h("span","cm-lock"+(claimedOther(c)?" other":""),"🔒 "+(claimedOther(c)?(c.claimedByName||"Admin")+(c.allowTakeover===true?" · overnemen mag":""):"Jij"));t.appendChild(lk)}
-  it.append(av,t);
-  if(p)it.appendChild(h("span","cm-ug",g+" goals"));
+  const it=h("button","cm-it");it.type="button";
+  const av=h("span","cm-av"),p=ALLP.find(a=>a.id===c.id);phSet(av,p&&p.photo,ini(c.name));
+  const t=h("span","t");t.append(h("strong",null,c.name||"Onbekend"),h("em",null,(TY[c.type]?TY[c.type]+": ":"")+(c.last||"")));
+  it.append(av,t,h("small",null,fmt(c.ms)));
+  if(claimedBy(c)&&!c.done){const lk=h("span","cm-lock"+(claimedOther(c)?" other":""),"🔒 "+(claimedOther(c)?(c.claimedByName||"Admin"):"Jij"));t.appendChild(lk)}
   if(needsMe(c))it.appendChild(h("span","cm-dot"));
-  else if(c.done)it.appendChild(h("small",null,"✓"));
+  else if(c.done){it.append(h("small",null,"✓"))}
   it.onclick=()=>openThread(c.id);
   body.appendChild(it);
  });
 }
 function viewThread(body){
  const c=CH.find(a=>a.id===sel)||{name:"Onbekend"},p=ALLP.find(a=>a.id===sel);
- const back=h("button","cm-back","← Alle gesprekken");back.type="button";back.onclick=()=>{leaveThread();POP=true;render()};body.appendChild(back);
- const g=p?Math.max(0,+p.goals||0):0,top=h("div","cm-u st"),av=h("span","cm-av");top.style.setProperty("--c",tierC(g));phSet(av,p&&p.photo,ini(c.name));
- const t=h("div","cm-ut");t.appendChild(h("strong",null,c.name||"Onbekend"));
- t.appendChild(h("small",null,String(c.club||p&&p.club||"").replace(/\s+/g," ").trim().toUpperCase()||"-"));
- top.append(av,t);if(p)top.appendChild(h("span","cm-ug",g+" goals"));body.appendChild(top);
+ const back=h("button","cm-back","← Alle gesprekken");back.type="button";back.onclick=()=>{leaveThread();render()};body.appendChild(back);
+ const top=h("div","cm-top"),av=h("span","cm-av");phSet(av,p&&p.photo,ini(c.name));
+ const t=h("div");t.appendChild(h("strong",null,c.name||"Onbekend"));
+ t.appendChild(h("small",null,[(c.club||p&&p.club||"").toString().toUpperCase(),p?(p.goals||0)+" goals op de site":""].filter(Boolean).join(" · ")));
+ top.append(av,t);body.appendChild(top);
  if(!MSGS.length)body.appendChild(h("p","cm-empty","Berichten laden."));else thread(body,true);
  if(c.done)body.appendChild(h("p","cm-note","Afgehandeld. Zodra de gebruiker opnieuw schrijft, komt het gesprek weer bovenaan."));
  composer(body,true);
@@ -263,7 +228,7 @@ function viewThread(body){
 
 /* ---------- gesprekken ---------- */
 function openThread(id){
- leaveThread();sel=id;MSGS=[];draft="";status="";POP=true;SEENM.clear();
+ leaveThread();sel=id;MSGS=[];draft="";status="";
  tsub=onSnapshot(query(collection(db,"msgs"),where("uid","==",id)),s=>{MSGS=s.docs.map(d=>Object.assign({id:d.id},d.data())).sort((a,b)=>a.ms-b.ms);render()},()=>{status="Berichten laden mislukt.";render()});
  render();
 }
@@ -305,29 +270,22 @@ async function claimChat(force){
   await runTransaction(db,async tx=>{
    const sn=await tx.get(ref);if(!sn.exists())throw new Error("weg");
    const d=sn.data();
-   if(d.claimedBy&&d.claimedBy!==uid){
-    if(!force){const e=new Error("al geclaimd");e.code="claimed";throw e}
-    if(d.allowTakeover!==true){const e=new Error("overnemen niet toegestaan");e.code="locked";throw e}
-   }
-   tx.update(ref,{claimedBy:uid,claimedByName:nameOf(ME),claimedMs:Date.now(),allowTakeover:false});
+   if(!force&&d.claimedBy&&d.claimedBy!==uid){const e=new Error("al geclaimd");e.code="claimed";throw e}
+   tx.update(ref,{claimedBy:uid,claimedByName:nameOf(ME),claimedMs:Date.now()});
   });
   status="Je hebt dit bericht geclaimd. Andere admins zien dat jij het behandelt.";
- }catch(e){console.error(e);status=e&&e.code==="claimed"?"Een andere admin was je net voor.":e&&e.code==="locked"?"De admin die dit bericht behandelt heeft overnemen niet toegestaan (meer).":"Claimen mislukt. Probeer het opnieuw."}
+ }catch(e){console.error(e);status=e&&e.code==="claimed"?"Een andere admin was je net voor.":"Claimen mislukt. Probeer het opnieuw."}
  busy=false;render();
 }
 async function releaseChat(){
  const id=sel;if(!id)return;
- try{await updateDoc(doc(db,"chats",id),{claimedBy:null,claimedByName:null,claimedMs:null,allowTakeover:false});status="Vrijgegeven. Een andere admin kan het nu claimen."}
+ try{await updateDoc(doc(db,"chats",id),{claimedBy:null,claimedByName:null,claimedMs:null});status="Vrijgegeven. Een andere admin kan het nu claimen."}
  catch(e){console.error(e);status="Vrijgeven mislukt."}
  render();
 }
-async function toggleTakeover(){
- const c=CH.find(a=>a.id===sel);if(!c||!claimedMine(c))return;
- try{await updateDoc(doc(db,"chats",sel),{allowTakeover:c.allowTakeover!==true})}catch(e){console.error(e);status="Opslaan mislukt. Controleer de Firestore-regels.";render()}
-}
 async function toggleDone(){
  const c=CH.find(a=>a.id===sel);if(!c)return;
- try{await updateDoc(doc(db,"chats",sel),c.done?{done:false}:{done:true,claimedBy:null,claimedByName:null,claimedMs:null,allowTakeover:false})}catch(e){console.error(e);status="Opslaan mislukt.";render()}
+ try{await updateDoc(doc(db,"chats",sel),c.done?{done:false}:{done:true,claimedBy:null,claimedByName:null,claimedMs:null})}catch(e){console.error(e);status="Opslaan mislukt.";render()}
 }
 
 /* ---------- partners en sponsors ---------- */
